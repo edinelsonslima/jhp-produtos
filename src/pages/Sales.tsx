@@ -19,12 +19,18 @@ export default function Sales() {
   const [selectedProduct, setSelectedProduct] = useState('');
   const [quantity, setQuantity] = useState('');
   const [customPrice, setCustomPrice] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'pix' | 'dinheiro'>('dinheiro');
+  const [paymentMethod, setPaymentMethod] = useState<'pix' | 'dinheiro' | 'misto'>('dinheiro');
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [cashAmount, setCashAmount] = useState('');
+  const [pixAmount, setPixAmount] = useState('');
 
   const product = products.find(p => p.id === selectedProduct);
   const qty = parseFloat(quantity) || 0;
   const total = customPrice ? parseFloat(customPrice) || 0 : (product ? product.price * qty : 0);
+  
+  const cashValue = parseFloat(cashAmount) || 0;
+  const pixValue = parseFloat(pixAmount) || 0;
+  const mixedTotal = cashValue + pixValue;
 
   const visibleProducts = products.slice(0, 3);
   const hiddenProducts = products.slice(3);
@@ -42,18 +48,51 @@ export default function Sales() {
       toast.error('Selecione um produto e quantidade válida');
       return;
     }
-    addSale({
-      productName: product.name,
-      quantity: qty,
-      unit: product.unit,
-      totalPrice: total,
-      paymentMethod,
-      date: new Date().toISOString().split('T')[0],
-    });
+    
+    if (paymentMethod === 'misto') {
+      if (mixedTotal <= 0) {
+        toast.error('Informe os valores em dinheiro e/ou PIX');
+        return;
+      }
+      // Register two separate sales for mixed payment
+      const dateStr = new Date().toISOString().split('T')[0];
+      if (cashValue > 0) {
+        addSale({
+          productName: product.name,
+          quantity: qty * (cashValue / mixedTotal),
+          unit: product.unit,
+          totalPrice: cashValue,
+          paymentMethod: 'dinheiro',
+          date: dateStr,
+        });
+      }
+      if (pixValue > 0) {
+        addSale({
+          productName: product.name,
+          quantity: qty * (pixValue / mixedTotal),
+          unit: product.unit,
+          totalPrice: pixValue,
+          paymentMethod: 'pix',
+          date: dateStr,
+        });
+      }
+    } else {
+      addSale({
+        productName: product.name,
+        quantity: qty,
+        unit: product.unit,
+        totalPrice: total,
+        paymentMethod,
+        date: new Date().toISOString().split('T')[0],
+      });
+    }
+    
     toast.success('Venda registrada!');
     setSelectedProduct('');
     setQuantity('');
     setCustomPrice('');
+    setCashAmount('');
+    setPixAmount('');
   };
 
   const ProductCard = ({ p }: { p: typeof products[0] }) => (
@@ -218,9 +257,72 @@ export default function Sales() {
               >
                 <Smartphone size={16} /> Pix
               </Button>
+              <Button
+                type="button"
+                variant={paymentMethod === 'misto' ? 'default' : 'outline'}
+                className={`flex-1 gap-2 ${paymentMethod === 'misto' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
+                onClick={() => setPaymentMethod('misto')}
+              >
+                <Plus size={16} /> Misto
+              </Button>
             </div>
           </div>
         </div>
+
+        {/* Mixed payment inputs */}
+        <AnimatePresence>
+          {paymentMethod === 'misto' && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-hidden"
+            >
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Banknote size={14} className="text-cash" />
+                  Valor em Dinheiro
+                </Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={cashAmount}
+                  onChange={e => setCashAmount(e.target.value)}
+                  placeholder="R$ 0,00"
+                  className="border-cash/30 focus-visible:ring-cash"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="flex items-center gap-2">
+                  <Smartphone size={14} className="text-pix" />
+                  Valor em PIX
+                </Label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={pixAmount}
+                  onChange={e => setPixAmount(e.target.value)}
+                  placeholder="R$ 0,00"
+                  className="border-pix/30 focus-visible:ring-pix"
+                />
+              </div>
+              {mixedTotal > 0 && (
+                <div className="col-span-full text-center p-2 rounded-lg bg-muted/50">
+                  <span className="text-sm text-muted-foreground">Total misto: </span>
+                  <span className="font-mono font-bold">{formatCurrency(mixedTotal)}</span>
+                  {total > 0 && mixedTotal !== total && (
+                    <span className="text-xs text-destructive ml-2">
+                      (diferença de {formatCurrency(Math.abs(total - mixedTotal))})
+                    </span>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {total > 0 && (
           <div className="text-right">
