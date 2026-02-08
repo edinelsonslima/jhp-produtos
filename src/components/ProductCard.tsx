@@ -2,8 +2,8 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { Product, SaleProduct } from "@/types";
 import { motion, useDragControls } from "framer-motion";
 import { Package, Trash2 } from "lucide-react";
-import { PointerEvent, useRef, useState } from "react";
-import { Button } from "./ui/button";
+import { useRef, useState } from "react";
+import { buttonVariants } from "./ui/button";
 
 interface Props {
   product: Product;
@@ -22,35 +22,36 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
   const updateProductByQuantity = (quantity: number = 0) => {
     const newQuantity = Math.max(quantity, 0);
     onSelect({ ...product, quantity: newQuantity });
+    feedbackVibrate(30);
   };
 
-  function handlePointerDown(e: PointerEvent<HTMLButtonElement>) {
-    const isDrag = e.pointerType === "mouse" && e.button !== 0;
-    if (isDrag) {
-      return;
-    }
+  const feedbackVibrate = (pattern: number | number[]) => {
+    window?.navigator?.vibrate(pattern);
+  };
 
+  const handlePointerDown = () => {
     if (!selected || longPressActive) return;
 
     longPressTimer.current = window.setTimeout(() => {
       setLongPressActive(true);
+      feedbackVibrate(10);
     }, 500);
-  }
+  };
 
-  function handlePointerUp() {
+  const handlePointerUp = () => {
     if (!longPressTimer.current) {
       return;
     }
 
     window.clearTimeout(longPressTimer.current);
     longPressTimer.current = null;
-  }
+  };
 
-  function handleDragStart() {
+  const handleDragStart = () => {
     isDragging.current = true;
-  }
+  };
 
-  function handleDragEnd(_: unknown, info: { offset: { x: number } }) {
+  const handleDragEnd = (_: unknown, info: { offset: { x: number } }) => {
     isDragging.current = false;
 
     if (info.offset.x < -80) {
@@ -60,12 +61,12 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
     if (info.offset.x > 80) {
       updateProductByQuantity(quantity + 1);
     }
-  }
+  };
 
-  function handleClick() {
+  const handleClick = () => {
     if (isDragging.current) return;
     updateProductByQuantity(quantity + 1);
-  }
+  };
 
   return (
     <motion.button
@@ -98,10 +99,11 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
       </div>
 
       {longPressActive && (
-        <Button
-          type="button"
-          variant="destructive"
-          className="flex gap-2 w-full"
+        <span
+          className={buttonVariants({
+            variant: "destructive",
+            className: "w-full",
+          })}
           onClick={(e) => {
             e.stopPropagation();
             updateProductByQuantity(0);
@@ -110,7 +112,7 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
         >
           <Trash2 size={14} />
           Limpar
-        </Button>
+        </span>
       )}
 
       {!longPressActive && (
@@ -119,7 +121,12 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
             {formatCurrency(product.price)}
           </span>
 
-          <span className="text-xs text-muted-foreground">
+          <span
+            className={cn(
+              "text-xs text-muted-foreground",
+              quantity && "font-bold text-primary",
+            )}
+          >
             {!quantity
               ? product.unit === "litro"
                 ? "litro"
