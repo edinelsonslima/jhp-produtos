@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Smartphone, Banknote, Trash2, Plus } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Smartphone, Banknote, Trash2, Plus, ChevronDown, Package } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
 function formatCurrency(value: number) {
@@ -18,10 +20,21 @@ export default function Sales() {
   const [quantity, setQuantity] = useState('');
   const [customPrice, setCustomPrice] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'pix' | 'dinheiro'>('dinheiro');
+  const [isProductsOpen, setIsProductsOpen] = useState(false);
 
   const product = products.find(p => p.id === selectedProduct);
   const qty = parseFloat(quantity) || 0;
   const total = customPrice ? parseFloat(customPrice) || 0 : (product ? product.price * qty : 0);
+
+  const visibleProducts = products.slice(0, 3);
+  const hiddenProducts = products.slice(3);
+  const hasMoreProducts = hiddenProducts.length > 0;
+
+  const handleProductClick = (productId: string) => {
+    setSelectedProduct(productId);
+    setQuantity('1');
+    setCustomPrice('');
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,11 +56,102 @@ export default function Sales() {
     setCustomPrice('');
   };
 
+  const ProductCard = ({ p }: { p: typeof products[0] }) => (
+    <motion.button
+      type="button"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={() => handleProductClick(p.id)}
+      className={`flex flex-col items-start p-4 rounded-xl border transition-all text-left ${
+        selectedProduct === p.id
+          ? 'border-primary bg-primary/10 ring-2 ring-primary/20'
+          : 'border-border bg-card hover:border-primary/50 hover:bg-accent/50'
+      }`}
+    >
+      <div className="flex items-center gap-2 mb-2">
+        <Package size={16} className="text-primary" />
+        <span className="font-semibold text-sm truncate">{p.name}</span>
+      </div>
+      <div className="flex items-center justify-between w-full">
+        <span className="text-xs text-muted-foreground">
+          {p.unit === 'litro' ? 'por litro' : 'unidade'}
+        </span>
+        <span className="font-mono font-bold text-sm text-primary">
+          {formatCurrency(p.price)}
+        </span>
+      </div>
+    </motion.button>
+  );
+
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <h2 className="text-2xl font-extrabold tracking-tight">Registrar Venda</h2>
         <p className="text-muted-foreground text-sm mt-1">Adicione vendas ao caixa de hoje</p>
+      </motion.div>
+
+      {/* Product Cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-xl border bg-card p-4"
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Selecione um Produto
+          </h3>
+          {selectedProduct && (
+            <span className="text-xs text-primary font-medium">
+              Produto selecionado ✓
+            </span>
+          )}
+        </div>
+
+        {/* Visible Products */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          {visibleProducts.map(p => (
+            <ProductCard key={p.id} p={p} />
+          ))}
+        </div>
+
+        {/* Collapsible Hidden Products */}
+        {hasMoreProducts && (
+          <Collapsible open={isProductsOpen} onOpenChange={setIsProductsOpen}>
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full mt-3 gap-2 text-muted-foreground hover:text-foreground"
+              >
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform duration-200 ${isProductsOpen ? 'rotate-180' : ''}`}
+                />
+                {isProductsOpen ? 'Mostrar menos' : `Ver mais ${hiddenProducts.length} produtos`}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <AnimatePresence>
+                {isProductsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ScrollArea className="mt-3 max-h-[60vh]">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pr-4">
+                        {hiddenProducts.map(p => (
+                          <ProductCard key={p.id} p={p} />
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
       </motion.div>
 
       <motion.form
