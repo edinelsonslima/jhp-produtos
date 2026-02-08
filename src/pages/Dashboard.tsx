@@ -1,17 +1,25 @@
-import { DollarSign, Smartphone, Banknote, TrendingUp, Minus } from 'lucide-react';
-import StatCard from '@/components/StatCard';
-import { useStore } from '@/hooks/useStore';
-import { motion } from 'framer-motion';
-
-function formatCurrency(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
+import StatCard from "@/components/StatCard";
+import { useStore } from "@/hooks/useStore";
+import { formatCurrency } from "@/lib/utils";
+import { motion } from "framer-motion";
+import {
+  Banknote,
+  DollarSign,
+  Minus,
+  Smartphone,
+  TrendingUp,
+} from "lucide-react";
 
 export default function Dashboard() {
   const {
-    todayTotal, todayPix, todayCash,
-    monthTotal, monthPix, monthCash,
-    todaySales, todayPaymentsTotal,
+    todayTotal,
+    todayPix,
+    todayCash,
+    monthTotal,
+    monthPix,
+    monthCash,
+    todaySales,
+    todayPaymentsTotal,
   } = useStore();
 
   const todayNet = todayTotal - todayPaymentsTotal;
@@ -21,18 +29,43 @@ export default function Dashboard() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <h2 className="text-2xl font-extrabold tracking-tight">Dashboard</h2>
         <p className="text-muted-foreground text-sm mt-1">
-          Resumo do dia {new Date().toLocaleDateString('pt-BR')}
+          Resumo do dia {new Date().toLocaleDateString("pt-BR")}
         </p>
       </motion.div>
 
       {/* Today */}
       <div>
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Hoje</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          Hoje
+        </h3>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard label="Total Vendido" value={formatCurrency(todayTotal)} icon={DollarSign} delay={0} />
-          <StatCard label="Pix" value={formatCurrency(todayPix)} icon={Smartphone} variant="pix" delay={0.05} />
-          <StatCard label="Dinheiro" value={formatCurrency(todayCash)} icon={Banknote} variant="cash" delay={0.1} />
-          <StatCard label="Diárias Pagas" value={formatCurrency(todayPaymentsTotal)} icon={Minus} variant="destructive" delay={0.15} />
+          <StatCard
+            label="Total Vendido"
+            value={formatCurrency(todayTotal)}
+            icon={DollarSign}
+            delay={0}
+          />
+          <StatCard
+            label="Pix"
+            value={formatCurrency(todayPix)}
+            icon={Smartphone}
+            variant="pix"
+            delay={0.05}
+          />
+          <StatCard
+            label="Dinheiro"
+            value={formatCurrency(todayCash)}
+            icon={Banknote}
+            variant="cash"
+            delay={0.1}
+          />
+          <StatCard
+            label="Diárias Pagas"
+            value={formatCurrency(todayPaymentsTotal)}
+            icon={Minus}
+            variant="destructive"
+            delay={0.15}
+          />
         </div>
       </div>
 
@@ -45,11 +78,17 @@ export default function Dashboard() {
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Líquido Hoje</p>
-            <p className={`text-3xl font-extrabold mt-1 font-mono ${todayNet >= 0 ? 'text-success' : 'text-destructive'}`}>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Líquido Hoje
+            </p>
+            <p
+              className={`text-3xl font-extrabold mt-1 font-mono ${todayNet >= 0 ? "text-success" : "text-destructive"}`}
+            >
               {formatCurrency(todayNet)}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">Total vendido − diárias pagas</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Total vendido − diárias pagas
+            </p>
           </div>
           <TrendingUp size={28} className="text-muted-foreground/40" />
         </div>
@@ -57,11 +96,30 @@ export default function Dashboard() {
 
       {/* Month */}
       <div>
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">Este Mês</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          Este Mês
+        </h3>
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-          <StatCard label="Total Mês" value={formatCurrency(monthTotal)} icon={DollarSign} delay={0.25} />
-          <StatCard label="Pix no Mês" value={formatCurrency(monthPix)} icon={Smartphone} variant="pix" delay={0.3} />
-          <StatCard label="Dinheiro no Mês" value={formatCurrency(monthCash)} icon={Banknote} variant="cash" delay={0.35} />
+          <StatCard
+            label="Total Mês"
+            value={formatCurrency(monthTotal)}
+            icon={DollarSign}
+            delay={0.25}
+          />
+          <StatCard
+            label="Pix no Mês"
+            value={formatCurrency(monthPix)}
+            icon={Smartphone}
+            variant="pix"
+            delay={0.3}
+          />
+          <StatCard
+            label="Dinheiro no Mês"
+            value={formatCurrency(monthCash)}
+            icon={Banknote}
+            variant="cash"
+            delay={0.35}
+          />
         </div>
       </div>
 
@@ -77,21 +135,28 @@ export default function Dashboard() {
         ) : (
           <div className="rounded-xl border bg-card overflow-hidden">
             <div className="divide-y divide-border">
-              {todaySales.slice(0, 10).map(sale => (
-                <div key={sale.id} className="flex items-center justify-between px-5 py-3">
+              {todaySales.slice(0, 10).map((sale) => (
+                <div
+                  key={sale.id}
+                  className="flex items-center justify-between px-5 py-3"
+                >
                   <div>
                     <p className="text-sm font-semibold">{sale.productName}</p>
                     <p className="text-xs text-muted-foreground">
-                      {sale.quantity} {sale.unit === 'litro' ? 'L' : 'un.'}
+                      {sale.quantity} {sale.unit === "litro" ? "L" : "un."}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold font-mono">{formatCurrency(sale.totalPrice)}</p>
-                    <span className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                      sale.paymentMethod === 'pix'
-                        ? 'bg-pix/15 text-pix'
-                        : 'bg-cash/15 text-cash'
-                    }`}>
+                    <p className="text-sm font-bold font-mono">
+                      {formatCurrency(sale.totalPrice)}
+                    </p>
+                    <span
+                      className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                        sale.paymentMethod === "pix"
+                          ? "bg-pix/15 text-pix"
+                          : "bg-cash/15 text-cash"
+                      }`}
+                    >
                       {sale.paymentMethod}
                     </span>
                   </div>

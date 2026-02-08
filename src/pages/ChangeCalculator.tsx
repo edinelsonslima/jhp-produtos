@@ -3,10 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 import { Calculator } from 'lucide-react';
-
-function formatCurrency(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
+import { formatCurrency } from '@/lib/utils';
 
 export default function ChangeCalculator() {
   const [saleValue, setSaleValue] = useState('');

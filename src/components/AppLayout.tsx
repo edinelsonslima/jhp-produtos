@@ -1,13 +1,13 @@
-import { ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  Calculator,
-  Users,
-  Package,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  Calculator,
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+} from "lucide-react";
+import { Fragment, ReactNode } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -21,7 +21,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex flex-col md:flex-row h-dvh overflow-hidden">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-sidebar text-sidebar-foreground">
         <div className="p-6 border-b border-sidebar-border">
@@ -53,26 +53,26 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </nav>
       </aside>
 
+      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-sidebar text-sidebar-foreground">
+        <h1 className="text-lg font-extrabold">
+          <span className="text-sidebar-primary">JHP</span> Produtos
+        </h1>
+      </header>
+
+      <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        {children}
+      </main>
+
       {/* Mobile Header */}
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <header className="md:hidden flex items-center justify-between px-4 py-3 bg-sidebar text-sidebar-foreground">
-          <h1 className="text-lg font-extrabold">
-            <span className="text-sidebar-primary">JHP</span> Produtos
-          </h1>
-        </header>
-
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">{children}</main>
-
-        <nav className="flex align-center justify-around gap-5 py-1 px-4 md:hidden bg-sidebar relative">
+      <aside className="md:hidden relative">
+        <nav className="flex flex-1 align-center justify-around gap-5 py-1 px-4 bg-sidebar">
           {navItems.map((item) => {
             const active = location.pathname === item.to;
+
             if (item.to === "/vendas") {
               return (
-                <>
-                  <item.icon
-                    size={20}
-                    className="bg-transparent invisible text-red-800"
-                  />
+                <Fragment key={item.to}>
+                  <item.icon size={20} className="bg-transparent invisible" />
                   <Link
                     key={item.to}
                     to={item.to}
@@ -85,7 +85,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                   >
                     <item.icon size={20} />
                   </Link>
-                </>
+                </Fragment>
               );
             }
 
@@ -105,7 +105,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-      </div>
+      </aside>
     </div>
   );
 }

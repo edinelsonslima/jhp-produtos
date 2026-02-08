@@ -23,3 +23,7 @@ export interface DailyPayment {
   date: string;
   timestamp: number;
 }
+
+export interface SaleProduct extends Product {
+  quantity: number;
+}

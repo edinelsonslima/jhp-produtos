@@ -6,10 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Trash2, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-
-function formatCurrency(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
+import { formatCurrency } from '@/lib/utils';
 
 export default function DailyPayments() {
   const { dailyPayments, addDailyPayment, deleteDailyPayment, todayPaymentsTotal } = useStore();
