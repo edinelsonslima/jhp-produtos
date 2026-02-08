@@ -55,11 +55,11 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
     isDragging.current = false;
 
     if (info.offset.x < -80) {
-      updateProductByQuantity(quantity - 1);
+      updateProductByQuantity(quantity + 1);
     }
 
     if (info.offset.x > 80) {
-      updateProductByQuantity(quantity + 1);
+      updateProductByQuantity(quantity - 1);
     }
   };
 
@@ -73,9 +73,8 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
       type="button"
       drag={!longPressActive ? "x" : false}
       dragControls={dragControls}
-      animate={false}
+      dragTransition={{ bounceStiffness: 100, bounceDamping: 9999 }}
       dragElastic={1}
-      dragMomentum={false}
       dragConstraints={{ left: 0, right: 0 }}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
@@ -105,6 +104,10 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
             className: "w-full",
           })}
           onClick={(e) => {
+            if (longPressTimer.current) {
+              return;
+            }
+
             e.stopPropagation();
             updateProductByQuantity(0);
             setLongPressActive(false);
