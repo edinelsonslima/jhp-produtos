@@ -1,19 +1,18 @@
 import { ProductCard } from "@/components/ProductCard";
+import { SaleItem } from "@/components/SaleItem";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useStore } from "@/hooks/useStore";
-import { formatCurrency } from "@/lib/utils";
-import { SaleProduct } from "@/types";
+import { cn, formatCurrency } from "@/lib/utils";
+import { PaymentMethod, SaleProduct } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Plus, Smartphone, Trash2 } from "lucide-react";
+import { Banknote, Plus, Smartphone } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
-type PaymentMethod = "pix" | "dinheiro" | "misto";
-
 export default function Sales() {
-  const { products, sales, deleteSale } = useStore();
+  const { products, sales, addSale } = useStore();
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("dinheiro");
   const [selectedProducts, setSelectedProducts] = useState<SaleProduct[]>([]);
@@ -90,58 +89,35 @@ export default function Sales() {
       return;
     }
 
-    if (paymentMethod === "misto") {
-      if (mixedTotal <= 0) {
-        toast.error("Informe os valores em dinheiro e/ou PIX");
-        return;
-      }
-
-      if (mixedTotal !== total) {
-        toast.error(
-          "Valores em dinheiro e PIX deve ser igual ao total da venda",
-        );
-        return;
-      }
-
-      // Register two separate sales for mixed payment
-
-      if (cashValue > 0) {
-        // addSale({
-        //   productName: product.name,
-        //   quantity: qty * (cashValue / mixedTotal),
-        //   unit: product.unit,
-        //   totalPrice: cashValue,
-        //   paymentMethod: "dinheiro",
-        //   date: dateStr,
-        // });
-      }
-      if (pixValue > 0) {
-        // addSale({
-        //   productName: product.name,
-        //   quantity: qty * (pixValue / mixedTotal),
-        //   unit: product.unit,
-        //   totalPrice: pixValue,
-        //   paymentMethod: "pix",
-        //   date: dateStr,
-        // });
-      }
+    if (paymentMethod === "misto" && mixedTotal <= 0) {
+      toast.error("Informe os valores em dinheiro e/ou PIX");
       return;
     }
 
-    // addSale({
-    //   productName: product.name,
-    //   quantity: qty,
-    //   unit: product.unit,
-    //   totalPrice: total,
-    //   paymentMethod,
-    //   date: new Date().toISOString().split("T")[0],
-    // });
+    if (paymentMethod === "misto" && mixedTotal !== total) {
+      toast.error("Valores em dinheiro e PIX deve ser igual ao total da venda");
+      return;
+    }
 
-    toast.success("Venda registrada!");
+    addSale({
+      id: window.crypto?.randomUUID(),
+      products: selectedProducts,
+      date: new Date().toISOString(),
+      paymentMethod,
+      price: {
+        total: total,
+        cash: cashValue || (paymentMethod === "dinheiro" ? total : 0),
+        pix: pixValue || (paymentMethod === "pix" ? total : 0),
+      },
+    });
+
     setSelectedProducts([]);
+    setCustomQuantity("");
     setCustomPrice("");
     setCashAmount("");
     setPixAmount("");
+    setPaymentMethod("dinheiro");
+    toast.success("Venda registrada!");
   };
 
   return (
@@ -238,47 +214,9 @@ export default function Sales() {
                 Nenhuma venda registrada
               </div>
             ) : (
-              <div className="divide-y divide-border">
+              <div>
                 {sales.slice(0, 20).map((sale) => (
-                  <div
-                    key={sale.id}
-                    className="flex items-center justify-between px-5 py-3"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold">
-                        {sale.productName}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {sale.quantity} {sale.unit === "litro" ? "L" : "un."} ·{" "}
-                        {new Date(sale.date).toLocaleDateString("pt-BR")}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
-                        <p className="text-sm font-bold font-mono">
-                          {formatCurrency(sale.totalPrice)}
-                        </p>
-                        <span
-                          className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                            sale.paymentMethod === "pix"
-                              ? "bg-pix/15 text-pix"
-                              : "bg-cash/15 text-cash"
-                          }`}
-                        >
-                          {sale.paymentMethod}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => {
-                          deleteSale(sale.id);
-                          toast.info("Venda removida");
-                        }}
-                        className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </div>
+                  <SaleItem key={sale.id} sale={sale} />
                 ))}
               </div>
             )}
@@ -290,7 +228,7 @@ export default function Sales() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="space-y-3 sticky bottom-12 pt-2 pb-4 bg-background border-t border-border md:max-w-4xl md:mx-auto"
+        className="space-y-3 sticky bottom-12 md:bottom-0 pt-2 pb-4 bg-background border-t border-border md:max-w-4xl md:mx-auto"
       >
         <div className="flex gap-2">
           <Button
@@ -359,6 +297,7 @@ export default function Sales() {
                   className="border-pix/30 focus-visible:ring-pix"
                 />
               </div>
+
               {mixedTotal > 0 && (
                 <div className="col-span-full text-center p-2 rounded-lg bg-muted/50">
                   <span className="text-sm text-muted-foreground">
@@ -368,7 +307,14 @@ export default function Sales() {
                     {formatCurrency(mixedTotal)}
                   </span>
                   {total > 0 && mixedTotal !== total && (
-                    <span className="text-xs text-destructive ml-2">
+                    <span
+                      className={cn(
+                        "text-xs ml-2",
+                        mixedTotal < total
+                          ? "text-destructive"
+                          : "text-success",
+                      )}
+                    >
                       (diferença de{" "}
                       {formatCurrency(Math.abs(total - mixedTotal))})
                     </span>

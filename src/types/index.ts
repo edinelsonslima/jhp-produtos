@@ -1,19 +1,27 @@
+export type PaymentMethod = "pix" | "dinheiro" | "misto";
+
 export interface Product {
   id: string;
   name: string;
-  unit: 'unidade' | 'litro';
+  unit: "unidade" | "litro";
   price: number;
+}
+
+export interface SaleProduct extends Product {
+  quantity: number;
 }
 
 export interface Sale {
   id: string;
-  productName: string;
-  quantity: number;
-  unit: 'unidade' | 'litro';
-  totalPrice: number;
-  paymentMethod: 'pix' | 'dinheiro';
-  date: string; // ISO string
+  date: string;
   timestamp: number;
+  products: SaleProduct[];
+  price: {
+    total: number;
+    cash: number;
+    pix: number;
+  };
+  paymentMethod: PaymentMethod;
 }
 
 export interface DailyPayment {
@@ -22,8 +30,4 @@ export interface DailyPayment {
   amount: number;
   date: string;
   timestamp: number;
-}
-
-export interface SaleProduct extends Product {
-  quantity: number;
 }

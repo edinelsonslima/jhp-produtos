@@ -8,3 +8,10 @@ export function cn(...inputs: ClassValue[]) {
 export function formatCurrency(value: number) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
+
+export function formatDateTime(dateString: string) {
+  return new Date(dateString).toLocaleString("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+}
