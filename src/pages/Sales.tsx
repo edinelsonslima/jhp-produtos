@@ -22,6 +22,7 @@ export default function Sales() {
 
   const [customPrice, setCustomPrice] = useState("");
   const [customQuantity, setCustomQuantity] = useState("");
+  const [customProduct, setCustomProduct] = useState("");
 
   const total = selectedProducts.reduce((acc, p) => {
     const price = parseFloat(customPrice) || p.price;
@@ -67,17 +68,18 @@ export default function Sales() {
       return;
     }
 
-    const customProduct: SaleProduct = {
+    const customProductItem: SaleProduct = {
       id: `custom-${Date.now()}`,
-      name: "Item Personalizado",
+      name: customProduct || "Item Personalizado",
       price: parseFloat(customPrice),
       unit: "unidade",
       quantity: parseInt(customQuantity) || 1,
     };
 
-    setSelectedProducts((prev) => [...prev, customProduct]);
+    setSelectedProducts((prev) => [...prev, customProductItem]);
     setCustomPrice("");
     setCustomQuantity("");
+    setCustomProduct("");
     toast.success("Item personalizado adicionado");
   };
 
@@ -180,21 +182,36 @@ export default function Sales() {
             className="font-mono w-full mb-3"
           />
 
-          <Label className="mt-4 mb-1">Quantidade</Label>
-          <Input
-            type="number"
-            step="1"
-            min="0"
-            value={customQuantity}
-            onChange={(e) => setCustomQuantity(e.target.value)}
-            placeholder="0"
-            className="font-mono w-full"
-          />
+          <div className="flex gap-2">
+            <div className="flex-2 min-w-[60%]">
+              <Label>Produto</Label>
+              <Input
+                type="text"
+                value={customProduct}
+                onChange={(e) => setCustomProduct(e.target.value)}
+                placeholder="Descrição do item personalizado"
+                className="font-mono w-full"
+              />
+            </div>
+
+            <div className="flex-1 min-w-[40%]">
+              <Label className="mt-4 mb-1">Quantidade</Label>
+              <Input
+                type="number"
+                step="1"
+                min="0"
+                value={customQuantity}
+                onChange={(e) => setCustomQuantity(e.target.value)}
+                placeholder="0"
+                className="font-mono w-full"
+              />
+            </div>
+          </div>
 
           <Button
             type="submit"
             variant="outline"
-            className="mt-4 w-full"
+            className="mt-6 w-full"
             onClick={() => {}}
           >
             <Plus size={16} /> Adicionar Item Personalizado
