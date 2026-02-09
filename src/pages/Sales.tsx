@@ -290,7 +290,7 @@ export default function Sales() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="space-y-3 sticky -bottom-4 pt-2 pb-4 bg-background border-t border-border md:max-w-4xl md:mx-auto"
+        className="space-y-3 sticky bottom-12 pt-2 pb-4 bg-background border-t border-border md:max-w-4xl md:mx-auto"
       >
         <div className="flex gap-2">
           <Button

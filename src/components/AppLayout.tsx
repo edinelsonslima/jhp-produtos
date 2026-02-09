@@ -21,7 +21,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
 
   return (
-    <div className="flex flex-col md:flex-row h-dvh overflow-hidden">
+    <div className="flex flex-col md:flex-row h-dvh overflow-hidden overflow-y-auto">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-sidebar text-sidebar-foreground">
         <div className="p-6 border-b border-sidebar-border">
@@ -53,18 +53,18 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </nav>
       </aside>
 
-      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-sidebar text-sidebar-foreground">
+      <header className="md:hidden flex items-center justify-between px-4 py-3 bg-sidebar text-sidebar-foreground sticky top-0">
         <h1 className="text-lg font-extrabold">
           <span className="text-sidebar-primary">JHP</span> Produtos
         </h1>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4 md:p-8">
+      <main className="flex-1 p-4 md:p-8">
         {children}
       </main>
 
       {/* Mobile Header */}
-      <aside className="md:hidden relative">
+      <aside className="md:hidden sticky bottom-0">
         <nav className="flex flex-1 align-center justify-around gap-5 py-1 px-4 bg-sidebar">
           {navItems.map((item) => {
             const active = location.pathname === item.to;
