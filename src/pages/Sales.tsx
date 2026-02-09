@@ -327,7 +327,7 @@ export default function Sales() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-hidden"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-hidden p-1"
             >
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
