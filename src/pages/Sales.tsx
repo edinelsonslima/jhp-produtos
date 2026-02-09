@@ -36,6 +36,7 @@ export default function Sales() {
   const addProduct = (product: SaleProduct) => {
     setSelectedProducts((prev) => {
       const selectedProducts = [...prev];
+
       const currentProductIndex = selectedProducts.findIndex(
         (p) => p.id === product.id,
       );
@@ -52,6 +53,11 @@ export default function Sales() {
           ...selectedProducts,
           { ...productToAdd, selected: true, quantity: 1 },
         ];
+      }
+
+      if (product.quantity === 0) {
+        selectedProducts.splice(currentProductIndex, 1);
+        return selectedProducts;
       }
 
       selectedProducts[currentProductIndex] = product;
@@ -125,11 +131,20 @@ export default function Sales() {
   return (
     <>
       <div className="max-w-4xl mx-auto space-y-8 mb-8">
+        <p
+          className={cn(
+            "text-2xl font-extrabold font-mono fixed top-7 -right-2 bg-card shadow-sm p-2 pr-10 rounded-lg z-50",
+            total > 0 ? "text-success" : "text-destructive",
+          )}
+        >
+          {formatCurrency(total)}
+        </p>
+
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <h2 className="text-2xl font-extrabold tracking-tight">
             Registrar Venda
           </h2>
-          <p className="text-muted-foreground text-sm mt-1">
+          <p className="text-muted-foreground text-md mt-1">
             Adicione vendas ao caixa de hoje
           </p>
         </motion.div>
@@ -143,9 +158,6 @@ export default function Sales() {
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
               Selecione um Produto
             </h3>
-            <p className="text-md font-extrabold font-mono">
-              {formatCurrency(total)}
-            </p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
