@@ -1,3 +1,4 @@
+import { SaleItem } from "@/components/SaleItem";
 import StatCard from "@/components/StatCard";
 import { useStore } from "@/hooks/useStore";
 import { formatCurrency } from "@/lib/utils";
@@ -134,39 +135,9 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="rounded-xl border bg-card overflow-hidden">
-            <div className="divide-y divide-border">
-              {todaySales.slice(0, 10).map((sale) => (
-                <div
-                  key={sale.id}
-                  className="flex items-center justify-between px-5 py-3"
-                >
-                  <div>
-                    <p className="text-sm font-semibold">
-                      {sale.products?.map((p) => p.name).join(", ") || "Venda"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {sale.products?.map((p) => `${p.quantity} ${p.unit === "litro" ? "L" : "un."}`).join(", ")}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-bold font-mono">
-                      {formatCurrency(sale.price.total)}
-                    </p>
-                    <span
-                      className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                        sale.paymentMethod === "pix"
-                          ? "bg-pix/15 text-pix"
-                          : sale.paymentMethod === "misto"
-                            ? "bg-primary/15 text-primary"
-                            : "bg-cash/15 text-cash"
-                      }`}
-                    >
-                      {sale.paymentMethod}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {todaySales.slice(0, 10).map((sale) => (
+              <SaleItem key={sale.id} sale={sale} />
+            ))}
           </div>
         )}
       </div>

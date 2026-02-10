@@ -1,4 +1,4 @@
-export type PaymentMethod = "pix" | "dinheiro" | "misto";
+export type PaymentMethod = "pix" | "dinheiro" | "combinado";
 
 export interface Product {
   id: string;

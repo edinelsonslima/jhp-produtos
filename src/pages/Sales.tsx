@@ -97,12 +97,12 @@ export default function Sales() {
       return;
     }
 
-    if (paymentMethod === "misto" && mixedTotal <= 0) {
+    if (paymentMethod === "combinado" && mixedTotal <= 0) {
       toast.error("Informe os valores em dinheiro e/ou PIX");
       return;
     }
 
-    if (paymentMethod === "misto" && mixedTotal !== total) {
+    if (paymentMethod === "combinado" && mixedTotal !== total) {
       toast.error("Valores em dinheiro e PIX deve ser igual ao total da venda");
       return;
     }
@@ -278,17 +278,17 @@ export default function Sales() {
           </Button>
           <Button
             type="button"
-            variant={paymentMethod === "misto" ? "default" : "outline"}
-            className={`flex-1 gap-2 ${paymentMethod === "misto" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
-            onClick={() => setPaymentMethod("misto")}
+            variant={paymentMethod === "combinado" ? "default" : "outline"}
+            className={`flex-1 gap-2 ${paymentMethod === "combinado" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+            onClick={() => setPaymentMethod("combinado")}
           >
-            <Plus size={16} /> Misto
+            <Plus size={16} /> Combinado
           </Button>
         </div>
 
         {/* Mixed payment inputs */}
         <AnimatePresence>
-          {paymentMethod === "misto" && (
+          {paymentMethod === "combinado" && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
@@ -330,7 +330,7 @@ export default function Sales() {
               {mixedTotal > 0 && (
                 <div className="col-span-full text-center p-2 rounded-lg bg-muted/50">
                   <span className="text-sm text-muted-foreground">
-                    Total misto:{" "}
+                    Total combinado:{" "}
                   </span>
                   <span className="font-mono font-bold">
                     {formatCurrency(mixedTotal)}

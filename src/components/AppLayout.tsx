@@ -1,13 +1,21 @@
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Calculator,
   LayoutDashboard,
+  LogOut,
   Package,
   ShoppingCart,
   Users,
 } from "lucide-react";
 import { Fragment, ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -19,18 +27,41 @@ const navItems = [
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const { user, logout } = useAuth();
+
+  const initials = user?.name
+    ? user.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2)
+    : "?";
 
   return (
     <div className="flex flex-col md:flex-row h-dvh overflow-hidden overflow-y-auto">
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-sidebar text-sidebar-foreground sticky top-0">
-        <div className="p-6 border-b border-sidebar-border">
-          <h1 className="text-xl font-extrabold tracking-tight">
-            <span className="text-sidebar-primary">JHP</span> Produtos
-          </h1>
-          <p className="text-xs text-sidebar-foreground/60 mt-1">
-            Gestão de Vendas
-          </p>
+        <div className="p-6 border-b border-sidebar-border flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-extrabold tracking-tight">
+              <span className="text-sidebar-primary">JHP</span> Produtos
+            </h1>
+            <p className="text-xs text-sidebar-foreground/60 mt-1">
+              Gestão de Vendas
+            </p>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-9 h-9 rounded-full bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">
+                {initials}
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <div className="px-3 py-2 border-b">
+                <p className="text-sm font-semibold truncate">{user?.name}</p>
+                <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+              </div>
+              <DropdownMenuItem onClick={logout} className="gap-2 text-destructive focus:text-destructive">
+                <LogOut size={14} /> Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => {
@@ -57,13 +88,29 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         <h1 className="text-lg font-extrabold">
           <span className="text-sidebar-primary">JHP</span> Produtos
         </h1>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="w-8 h-8 rounded-full bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center text-xs font-bold">
+              {initials}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <div className="px-3 py-2 border-b">
+              <p className="text-sm font-semibold truncate">{user?.name}</p>
+              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+            </div>
+            <DropdownMenuItem onClick={logout} className="gap-2 text-destructive focus:text-destructive">
+              <LogOut size={14} /> Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       <main className="flex-1 p-4 md:p-8">
         {children}
       </main>
 
-      {/* Mobile Header */}
+      {/* Mobile Bottom Nav */}
       <aside className="md:hidden sticky bottom-0">
         <nav className="flex flex-1 align-center justify-around gap-5 py-1 px-4 bg-sidebar">
           {navItems.map((item) => {
