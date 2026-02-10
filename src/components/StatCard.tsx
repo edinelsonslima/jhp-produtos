@@ -34,7 +34,7 @@ export default function StatCard({ label, value, icon: Icon, variant = 'default'
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{label}</p>
-          <p className="text-2xl font-extrabold mt-1 font-mono">{value}</p>
+          <p className="text-xl sm:text-2xl font-extrabold mt-1 font-mono truncate">{value}</p>
         </div>
         <div className={`p-3 rounded-xl ${variant === 'default' ? 'bg-primary/10' : ''}`}>
           <Icon size={22} className={iconStyles[variant]} />
