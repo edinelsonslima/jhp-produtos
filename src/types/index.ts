@@ -24,9 +24,17 @@ export interface Sale {
   paymentMethod: PaymentMethod;
 }
 
+export interface Employee {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  defaultRates: [number, number]; // two preset daily rates
+}
+
 export interface DailyPayment {
   id: string;
   employeeName: string;
+  employeeId?: string;
   amount: number;
   date: string;
   timestamp: number;

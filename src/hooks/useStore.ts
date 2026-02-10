@@ -1,4 +1,4 @@
-import { DailyPayment, Product, Sale } from "@/types";
+import { DailyPayment, Employee, Product, Sale } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 
 const MOCK_PRODUCTS: Product[] = [
@@ -32,6 +32,9 @@ export function useStore() {
   );
   const [products, setProducts] = useState<Product[]>(() =>
     loadFromStorage("products", MOCK_PRODUCTS),
+  );
+  const [employees, setEmployees] = useState<Employee[]>(() =>
+    loadFromStorage("employees", []),
   );
 
   const addSale = useCallback((sale: Omit<Sale, "timestamp">) => {
@@ -69,6 +72,17 @@ export function useStore() {
 
   const deleteProduct = useCallback((id: string) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
+  }, []);
+
+  const addEmployee = useCallback((employee: Omit<Employee, "id">) => {
+    setEmployees((prev) => [
+      ...prev,
+      { ...employee, id: window.crypto?.randomUUID() },
+    ]);
+  }, []);
+
+  const deleteEmployee = useCallback((id: string) => {
+    setEmployees((prev) => prev.filter((e) => e.id !== id));
   }, []);
 
   const todayStr = new Date().toISOString().split("T")[0];
@@ -110,6 +124,10 @@ export function useStore() {
     saveToStorage("products", products);
   }, [products]);
 
+  useEffect(() => {
+    saveToStorage("employees", employees);
+  }, [employees]);
+
   return {
     sales,
     todaySales,
@@ -124,11 +142,14 @@ export function useStore() {
     todayPaymentsTotal,
     dailyPayments,
     products,
+    employees,
     addSale,
     deleteSale,
     addDailyPayment,
     deleteDailyPayment,
     addProduct,
     deleteProduct,
+    addEmployee,
+    deleteEmployee,
   };
 }

@@ -141,20 +141,24 @@ export default function Dashboard() {
                   className="flex items-center justify-between px-5 py-3"
                 >
                   <div>
-                    <p className="text-sm font-semibold">{sale.productName}</p>
+                    <p className="text-sm font-semibold">
+                      {sale.products?.map((p) => p.name).join(", ") || "Venda"}
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {sale.quantity} {sale.unit === "litro" ? "L" : "un."}
+                      {sale.products?.map((p) => `${p.quantity} ${p.unit === "litro" ? "L" : "un."}`).join(", ")}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm font-bold font-mono">
-                      {formatCurrency(sale.totalPrice)}
+                      {formatCurrency(sale.price.total)}
                     </p>
                     <span
                       className={`inline-block text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
                         sale.paymentMethod === "pix"
                           ? "bg-pix/15 text-pix"
-                          : "bg-cash/15 text-cash"
+                          : sale.paymentMethod === "misto"
+                            ? "bg-primary/15 text-primary"
+                            : "bg-cash/15 text-cash"
                       }`}
                     >
                       {sale.paymentMethod}
