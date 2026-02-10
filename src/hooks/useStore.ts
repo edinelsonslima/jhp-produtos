@@ -121,7 +121,7 @@ export function useStore() {
 
   const todayStr = new Date().toISOString().split("T")[0];
 
-  const todaySales = snap.sales.filter((s) => s.date === todayStr);
+  const todaySales = snap.sales.filter((s) => s.date.startsWith(todayStr));
   const todayTotal = todaySales.reduce((sum, s) => sum + s.price.total, 0);
   const todayPix = todaySales
     .filter((s) => s.paymentMethod === "pix")
@@ -140,7 +140,7 @@ export function useStore() {
     .filter((s) => s.paymentMethod === "dinheiro")
     .reduce((sum, s) => sum + s.price.total, 0);
 
-  const todayPayments = snap.dailyPayments.filter((p) => p.date === todayStr);
+  const todayPayments = snap.dailyPayments.filter((p) => p.date.startsWith(todayStr));
   const todayPaymentsTotal = todayPayments.reduce(
     (sum, p) => sum + p.amount,
     0,
