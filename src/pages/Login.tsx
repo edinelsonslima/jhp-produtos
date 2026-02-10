@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 export default function Login() {
   const { login, register } = useAuth();
+
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,19 +16,34 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (isRegister) {
-      if (!name.trim()) { toast.error("Informe seu nome"); return; }
-      if (!email.trim()) { toast.error("Informe seu e-mail"); return; }
-      if (password.length < 4) { toast.error("Senha deve ter ao menos 4 caracteres"); return; }
+      if (!name.trim()) {
+        return toast.error("Informe seu nome");
+      }
+
+      if (!email.trim()) {
+        return toast.error("Informe seu e-mail");
+      }
+
+      if (password.length < 4) {
+        return toast.error("Senha deve ter ao menos 4 caracteres");
+      }
+
       const err = register(name.trim(), email.trim().toLowerCase(), password);
-      if (err) { toast.error(err); return; }
-      toast.success("Conta criada com sucesso!");
-    } else {
-      if (!email.trim() || !password) { toast.error("Preencha todos os campos"); return; }
-      const err = login(email.trim().toLowerCase(), password);
-      if (err) { toast.error(err); return; }
-      toast.success("Bem-vindo de volta!");
+
+      return err
+        ? toast.error(err)
+        : toast.success("Conta criada com sucesso!");
     }
+
+    if (!email.trim() || !password) {
+      return toast.error("Preencha todos os campos");
+    }
+
+    const err = login(email.trim().toLowerCase(), password);
+
+    return err ? toast.error(err) : toast.success("Bem-vindo de volta!");
   };
 
   return (
@@ -46,7 +62,10 @@ export default function Login() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border bg-card p-6">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 rounded-xl border bg-card p-6"
+        >
           {isRegister && (
             <div className="space-y-2">
               <Label>Nome</Label>
@@ -58,6 +77,7 @@ export default function Login() {
               />
             </div>
           )}
+
           <div className="space-y-2">
             <Label>E-mail</Label>
             <Input
@@ -68,6 +88,7 @@ export default function Login() {
               maxLength={255}
             />
           </div>
+
           <div className="space-y-2">
             <Label>Senha</Label>
             <Input
@@ -78,6 +99,7 @@ export default function Login() {
               maxLength={100}
             />
           </div>
+
           <Button type="submit" className="w-full">
             {isRegister ? "Criar Conta" : "Entrar"}
           </Button>
