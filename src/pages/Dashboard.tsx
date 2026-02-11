@@ -75,7 +75,7 @@ export default function Dashboard() {
           />
           <StatCard
             label="Diárias Pagas"
-            value={formatCurrency(todaySales.total)}
+            value={formatCurrency(todayPayments.total)}
             icon={Minus}
             variant="destructive"
             delay={0.15}
