@@ -1,6 +1,7 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/sonner";
 import { useStore } from "@/hooks/useStore";
 import { cn, formatCurrency } from "@/lib/utils";
 import { PaymentMethod, SaleProduct } from "@/types";
@@ -16,7 +17,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
 
 export default function EditSale() {
   const { id } = useParams<{ id: string }>();
@@ -25,9 +25,7 @@ export default function EditSale() {
 
   const sale = sales.find((s) => s.id === id);
 
-  const [products, setProducts] = useState<SaleProduct[]>(
-    sale?.products ?? [],
-  );
+  const [products, setProducts] = useState<SaleProduct[]>(sale?.products ?? []);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     sale?.paymentMethod ?? "dinheiro",
   );
@@ -66,10 +64,7 @@ export default function EditSale() {
       return;
     }
 
-    if (
-      paymentMethod === "combinado" &&
-      Math.abs(mixedTotal - total) > 0.01
-    ) {
+    if (paymentMethod === "combinado" && Math.abs(mixedTotal - total) > 0.01) {
       toast.error("Valores em dinheiro e PIX devem ser igual ao total");
       return;
     }
@@ -139,8 +134,7 @@ export default function EditSale() {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold truncate">{p.name}</p>
               <p className="text-xs text-muted-foreground font-mono">
-                {formatCurrency(p.price)} /{" "}
-                {p.unit === "litro" ? "L" : "un."}
+                {formatCurrency(p.price)} / {p.unit === "litro" ? "L" : "un."}
               </p>
             </div>
             <div className="flex items-center gap-2">

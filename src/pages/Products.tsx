@@ -9,12 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "@/components/ui/sonner";
 import { useStore } from "@/hooks/useStore";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Package, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
 export default function Products() {
   const { products, addProduct, deleteProduct } = useStore();

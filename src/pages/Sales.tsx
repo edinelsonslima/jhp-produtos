@@ -4,13 +4,13 @@ import { SaleItem } from "@/components/SaleItem";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/sonner";
 import { useStore } from "@/hooks/useStore";
 import { cn, formatCurrency } from "@/lib/utils";
 import { PaymentMethod, SaleProduct } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { Banknote, Plus, Smartphone } from "lucide-react";
 import { FormEvent, useState } from "react";
-import { toast } from "sonner";
 
 export default function Sales() {
   const { products, sales, addSale, deleteSale } = useStore();
@@ -98,10 +98,7 @@ export default function Sales() {
       return;
     }
 
-    if (
-      paymentMethod === "combinado" &&
-      Math.abs(mixedTotal - total) > 0.01
-    ) {
+    if (paymentMethod === "combinado" && Math.abs(mixedTotal - total) > 0.01) {
       toast.error(
         "Valores em dinheiro e PIX devem ser igual ao total da venda",
       );

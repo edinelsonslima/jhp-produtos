@@ -1,5 +1,6 @@
 import { SaleItem } from "@/components/SaleItem";
 import StatCard from "@/components/StatCard";
+import { toast } from "@/components/ui/sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useStore } from "@/hooks/useStore";
 import { formatCurrency } from "@/lib/utils";
@@ -11,7 +12,6 @@ import {
   Smartphone,
   TrendingUp,
 } from "lucide-react";
-import { toast } from "sonner";
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -151,11 +151,7 @@ export default function Dashboard() {
         ) : (
           <div className="rounded-xl border bg-card overflow-hidden">
             {todaySales.slice(0, 10).map((sale) => (
-              <SaleItem
-                key={sale.id}
-                sale={sale}
-                onDelete={handleDelete}
-              />
+              <SaleItem key={sale.id} sale={sale} onDelete={handleDelete} />
             ))}
           </div>
         )}

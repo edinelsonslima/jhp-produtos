@@ -16,7 +16,7 @@ import { Employee } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/sonner";
 
 export default function DailyPayments() {
   const {
