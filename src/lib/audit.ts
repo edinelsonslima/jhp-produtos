@@ -10,6 +10,7 @@ export interface AuditEntry {
 function getCurrentUser(): { id: string; name: string } {
   try {
     const data = localStorage.getItem("auth_user");
+
     if (data) {
       const user = JSON.parse(data);
       return { id: user.id, name: user.name };
@@ -17,6 +18,7 @@ function getCurrentUser(): { id: string; name: string } {
   } catch {
     // ignore
   }
+
   return { id: "system", name: "Sistema" };
 }
 
@@ -30,9 +32,12 @@ export function logAudit(action: string, details: string) {
     userId: user.id,
     timestamp: Date.now(),
   };
+
   const log = getAuditLog();
   log.unshift(entry);
+
   if (log.length > 500) log.length = 500;
+
   localStorage.setItem("audit_log", JSON.stringify(log));
 }
 

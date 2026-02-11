@@ -1,5 +1,5 @@
-import { useSyncExternalStore } from "react";
 import { logAudit } from "@/lib/audit";
+import { useSyncExternalStore } from "react";
 
 export interface AppUser {
   id: string;
@@ -53,13 +53,9 @@ function update(partial: Partial<AuthState>) {
     localStorage.setItem("auth_users", JSON.stringify(state.users));
   }
 
-  if (partial.user !== undefined) {
-    if (partial.user) {
-      localStorage.setItem("auth_user", JSON.stringify(partial.user));
-    } else {
-      localStorage.removeItem("auth_user");
-    }
-  }
+  partial.user
+    ? localStorage.setItem("auth_user", JSON.stringify(partial.user))
+    : localStorage.removeItem("auth_user");
 
   emit();
 }
