@@ -1,41 +1,43 @@
+import { storage } from "@/lib/utils";
 import { useSyncExternalStore } from "react";
 
-type SetterStateFn<T> = (state: T) => Partial<T>;
-type CreateStateFn<T> = (
-  setState: (partialState: Partial<T> | SetterStateFn<T>) => void,
-  getState: () => T,
-) => T;
+type SetterStateFn<T> = (state: T) => T;
 
-interface Store {
-  createState: CreateStateFn<any>;
+interface Store<TState, TActions> {
+  createActions: (
+    setState: (partialState: TState | SetterStateFn<TState>) => void,
+    getState: () => TState,
+  ) => TActions;
+
+  createState: (
+    setState: (partialState: TState | SetterStateFn<TState>) => void,
+    getState: () => TState,
+  ) => TState;
+
   persist?: {
-    key: string;
-    expiresIn?: number;
+    key: Lowercase<string>;
   };
 }
 
-export function createStore<TState extends Record<string | number, unknown>>({
-  createState,
-  persist,
-}: Store) {
-  // TODO: Implement persistence logic using the provided key and expiresIn values. This will likely involve using localStorage or a similar mechanism to save and load the state, and setting up a timer to handle expiration if expiresIn is provided.
-  let state: TState;
+export function createStore<
+  TState extends object | string | number | boolean,
+  TActions extends Record<string, (...args: never) => unknown>,
+>({ createActions, createState, persist }: Store<TState, TActions>) {
+  const persistStorageKey: Lowercase<`${string}-${string}`> = `store-${persist?.key}`;
+  const persistStorage = persist ? storage([persistStorageKey]) : null;
+
   const listeners = new Set<() => void>();
 
-  const notify = () => {
+  let state: TState;
+
+  const updateState = (value: TState) => {
+    state = value;
+    persistStorage?.save(persistStorageKey, state);
+
     listeners.forEach((listener) => listener());
   };
 
-  const updateState = (value: Partial<TState>) => {
-    state = {
-      ...state,
-      ...value,
-    };
-
-    notify();
-  };
-
-  const setState = (partialState: Partial<TState> | SetterStateFn<TState>) => {
+  const setState = (partialState: TState | SetterStateFn<TState>) => {
     if (typeof partialState === "function") {
       updateState(partialState(state));
       return;
@@ -48,6 +50,14 @@ export function createStore<TState extends Record<string | number, unknown>>({
     return state;
   };
 
+  const loaded = persistStorage?.load<TState>(persistStorageKey, undefined);
+  state = loaded ?? createState(setState, getState);
+
+  /**
+   * Subscribes a listener to state changes. Returns an unsubscribe function.
+   * @param listener The listener function to be called on state changes.
+   * @returns A function to unsubscribe the listener.
+   */
   const subscribe = (listener: () => void) => {
     listeners.add(listener);
 
@@ -56,16 +66,18 @@ export function createStore<TState extends Record<string | number, unknown>>({
     };
   };
 
-  state = createState(setState, getState);
-
+  /**
+   * Custom hook to access the store's state. Accepts a selector function to derive specific values from the state.
+   * @param selector A function that takes the current state and returns a derived value. This allows components to subscribe to specific parts of the state.
+   * @returns The selected value derived from the store's state. The component will re-render whenever the selected value changes due to state updates.
+   */
   const useStore = <TValue>(selector: (currentState: TState) => TValue) => {
     return useSyncExternalStore(subscribe, () => selector(state));
   };
 
   return {
-    useStore,
-    getState,
-    setState,
     subscribe,
-  };
+    useStore,
+    action: createActions(setState, getState),
+  } as const;
 }

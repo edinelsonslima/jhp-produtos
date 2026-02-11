@@ -2,9 +2,10 @@ import { CurrencyInput } from "@/components/CurrencyInput";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
-import { useStore } from "@/hooks/useSales";
+import { productStore } from "@/hooks/useProducts";
+import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency } from "@/lib/utils";
-import { PaymentMethod, SaleProduct } from "@/types";
+import { PaymentMethod, Sale } from "@/types";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -19,18 +20,19 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function EditSale() {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { sales, updateSale, deleteSale } = useStore();
+  const { id } = useParams<{ id: string }>();
 
-  const sale = sales.find((s) => s.id === id);
+  const sale = saleStore.action.get(id!);
 
-  const [products, setProducts] = useState<SaleProduct[]>(sale?.products ?? []);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
-    sale?.paymentMethod ?? "dinheiro",
+  const [products, setProducts] = useState<Sale["products"]>(
+    sale?.products ?? [],
   );
   const [cashAmount, setCashAmount] = useState(sale?.price.cash ?? 0);
   const [pixAmount, setPixAmount] = useState(sale?.price.pix ?? 0);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    sale?.paymentMethod ?? "dinheiro",
+  );
 
   if (!sale) {
     return (
@@ -43,14 +45,17 @@ export default function EditSale() {
     );
   }
 
-  const total = products.reduce((sum, p) => sum + p.price * p.quantity, 0);
   const mixedTotal = cashAmount + pixAmount;
+  const total = products.reduce((sum, p) => {
+    const price = productStore.action.get(p.productId)?.price ?? 0;
+    return sum + price * p.quantity;
+  }, 0);
 
   const updateQuantity = (productId: string, delta: number) => {
     setProducts((prev) =>
       prev
         .map((p) =>
-          p.id === productId
+          p.productId === productId
             ? { ...p, quantity: Math.max(0, p.quantity + delta) }
             : p,
         )
@@ -69,7 +74,7 @@ export default function EditSale() {
       return;
     }
 
-    updateSale(sale.id, {
+    saleStore.action.update(sale.id, {
       products,
       paymentMethod,
       price: {
@@ -94,7 +99,7 @@ export default function EditSale() {
   };
 
   const handleDelete = () => {
-    deleteSale(sale.id);
+    saleStore.action.delete(sale.id);
     toast.success("Venda excluída");
     navigate(-1);
   };
@@ -126,38 +131,49 @@ export default function EditSale() {
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
           Produtos ({products.length})
         </h3>
-        {products.map((p) => (
-          <div
-            key={p.id}
-            className="flex items-center justify-between py-2 border-b last:border-0"
-          >
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate">{p.name}</p>
-              <p className="text-xs text-muted-foreground font-mono">
-                {formatCurrency(p.price)} / {p.unit === "litro" ? "L" : "un."}
-              </p>
+        {products.map((p) => {
+          const product = productStore.action.get(p.productId);
+
+          if (!product) {
+            return null;
+          }
+
+          return (
+            <div
+              key={product.id}
+              className="flex items-center justify-between py-2 border-b last:border-0"
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold truncate">
+                  {product.name}
+                </p>
+                <p className="text-xs text-muted-foreground font-mono">
+                  {formatCurrency(product.price ?? 0)} /{" "}
+                  {product.unit === "litro" ? "L" : "un."}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(product.id, -1)}
+                  className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-destructive/20 transition-colors"
+                >
+                  <Minus size={14} />
+                </button>
+                <span className="w-8 text-center font-mono font-bold">
+                  {p.quantity}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(product.id, 1)}
+                  className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-primary/20 transition-colors"
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => updateQuantity(p.id, -1)}
-                className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-destructive/20 transition-colors"
-              >
-                <Minus size={14} />
-              </button>
-              <span className="w-8 text-center font-mono font-bold">
-                {p.quantity}
-              </span>
-              <button
-                type="button"
-                onClick={() => updateQuantity(p.id, 1)}
-                className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-primary/20 transition-colors"
-              >
-                <Plus size={14} />
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
         {products.length === 0 && (
           <p className="text-sm text-muted-foreground text-center py-4">
             Todos os produtos foram removidos

@@ -10,14 +10,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/sonner";
-import { useStore } from "@/hooks/useSales";
+import { productStore } from "@/hooks/useProducts";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Package, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 export default function Products() {
-  const { products, addProduct, deleteProduct } = useStore();
+  const products = productStore.useStore((state) => state.products);
+
   const [name, setName] = useState("");
   const [unit, setUnit] = useState<"unidade" | "litro">("litro");
   const [price, setPrice] = useState(0);
@@ -35,7 +36,7 @@ export default function Products() {
       return;
     }
 
-    addProduct({ name: name.trim(), unit, price });
+    productStore.action.add({ name: name.trim(), unit, price });
     toast.success("Produto adicionado!");
     setName("");
     setPrice(0);
@@ -121,7 +122,7 @@ export default function Products() {
                 </p>
                 <button
                   onClick={() => {
-                    deleteProduct(p.id);
+                    productStore.action.delete(p.id);
                     toast.info("Produto removido");
                   }}
                   className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"

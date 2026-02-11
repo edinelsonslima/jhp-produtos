@@ -2,15 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
-import { useAuth } from "@/hooks/useAuth";
+import { authStore } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Login() {
-  const { login, register } = useAuth();
-
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -32,7 +30,12 @@ export default function Login() {
         return toast.error("Senha deve ter ao menos 4 caracteres");
       }
 
-      const err = register(name.trim(), email.trim().toLowerCase(), password);
+      const err = authStore.action.register(
+        name.trim(),
+        email.trim().toLowerCase(),
+        password,
+      );
+
       return err
         ? toast.error(err)
         : toast.success("Conta criada com sucesso!");
@@ -46,7 +49,7 @@ export default function Login() {
       return toast.error("Informe um e-mail válido");
     }
 
-    const err = login(email.trim().toLowerCase(), password);
+    const err = authStore.action.login(email.trim().toLowerCase(), password);
     return err ? toast.error(err) : toast.success("Bem-vindo de volta!");
   };
 

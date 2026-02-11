@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/hooks/useAuth";
+import { authStore } from "@/hooks/useAuth";
 import {
   Calculator,
   ClipboardList,
@@ -33,7 +33,7 @@ const sidebarNavItems = [
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const user = authStore.useStore((state) => state.user);
 
   const initials = user?.name
     ? user.name
@@ -71,7 +71,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 </p>
               </div>
               <DropdownMenuItem
-                onClick={logout}
+                onClick={() => authStore.action.logout()}
                 className="gap-2 text-destructive focus:text-destructive"
               >
                 <LogOut size={14} /> Sair
@@ -124,7 +124,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={logout}
+              onClick={() => authStore.action.logout()}
               className="gap-2 text-destructive focus:text-destructive"
             >
               <LogOut size={14} /> Sair

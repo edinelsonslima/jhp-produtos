@@ -1,8 +1,9 @@
 import { SaleItem } from "@/components/SaleItem";
 import StatCard from "@/components/StatCard";
 import { toast } from "@/components/ui/sonner";
-import { useAuth } from "@/hooks/useAuth";
-import { useStore } from "@/hooks/useSales";
+import { authStore } from "@/hooks/useAuth";
+import { paymentStore } from "@/hooks/usePayments";
+import { saleStore } from "@/hooks/useSales";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
@@ -21,24 +22,18 @@ function getGreeting(): string {
 }
 
 export default function Dashboard() {
-  const { user } = useAuth();
-  const {
-    todayTotal,
-    todayPix,
-    todayCash,
-    monthTotal,
-    monthPix,
-    monthCash,
-    todaySales,
-    todayPaymentsTotal,
-    deleteSale,
-  } = useStore();
+  const user = authStore.useStore((state) => state.user);
 
-  const todayNet = todayTotal - todayPaymentsTotal;
+  const todaySales = saleStore.useStore((state) => state.today);
+  const monthSales = saleStore.useStore((state) => state.month);
+
+  const todayPayments = paymentStore.useStore((state) => state.today);
+
+  const todayNet = todaySales.total - todayPayments.total;
   const firstName = user?.name?.split(" ")[0] ?? "";
 
   const handleDelete = (id: string) => {
-    deleteSale(id);
+    saleStore.action.delete(id);
     toast.success("Venda excluída");
   };
 
@@ -60,27 +55,27 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             label="Total Vendido"
-            value={formatCurrency(todayTotal)}
+            value={formatCurrency(todaySales.total)}
             icon={DollarSign}
             delay={0}
           />
           <StatCard
             label="Pix"
-            value={formatCurrency(todayPix)}
+            value={formatCurrency(todaySales.pix)}
             icon={Smartphone}
             variant="pix"
             delay={0.05}
           />
           <StatCard
             label="Dinheiro"
-            value={formatCurrency(todayCash)}
+            value={formatCurrency(todaySales.cash)}
             icon={Banknote}
             variant="cash"
             delay={0.1}
           />
           <StatCard
             label="Diárias Pagas"
-            value={formatCurrency(todayPaymentsTotal)}
+            value={formatCurrency(todaySales.total)}
             icon={Minus}
             variant="destructive"
             delay={0.15}
@@ -119,20 +114,20 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard
             label="Total Mês"
-            value={formatCurrency(monthTotal)}
+            value={formatCurrency(monthSales.total)}
             icon={DollarSign}
             delay={0.25}
           />
           <StatCard
             label="Pix no Mês"
-            value={formatCurrency(monthPix)}
+            value={formatCurrency(monthSales.pix)}
             icon={Smartphone}
             variant="pix"
             delay={0.3}
           />
           <StatCard
             label="Dinheiro no Mês"
-            value={formatCurrency(monthCash)}
+            value={formatCurrency(monthSales.cash)}
             icon={Banknote}
             variant="cash"
             delay={0.35}
@@ -142,16 +137,16 @@ export default function Dashboard() {
 
       <div>
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-          Vendas de Hoje ({todaySales.length})
+          Vendas de Hoje ({todaySales.saleId.length})
         </h3>
-        {todaySales.length === 0 ? (
+        {todaySales.saleId.length === 0 ? (
           <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground text-sm">
             Nenhuma venda registrada hoje
           </div>
         ) : (
           <div className="rounded-xl border bg-card overflow-hidden">
-            {todaySales.slice(0, 10).map((sale) => (
-              <SaleItem key={sale.id} sale={sale} onDelete={handleDelete} />
+            {todaySales.saleId.slice(0, 10).map((saleId) => (
+              <SaleItem key={saleId} saleId={saleId} onDelete={handleDelete} />
             ))}
           </div>
         )}

@@ -1,98 +1,95 @@
 import { logAudit } from "@/lib/audit";
-import { storage } from "@/lib/utils";
-import { useSyncExternalStore } from "react";
+import { createStore } from "./useStore";
 
 export interface AppUser {
   id: string;
   name: string;
   email: string;
+  password: string;
 }
 
-interface AuthState {
+type State = {
   user: AppUser | null;
   users: AppUser[];
-}
-
-const authStorage = storage(["auth-user", "auth-users", "auth-passwords"]);
-
-const state: AuthState = {
-  user: authStorage.load<AppUser>("auth-user", null),
-  users: authStorage.load<AppUser[]>("auth-users", []),
 };
 
-const listeners = new Set<() => void>();
+type Actions = {
+  login: (email: string, password: string) => string | null;
+  logout: () => void;
+  register: (name: string, email: string, password: string) => string | null;
+  update: (user: Partial<Omit<AppUser, "id">>) => void;
+};
 
-function emit() {
-  listeners.forEach((l) => l());
-}
+export const authStore = createStore<State, Actions>({
+  persist: { key: "auth" },
 
-function subscribe(l: () => void) {
-  listeners.add(l);
-  return () => listeners.delete(l);
-}
+  createState: () => ({
+    user: null,
+    users: [],
+  }),
 
-function getSnapshot() {
-  return state;
-}
+  createActions: (set, get) => ({
+    login: (email, password) => {
+      const users = get().users;
 
-function update(partial: Partial<AuthState>) {
-  state.user = partial.user ?? state.user;
-  state.users = partial.users ?? state.users;
+      const found = users.find((u) => u.email === email);
+      console.log({
+        found, email, users
+      })
 
-  if (partial.users !== undefined) {
-    authStorage.save("auth-users", state.users);
-  }
+      if (!found) {
+        return "Usuário não encontrado";
+      }
 
-  partial.user
-    ? authStorage.save("auth-user", partial.user)
-    : authStorage.remove("auth-user");
+      if (found.password !== password) {
+        return "Senha incorreta";
+      }
 
-  emit();
-}
+      set({ ...get(), user: found });
+      logAudit("login", `Login realizado: ${found.name} (${found.email})`);
 
-function getPasswords() {
-  return authStorage.load<Record<string, string>>("auth-passwords", {});
-}
+      return null;
+    },
 
-export function useAuth() {
-  const snap = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+    logout: () => {
+      const userName = get().user?.name ?? "?";
+      
+      set({ ...get(), user: null });
+      logAudit("logout", `Logout: ${userName}`);
+    },
 
-  const login = (email: string, password: string): string | null => {
-    const found = snap.users.find((u) => u.email === email);
-    if (!found) return "Usuário não encontrado";
+    register: (name, email, password) => {
+      const users = get().users;
 
-    const passwords = getPasswords();
-    if (passwords[found.id] !== password) return "Senha incorreta";
+      if (users.some((u) => u.email === email)) {
+        return "E-mail já cadastrado";
+      }
 
-    update({ user: found });
-    logAudit("login", `Login realizado: ${found.name} (${found.email})`);
-    return null;
-  };
+      const user = {
+        id: crypto.randomUUID(),
+        password,
+        name,
+        email,
+      };
 
-  const register = (
-    name: string,
-    email: string,
-    password: string,
-  ): string | null => {
-    if (snap.users.some((u) => u.email === email))
-      return "E-mail já cadastrado";
+      set({ users: [...get().users, user], user: user });
+      logAudit("user_registered", `Novo usuário: ${name} (${email})`);
 
-    const newUser: AppUser = { id: crypto.randomUUID(), name, email };
+      return null;
+    },
 
-    const passwords = getPasswords();
-    passwords[newUser.id] = password;
-    authStorage.save("auth-passwords", passwords);
+    update: (data) => {
+      const user = get().user;
 
-    update({ users: [...snap.users, newUser], user: newUser });
-    logAudit("user_registered", `Novo usuário: ${name} (${email})`);
-    return null;
-  };
+      if (!user) {
+        return "Usuário não autenticado";
+      }
 
-  const logout = () => {
-    const userName = snap.user?.name ?? "?";
-    logAudit("logout", `Logout: ${userName}`);
-    update({ user: null });
-  };
-
-  return { user: snap.user, login, register, logout };
-}
+      set({ ...get(), user: { ...user, ...data } });
+      logAudit(
+        "user_updated",
+        `Usuário atualizado: ${user.name} (${user.email})`,
+      );
+    },
+  }),
+});

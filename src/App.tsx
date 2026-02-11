@@ -1,5 +1,5 @@
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { useAuth } from "@/hooks/useAuth";
+import { authStore } from "@/hooks/useAuth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import AuditLog from "./pages/AuditLog";
@@ -13,9 +13,11 @@ import Products from "./pages/Products";
 import Sales from "./pages/Sales";
 
 function AuthGate() {
-  const { user } = useAuth();
+  const user = authStore.useStore((state) => state.user);
 
-  if (!user) return <Login />;
+  if (!user) {
+    return <Login />;
+  }
 
   return (
     <AppLayout>

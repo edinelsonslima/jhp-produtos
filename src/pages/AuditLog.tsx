@@ -5,7 +5,10 @@ import { ClipboardList } from "lucide-react";
 
 const ACTION_LABELS: Record<
   string,
-  { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
+  {
+    label: string;
+    variant: "default" | "secondary" | "destructive" | "outline";
+  }
 > = {
   login: { label: "Login", variant: "default" },
   logout: { label: "Logout", variant: "secondary" },
@@ -45,11 +48,9 @@ export default function AuditLog() {
               label: entry.action,
               variant: "outline" as const,
             };
+
             return (
-              <div
-                key={entry.id}
-                className="px-4 py-3 flex items-start gap-3"
-              >
+              <div key={entry.id} className="px-4 py-3 flex items-start gap-3">
                 <Badge
                   variant={config.variant}
                   className="mt-0.5 shrink-0 text-xs"

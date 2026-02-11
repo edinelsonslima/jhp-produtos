@@ -5,18 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
-import { useStore } from "@/hooks/useSales";
+import { productStore } from "@/hooks/useProducts";
+import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency } from "@/lib/utils";
-import { PaymentMethod, SaleProduct } from "@/types";
+import { PaymentMethod, Sale } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { Banknote, Plus, Smartphone } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 export default function Sales() {
-  const { products, sales, addSale, deleteSale } = useStore();
+  const sales = saleStore.useStore((state) => state.sales);
+  const products = productStore.useStore((state) => state.products);
 
+  const [selected, setSelected] = useState<Sale["products"]>([]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("dinheiro");
-  const [selectedProducts, setSelectedProducts] = useState<SaleProduct[]>([]);
 
   const [cashAmount, setCashAmount] = useState(0);
   const [pixAmount, setPixAmount] = useState(0);
@@ -25,25 +27,27 @@ export default function Sales() {
   const [customQuantity, setCustomQuantity] = useState("");
   const [customProduct, setCustomProduct] = useState("");
 
-  const total = selectedProducts.reduce(
-    (acc, p) => acc + p.price * p.quantity,
-    0,
-  );
+  const totalPaymentCombined = cashAmount + pixAmount;
 
-  const mixedTotal = cashAmount + pixAmount;
+  const total = selected.reduce((acc, p) => {
+    const price = productStore.action.get(p.productId)?.price ?? 0;
+    return acc + price * p.quantity;
+  }, 0);
 
-  const addProduct = (product: SaleProduct) => {
-    setSelectedProducts((prev) => {
+  const addProduct = (product: Sale["products"][number]) => {
+    setSelected((prev) => {
       const list = [...prev];
-      const idx = list.findIndex((p) => p.id === product.id);
+      const idx = list.findIndex((p) => p.productId === product.productId);
 
       if (idx === -1) {
-        const found = products.find((p) => p.id === product.id);
+        const found = products.find((p) => p.id === product.productId);
+
         if (!found) {
           toast.error("Produto não encontrado");
           return prev;
         }
-        return [...list, { ...found, selected: true, quantity: 1 }];
+
+        return [...list, { productId: found.id, quantity: 1 }];
       }
 
       if (product.quantity === 0) {
@@ -70,15 +74,12 @@ export default function Sales() {
       return;
     }
 
-    const customProductItem: SaleProduct = {
-      id: `custom-${Date.now()}`,
-      name: customProduct.trim() || "Item Personalizado",
-      price: customPrice,
-      unit: "unidade",
+    const customProductItem: Sale["products"][number] = {
+      productId: `custom-${Date.now()}`,
       quantity: qty,
     };
 
-    setSelectedProducts((prev) => [...prev, customProductItem]);
+    setSelected((prev) => [...prev, customProductItem]);
     setCustomPrice(0);
     setCustomQuantity("");
     setCustomProduct("");
@@ -88,26 +89,27 @@ export default function Sales() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!selectedProducts.length) {
+    if (!selected.length) {
       toast.error("Adicione pelo menos um produto à venda");
       return;
     }
 
-    if (paymentMethod === "combinado" && mixedTotal <= 0) {
+    const isCombined = paymentMethod === "combinado";
+
+    if (isCombined && totalPaymentCombined <= 0) {
       toast.error("Informe os valores em dinheiro e/ou PIX");
       return;
     }
 
-    if (paymentMethod === "combinado" && Math.abs(mixedTotal - total) > 0.01) {
+    if (isCombined && Math.abs(totalPaymentCombined - total) > 0.01) {
       toast.error(
-        "Valores em dinheiro e PIX devem ser igual ao total da venda",
+        "Valores em Dinheiro e PIX devem ser igual ao total da venda",
       );
       return;
     }
 
-    addSale({
-      id: crypto.randomUUID(),
-      products: selectedProducts,
+    saleStore.action.add({
+      products: selected,
       date: new Date().toISOString(),
       paymentMethod,
       price: {
@@ -127,7 +129,7 @@ export default function Sales() {
       },
     });
 
-    setSelectedProducts([]);
+    setSelected([]);
     setCustomQuantity("");
     setCustomPrice(0);
     setCashAmount(0);
@@ -137,7 +139,7 @@ export default function Sales() {
   };
 
   const handleDeleteSale = (id: string) => {
-    deleteSale(id);
+    saleStore.action.delete(id);
     toast.success("Venda excluída");
   };
 
@@ -175,7 +177,7 @@ export default function Sales() {
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
             {products.map((p) => {
-              const config = selectedProducts.find((sp) => sp.id === p.id);
+              const config = selected.find((sp) => sp.productId === p.id);
               return (
                 <ProductCard
                   key={p.id}
@@ -252,7 +254,7 @@ export default function Sales() {
                 {sales.slice(0, 20).map((sale) => (
                   <SaleItem
                     key={sale.id}
-                    sale={sale}
+                    saleId={sale.id}
                     onDelete={handleDeleteSale}
                   />
                 ))}
@@ -339,27 +341,31 @@ export default function Sales() {
                 />
               </div>
 
-              {mixedTotal > 0 && (
+              {totalPaymentCombined > 0 && (
                 <div className="col-span-full text-center p-2 rounded-lg bg-muted/50">
                   <span className="text-sm text-muted-foreground">
                     Total combinado:{" "}
                   </span>
+
                   <span className="font-mono font-bold">
-                    {formatCurrency(mixedTotal)}
+                    {formatCurrency(totalPaymentCombined)}
                   </span>
-                  {total > 0 && Math.abs(mixedTotal - total) > 0.01 && (
-                    <span
-                      className={cn(
-                        "text-xs ml-2",
-                        mixedTotal < total
-                          ? "text-destructive"
-                          : "text-success",
-                      )}
-                    >
-                      (diferença de{" "}
-                      {formatCurrency(Math.abs(total - mixedTotal))})
-                    </span>
-                  )}
+
+                  {total > 0 &&
+                    Math.abs(totalPaymentCombined - total) > 0.01 && (
+                      <span
+                        className={cn(
+                          "text-xs ml-2",
+                          totalPaymentCombined < total
+                            ? "text-destructive"
+                            : "text-success",
+                        )}
+                      >
+                        (diferença de{" "}
+                        {formatCurrency(Math.abs(total - totalPaymentCombined))}
+                        )
+                      </span>
+                    )}
                 </div>
               )}
             </motion.div>

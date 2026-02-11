@@ -11,7 +11,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { toast } from "@/components/ui/sonner";
-import { useStore } from "@/hooks/useSales";
+import { employeeStore } from "@/hooks/useEmployees";
+import { paymentStore } from "@/hooks/usePayments";
 import { cn, formatCurrency } from "@/lib/utils";
 import { Employee } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
@@ -19,19 +20,11 @@ import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 export default function DailyPayments() {
-  const {
-    dailyPayments,
-    employees,
-    addDailyPayment,
-    deleteDailyPayment,
-    addEmployee,
-    deleteEmployee,
-    todayPaymentsTotal,
-  } = useStore();
+  const payments = paymentStore.useStore((state) => state.payments);
+  const employees = employeeStore.useStore((state) => state.employees);
+  const todayPayments = paymentStore.useStore((state) => state.today);
 
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
-    null,
-  );
+  const [employee, setEmployee] = useState<Employee | null>(null);
   const [customAmount, setCustomAmount] = useState(0);
 
   const [newName, setNewName] = useState("");
@@ -40,38 +33,48 @@ export default function DailyPayments() {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleSelectEmployee = (emp: Employee) => {
-    setSelectedEmployee(emp);
+    setEmployee(emp);
     setCustomAmount(0);
   };
 
   const handlePayPreset = (amount: number) => {
-    if (!selectedEmployee) return;
-    addDailyPayment({
-      employeeName: selectedEmployee.name,
-      employeeId: selectedEmployee.id,
+    if (!employee) return;
+
+    paymentStore.action.add({
+      date: new Date().toISOString(),
       amount,
-      date: new Date().toISOString().split("T")[0],
+      receiver: {
+        id: employee.id,
+        type: "employee",
+      },
     });
+
     toast.success(
-      `Diária de ${formatCurrency(amount)} registrada para ${selectedEmployee.name}!`,
+      `Diária de ${formatCurrency(amount)} registrada para ${employee.name}!`,
     );
   };
 
   const handlePayCustom = () => {
-    if (!selectedEmployee) return;
+    if (!employee) return;
+
     if (customAmount <= 0) {
       toast.error("Informe um valor válido");
       return;
     }
-    addDailyPayment({
-      employeeName: selectedEmployee.name,
-      employeeId: selectedEmployee.id,
+
+    paymentStore.action.add({
+      date: new Date().toISOString(),
       amount: customAmount,
-      date: new Date().toISOString().split("T")[0],
+      receiver: {
+        id: employee.id,
+        type: "employee",
+      },
     });
+
     toast.success(
-      `Diária de ${formatCurrency(customAmount)} registrada para ${selectedEmployee.name}!`,
+      `Diária de ${formatCurrency(customAmount)} registrada para ${employee.name}!`,
     );
+
     setCustomAmount(0);
   };
 
@@ -83,20 +86,21 @@ export default function DailyPayments() {
       return;
     }
 
-    addEmployee({
+    employeeStore.action.add({
       name: newName.trim(),
       defaultRates: [newRate1, newRate2],
     });
+
     toast.success("Funcionário cadastrado!");
+
     setNewName("");
     setNewRate1(0);
     setNewRate2(0);
     setDialogOpen(false);
   };
 
-  const todayStr = new Date().toISOString().split("T")[0];
-  const todayPayments = dailyPayments.filter((p) => p.date === todayStr);
-  const otherPayments = dailyPayments.filter((p) => p.date !== todayStr);
+  const todayStr = new Date().toISOString();
+  const otherPayments = payments.filter((p) => p.date !== todayStr);
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
@@ -120,7 +124,7 @@ export default function DailyPayments() {
                 onClick={() => handleSelectEmployee(emp)}
                 className={cn(
                   "flex flex-col items-center gap-2 min-w-[80px] p-3 rounded-xl transition-all duration-200",
-                  selectedEmployee?.id === emp.id
+                  employee?.id === emp.id
                     ? "bg-primary/10 ring-2 ring-primary scale-105"
                     : "hover:bg-muted",
                 )}
@@ -128,7 +132,7 @@ export default function DailyPayments() {
                 <div
                   className={cn(
                     "w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold transition-colors",
-                    selectedEmployee?.id === emp.id
+                    employee?.id === emp.id
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground",
                   )}
@@ -205,9 +209,9 @@ export default function DailyPayments() {
       </motion.div>
 
       <AnimatePresence>
-        {selectedEmployee && (
+        {employee && (
           <motion.div
-            key={selectedEmployee.id}
+            key={employee.id}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
@@ -216,10 +220,10 @@ export default function DailyPayments() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                  {selectedEmployee.name.charAt(0).toUpperCase()}
+                  {employee.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-semibold">{selectedEmployee.name}</p>
+                  <p className="font-semibold">{employee.name}</p>
                   <p className="text-xs text-muted-foreground">
                     Selecione o valor da diária
                   </p>
@@ -227,8 +231,8 @@ export default function DailyPayments() {
               </div>
               <button
                 onClick={() => {
-                  deleteEmployee(selectedEmployee.id);
-                  setSelectedEmployee(null);
+                  employeeStore.action.delete(employee.id);
+                  setEmployee(null);
                   toast.info("Funcionário removido");
                 }}
                 className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
@@ -238,7 +242,7 @@ export default function DailyPayments() {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              {selectedEmployee.defaultRates
+              {employee.defaultRates
                 .filter((r) => r > 0)
                 .map((rate, i) => (
                   <Button
@@ -272,43 +276,57 @@ export default function DailyPayments() {
           Total Diárias Hoje
         </p>
         <p className="text-2xl font-extrabold font-mono text-destructive mt-1">
-          {formatCurrency(todayPaymentsTotal)}
+          {formatCurrency(todayPayments.total)}
         </p>
       </div>
 
-      {todayPayments.length > 0 && (
+      {todayPayments.paymentId.length > 0 && (
         <div>
           <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
             Hoje
           </h3>
           <div className="rounded-xl border bg-card overflow-hidden divide-y divide-border">
-            {todayPayments.map((p) => (
-              <div
-                key={p.id}
-                className="flex items-center justify-between px-5 py-3"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
-                    {p.employeeName.charAt(0).toUpperCase()}
+            {todayPayments.paymentId.map((paymentId) => {
+              const payment = paymentStore.action.get(paymentId);
+
+              if (!payment?.receiver?.id) {
+                return null;
+              }
+
+              const employee = employeeStore.action.get(payment?.receiver?.id);
+
+              if (!employee) {
+                return null;
+              }
+
+              return (
+                <div
+                  key={paymentId}
+                  className="flex items-center justify-between px-5 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
+                      {employee.name.charAt(0).toUpperCase()}
+                    </div>
+                    <p className="text-sm font-semibold">{employee.name}</p>
                   </div>
-                  <p className="text-sm font-semibold">{p.employeeName}</p>
+                  <div className="flex items-center gap-3">
+                    <p className="text-sm font-bold font-mono">
+                      {formatCurrency(payment.amount)}
+                    </p>
+                    <button
+                      onClick={() => {
+                        paymentStore.action.delete(payment.id);
+                        toast.info("Diária removida");
+                      }}
+                      className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <p className="text-sm font-bold font-mono">
-                    {formatCurrency(p.amount)}
-                  </p>
-                  <button
-                    onClick={() => {
-                      deleteDailyPayment(p.id);
-                      toast.info("Diária removida");
-                    }}
-                    className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -319,27 +337,39 @@ export default function DailyPayments() {
             Anteriores
           </h3>
           <div className="rounded-xl border bg-card overflow-hidden divide-y divide-border">
-            {otherPayments.slice(0, 20).map((p) => (
-              <div
-                key={p.id}
-                className="flex items-center justify-between px-5 py-3"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
-                    {p.employeeName.charAt(0).toUpperCase()}
+            {otherPayments.slice(0, 20).map((payment) => {
+              if (!payment.receiver?.id) {
+                return null;
+              }
+
+              const employee = employeeStore.action.get(payment?.receiver?.id);
+
+              if (!employee) {
+                return null;
+              }
+
+              return (
+                <div
+                  key={payment.id}
+                  className="flex items-center justify-between px-5 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground">
+                      {employee.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{employee.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(payment.date).toLocaleDateString("pt-BR")}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold">{p.employeeName}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(p.date).toLocaleDateString("pt-BR")}
-                    </p>
-                  </div>
+                  <p className="text-sm font-bold font-mono">
+                    {formatCurrency(payment.amount)}
+                  </p>
                 </div>
-                <p className="text-sm font-bold font-mono">
-                  {formatCurrency(p.amount)}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

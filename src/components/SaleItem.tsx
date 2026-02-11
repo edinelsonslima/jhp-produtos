@@ -1,5 +1,6 @@
+import { productStore } from "@/hooks/useProducts";
+import { saleStore } from "@/hooks/useSales";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
-import { Sale } from "@/types";
 import {
   Banknote,
   ChevronDown,
@@ -15,11 +16,19 @@ import {
 } from "./ui/collapsible";
 
 interface SaleItemProps {
-  sale: Sale;
+  saleId: string;
   onDelete?: (id: string) => void;
 }
 
-export function SaleItem({ sale, onDelete }: SaleItemProps) {
+export function SaleItem({ saleId, onDelete }: SaleItemProps) {
+  const sale = saleStore.useStore((state) => {
+    return state.sales.find((s) => s.id === saleId);
+  });
+
+  if (!sale) {
+    return null;
+  }
+
   return (
     <Collapsible className="border-b last:border-b-0">
       <CollapsibleTrigger asChild>
@@ -57,18 +66,26 @@ export function SaleItem({ sale, onDelete }: SaleItemProps) {
 
       <CollapsibleContent className="px-5 pb-4 space-y-2 border-t border-dashed">
         <div className="space-y-1 mt-3">
-          {sale.products?.map((p) => (
-            <div
-              key={p.id}
-              className="flex items-center justify-between text-sm"
-            >
-              <span className="truncate">
-                {p.name} ({p.unit === "litro" ? "L" : "un."})
-              </span>
-              <span className="flex-1 mx-2 border-b border-dotted border-muted-foreground/50 translate-y-1" />
-              <span className="text-muted-foreground">{p.quantity}x</span>
-            </div>
-          ))}
+          {sale.products?.map((p) => {
+            const product = productStore.action.get(p.productId);
+
+            if (!product) {
+              return null;
+            }
+
+            return (
+              <div
+                key={product.id}
+                className="flex items-center justify-between text-sm"
+              >
+                <span className="truncate">
+                  {product.name} ({product.unit === "litro" ? "L" : "un."})
+                </span>
+                <span className="flex-1 mx-2 border-b border-dotted border-muted-foreground/50 translate-y-1" />
+                <span className="text-muted-foreground">{p.quantity}x</span>
+              </div>
+            );
+          })}
         </div>
 
         <div className="flex gap-2 mt-3 pt-3 border-t border-dashed">
