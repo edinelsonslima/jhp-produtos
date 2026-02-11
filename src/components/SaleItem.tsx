@@ -64,8 +64,8 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
         </button>
       </CollapsibleTrigger>
 
-      <CollapsibleContent className="px-5 pb-4 space-y-2 border-t border-dashed">
-        <div className="space-y-1 mt-3">
+      <CollapsibleContent className="px-5 pb-4 space-y-2">
+        <div className="space-y-1 pt-3 border-t border-dashed">
           {sale.products?.map((p) => {
             const product = productStore.action.get(p.productId);
 
