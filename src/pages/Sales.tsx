@@ -1,3 +1,4 @@
+import { CurrencyInput } from "@/components/CurrencyInput";
 import { ProductCard } from "@/components/ProductCard";
 import { SaleItem } from "@/components/SaleItem";
 import { Button } from "@/components/ui/button";
@@ -12,78 +13,73 @@ import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
 export default function Sales() {
-  const { products, sales, addSale } = useStore();
+  const { products, sales, addSale, deleteSale } = useStore();
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("dinheiro");
   const [selectedProducts, setSelectedProducts] = useState<SaleProduct[]>([]);
 
-  const [cashAmount, setCashAmount] = useState("");
-  const [pixAmount, setPixAmount] = useState("");
+  const [cashAmount, setCashAmount] = useState(0);
+  const [pixAmount, setPixAmount] = useState(0);
 
-  const [customPrice, setCustomPrice] = useState("");
+  const [customPrice, setCustomPrice] = useState(0);
   const [customQuantity, setCustomQuantity] = useState("");
   const [customProduct, setCustomProduct] = useState("");
 
-  const total = selectedProducts.reduce((acc, p) => {
-    const price = parseFloat(customPrice) || p.price;
-    return acc + price * p.quantity;
-  }, 0);
+  const total = selectedProducts.reduce(
+    (acc, p) => acc + p.price * p.quantity,
+    0,
+  );
 
-  const cashValue = parseFloat(cashAmount) || 0;
-  const pixValue = parseFloat(pixAmount) || 0;
-  const mixedTotal = cashValue + pixValue;
+  const mixedTotal = cashAmount + pixAmount;
 
   const addProduct = (product: SaleProduct) => {
     setSelectedProducts((prev) => {
-      const selectedProducts = [...prev];
+      const list = [...prev];
+      const idx = list.findIndex((p) => p.id === product.id);
 
-      const currentProductIndex = selectedProducts.findIndex(
-        (p) => p.id === product.id,
-      );
-
-      if (currentProductIndex === -1) {
-        const productToAdd = products.find((p) => p.id === product.id);
-
-        if (!productToAdd) {
+      if (idx === -1) {
+        const found = products.find((p) => p.id === product.id);
+        if (!found) {
           toast.error("Produto não encontrado");
           return prev;
         }
-
-        return [
-          ...selectedProducts,
-          { ...productToAdd, selected: true, quantity: 1 },
-        ];
+        return [...list, { ...found, selected: true, quantity: 1 }];
       }
 
       if (product.quantity === 0) {
-        selectedProducts.splice(currentProductIndex, 1);
-        return selectedProducts;
+        list.splice(idx, 1);
+        return list;
       }
 
-      selectedProducts[currentProductIndex] = product;
-
-      return [...selectedProducts];
+      list[idx] = product;
+      return [...list];
     });
   };
 
   const handleSubmitCustomItem = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!customPrice || parseFloat(customPrice) <= 0) {
+    if (customPrice <= 0) {
       toast.error("Informe um preço válido para o item personalizado");
+      return;
+    }
+
+    const qty = parseInt(customQuantity) || 1;
+    if (qty <= 0) {
+      toast.error("Quantidade deve ser maior que zero");
       return;
     }
 
     const customProductItem: SaleProduct = {
       id: `custom-${Date.now()}`,
-      name: customProduct || "Item Personalizado",
-      price: parseFloat(customPrice),
+      name: customProduct.trim() || "Item Personalizado",
+      price: customPrice,
       unit: "unidade",
-      quantity: parseInt(customQuantity) || 1,
+      quantity: qty,
     };
 
     setSelectedProducts((prev) => [...prev, customProductItem]);
-    setCustomPrice("");
+    setCustomPrice(0);
     setCustomQuantity("");
     setCustomProduct("");
     toast.success("Item personalizado adicionado");
@@ -102,30 +98,50 @@ export default function Sales() {
       return;
     }
 
-    if (paymentMethod === "combinado" && mixedTotal !== total) {
-      toast.error("Valores em dinheiro e PIX deve ser igual ao total da venda");
+    if (
+      paymentMethod === "combinado" &&
+      Math.abs(mixedTotal - total) > 0.01
+    ) {
+      toast.error(
+        "Valores em dinheiro e PIX devem ser igual ao total da venda",
+      );
       return;
     }
 
     addSale({
-      id: window.crypto?.randomUUID(),
+      id: crypto.randomUUID(),
       products: selectedProducts,
       date: new Date().toISOString(),
       paymentMethod,
       price: {
-        total: total,
-        cash: cashValue || (paymentMethod === "dinheiro" ? total : 0),
-        pix: pixValue || (paymentMethod === "pix" ? total : 0),
+        total,
+        cash:
+          paymentMethod === "dinheiro"
+            ? total
+            : paymentMethod === "combinado"
+              ? cashAmount
+              : 0,
+        pix:
+          paymentMethod === "pix"
+            ? total
+            : paymentMethod === "combinado"
+              ? pixAmount
+              : 0,
       },
     });
 
     setSelectedProducts([]);
     setCustomQuantity("");
-    setCustomPrice("");
-    setCashAmount("");
-    setPixAmount("");
+    setCustomPrice(0);
+    setCashAmount(0);
+    setPixAmount(0);
     setPaymentMethod("dinheiro");
     toast.success("Venda registrada!");
+  };
+
+  const handleDeleteSale = (id: string) => {
+    deleteSale(id);
+    toast.success("Venda excluída");
   };
 
   return (
@@ -133,7 +149,7 @@ export default function Sales() {
       <div className="max-w-4xl mx-auto space-y-8 mb-8">
         <p
           className={cn(
-            "text-2xl font-extrabold font-mono fixed top-7 -right-2 bg-card shadow-sm p-2 pr-10 rounded-lg z-50",
+            "text-2xl font-extrabold font-mono fixed top-16 md:top-4 right-2 bg-card shadow-sm p-2 pr-4 rounded-lg z-50",
             total > 0 ? "text-success" : "text-destructive",
           )}
         >
@@ -184,14 +200,10 @@ export default function Sales() {
           </h3>
 
           <Label className="mb-1">Preço</Label>
-          <Input
-            type="number"
-            step="0.01"
-            min="0"
+          <CurrencyInput
             value={customPrice}
-            onChange={(e) => setCustomPrice(e.target.value)}
-            placeholder="R$ 0,00"
-            className="font-mono w-full mb-3"
+            onValueChange={setCustomPrice}
+            className="w-full mb-3"
           />
 
           <div className="flex gap-2">
@@ -202,6 +214,7 @@ export default function Sales() {
                 value={customProduct}
                 onChange={(e) => setCustomProduct(e.target.value)}
                 placeholder="Descrição do item personalizado"
+                maxLength={100}
                 className="font-mono w-full"
               />
             </div>
@@ -211,21 +224,16 @@ export default function Sales() {
               <Input
                 type="number"
                 step="1"
-                min="0"
+                min="1"
                 value={customQuantity}
                 onChange={(e) => setCustomQuantity(e.target.value)}
-                placeholder="0"
+                placeholder="1"
                 className="font-mono w-full"
               />
             </div>
           </div>
 
-          <Button
-            type="submit"
-            variant="outline"
-            className="mt-6 w-full"
-            onClick={() => {}}
-          >
+          <Button type="submit" variant="outline" className="mt-6 w-full">
             <Plus size={16} /> Adicionar Item Personalizado
           </Button>
         </motion.form>
@@ -245,7 +253,11 @@ export default function Sales() {
             ) : (
               <div>
                 {sales.slice(0, 20).map((sale) => (
-                  <SaleItem key={sale.id} sale={sale} />
+                  <SaleItem
+                    key={sale.id}
+                    sale={sale}
+                    onDelete={handleDeleteSale}
+                  />
                 ))}
               </div>
             )}
@@ -263,7 +275,11 @@ export default function Sales() {
           <Button
             type="button"
             variant={paymentMethod === "dinheiro" ? "default" : "outline"}
-            className={`flex-1 gap-2 ${paymentMethod === "dinheiro" ? "bg-cash text-cash-foreground hover:bg-cash/90" : ""}`}
+            className={cn(
+              "flex-1 gap-2",
+              paymentMethod === "dinheiro" &&
+                "bg-cash text-cash-foreground hover:bg-cash/90",
+            )}
             onClick={() => setPaymentMethod("dinheiro")}
           >
             <Banknote size={16} /> Dinheiro
@@ -271,7 +287,11 @@ export default function Sales() {
           <Button
             type="button"
             variant={paymentMethod === "pix" ? "default" : "outline"}
-            className={`flex-1 gap-2 ${paymentMethod === "pix" ? "bg-pix text-pix-foreground hover:bg-pix/90" : ""}`}
+            className={cn(
+              "flex-1 gap-2",
+              paymentMethod === "pix" &&
+                "bg-pix text-pix-foreground hover:bg-pix/90",
+            )}
             onClick={() => setPaymentMethod("pix")}
           >
             <Smartphone size={16} /> Pix
@@ -279,14 +299,17 @@ export default function Sales() {
           <Button
             type="button"
             variant={paymentMethod === "combinado" ? "default" : "outline"}
-            className={`flex-1 gap-2 ${paymentMethod === "combinado" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+            className={cn(
+              "flex-1 gap-2",
+              paymentMethod === "combinado" &&
+                "bg-primary text-primary-foreground hover:bg-primary/90",
+            )}
             onClick={() => setPaymentMethod("combinado")}
           >
             <Plus size={16} /> Combinado
           </Button>
         </div>
 
-        {/* Mixed payment inputs */}
         <AnimatePresence>
           {paymentMethod === "combinado" && (
             <motion.div
@@ -301,13 +324,9 @@ export default function Sales() {
                   <Banknote size={14} className="text-cash" />
                   Valor em Dinheiro
                 </Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
+                <CurrencyInput
                   value={cashAmount}
-                  onChange={(e) => setCashAmount(e.target.value)}
-                  placeholder="R$ 0,00"
+                  onValueChange={setCashAmount}
                   className="border-cash/30 focus-visible:ring-cash"
                 />
               </div>
@@ -316,13 +335,9 @@ export default function Sales() {
                   <Smartphone size={14} className="text-pix" />
                   Valor em PIX
                 </Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
+                <CurrencyInput
                   value={pixAmount}
-                  onChange={(e) => setPixAmount(e.target.value)}
-                  placeholder="R$ 0,00"
+                  onValueChange={setPixAmount}
                   className="border-pix/30 focus-visible:ring-pix"
                 />
               </div>
@@ -335,7 +350,7 @@ export default function Sales() {
                   <span className="font-mono font-bold">
                     {formatCurrency(mixedTotal)}
                   </span>
-                  {total > 0 && mixedTotal !== total && (
+                  {total > 0 && Math.abs(mixedTotal - total) > 0.01 && (
                     <span
                       className={cn(
                         "text-xs ml-2",

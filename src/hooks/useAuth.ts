@@ -1,4 +1,5 @@
-import { useCallback, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
+import { logAudit } from "@/lib/audit";
 
 export interface AppUser {
   id: string;
@@ -20,7 +21,6 @@ let state: AuthState = {
       return null;
     }
   })(),
-
   users: (() => {
     try {
       const d = localStorage.getItem("auth_users");
@@ -49,84 +49,68 @@ function getSnapshot() {
 function update(partial: Partial<AuthState>) {
   state = { ...state, ...partial };
 
-  if (!partial.user && !partial.users) {
-    return;
+  if (partial.users !== undefined) {
+    localStorage.setItem("auth_users", JSON.stringify(state.users));
   }
 
-  if (partial.users) {
-    localStorage.setItem("auth_users", JSON.stringify(partial.users));
+  if (partial.user !== undefined) {
+    if (partial.user) {
+      localStorage.setItem("auth_user", JSON.stringify(partial.user));
+    } else {
+      localStorage.removeItem("auth_user");
+    }
   }
-
-  if (partial.user) {
-    localStorage.setItem("auth_user", JSON.stringify(partial.user));
-    return;
-  }
-
-  localStorage.removeItem("auth_user");
 
   emit();
+}
+
+function getPasswords(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem("auth_passwords") || "{}");
+  } catch {
+    return {};
+  }
 }
 
 export function useAuth() {
   const snap = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
-  const login = useCallback(
-    (email: string, password: string) => {
-      const found = snap.users.find((u) => u.email === email);
+  const login = (email: string, password: string): string | null => {
+    const found = snap.users.find((u) => u.email === email);
+    if (!found) return "Usuário não encontrado";
 
-      if (!found) {
-        return "Usuário não encontrado";
-      }
+    const passwords = getPasswords();
+    if (passwords[found.id] !== password) return "Senha incorreta";
 
-      // MVP: no password hashing, stored alongside
-      const passwords: Record<string, string> = (() => {
-        try {
-          return JSON.parse(localStorage.getItem("auth_passwords") || "{}");
-        } catch {
-          return {};
-        }
-      })();
+    update({ user: found });
+    logAudit("login", `Login realizado: ${found.name} (${found.email})`);
+    return null;
+  };
 
-      if (passwords[found.id] !== password) {
-        return "Senha incorreta";
-      }
+  const register = (
+    name: string,
+    email: string,
+    password: string,
+  ): string | null => {
+    if (snap.users.some((u) => u.email === email))
+      return "E-mail já cadastrado";
 
-      update({ user: found });
+    const newUser: AppUser = { id: crypto.randomUUID(), name, email };
 
-      return null;
-    },
-    [snap.users],
-  );
+    const passwords = getPasswords();
+    passwords[newUser.id] = password;
+    localStorage.setItem("auth_passwords", JSON.stringify(passwords));
 
-  const register = useCallback(
-    (name: string, email: string, password: string) => {
-      if (snap.users.some((u) => u.email === email)) {
-        return "E-mail já cadastrado";
-      }
+    update({ users: [...snap.users, newUser], user: newUser });
+    logAudit("user_registered", `Novo usuário: ${name} (${email})`);
+    return null;
+  };
 
-      const newUser: AppUser = { id: crypto.randomUUID(), name, email };
-
-      const passwords: Record<string, string> = (() => {
-        try {
-          return JSON.parse(localStorage.getItem("auth_passwords") || "{}");
-        } catch {
-          return {};
-        }
-      })();
-
-      passwords[newUser.id] = password;
-      localStorage.setItem("auth_passwords", JSON.stringify(passwords));
-
-      update({ users: [...snap.users, newUser], user: newUser });
-
-      return null;
-    },
-    [snap.users],
-  );
-
-  const logout = useCallback(() => {
+  const logout = () => {
+    const userName = snap.user?.name ?? "?";
+    logAudit("logout", `Logout: ${userName}`);
     update({ user: null });
-  }, []);
+  };
 
   return { user: snap.user, login, register, logout };
 }

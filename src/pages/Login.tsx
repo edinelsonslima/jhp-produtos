@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { toast } from "sonner";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Login() {
   const { login, register } = useAuth();
 
@@ -18,12 +20,12 @@ export default function Login() {
     e.preventDefault();
 
     if (isRegister) {
-      if (!name.trim()) {
-        return toast.error("Informe seu nome");
+      if (!name.trim() || name.trim().length < 2) {
+        return toast.error("Nome deve ter ao menos 2 caracteres");
       }
 
-      if (!email.trim()) {
-        return toast.error("Informe seu e-mail");
+      if (!EMAIL_REGEX.test(email.trim())) {
+        return toast.error("Informe um e-mail válido");
       }
 
       if (password.length < 4) {
@@ -31,7 +33,6 @@ export default function Login() {
       }
 
       const err = register(name.trim(), email.trim().toLowerCase(), password);
-
       return err
         ? toast.error(err)
         : toast.success("Conta criada com sucesso!");
@@ -41,8 +42,11 @@ export default function Login() {
       return toast.error("Preencha todos os campos");
     }
 
-    const err = login(email.trim().toLowerCase(), password);
+    if (!EMAIL_REGEX.test(email.trim())) {
+      return toast.error("Informe um e-mail válido");
+    }
 
+    const err = login(email.trim().toLowerCase(), password);
     return err ? toast.error(err) : toast.success("Bem-vindo de volta!");
   };
 
@@ -74,6 +78,7 @@ export default function Login() {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Seu nome"
                 maxLength={100}
+                minLength={2}
               />
             </div>
           )}
@@ -97,6 +102,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••"
               maxLength={100}
+              minLength={4}
             />
           </div>
 
