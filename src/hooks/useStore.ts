@@ -1,7 +1,7 @@
 import { DailyPayment, Employee, Product, Sale } from "@/types";
-import { useCallback, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
+import { logAudit } from "@/lib/audit";
 
-// ── Persistence helpers ──────────────────────────────────────────────
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
     const data = localStorage.getItem(key);
@@ -15,7 +15,6 @@ function saveToStorage<T>(key: string, data: T) {
   localStorage.setItem(key, JSON.stringify(data));
 }
 
-// ── Mock data ────────────────────────────────────────────────────────
 const MOCK_PRODUCTS: Product[] = [
   { id: "1", name: "Metazil", unit: "litro", price: 15 },
   { id: "2", name: "Solupam", unit: "litro", price: 18 },
@@ -25,7 +24,6 @@ const MOCK_PRODUCTS: Product[] = [
   { id: "6", name: "Desincrustante", unit: "litro", price: 22 },
 ];
 
-// ── Global store (singleton) ─────────────────────────────────────────
 interface StoreState {
   sales: Sale[];
   dailyPayments: DailyPayment[];
@@ -57,67 +55,116 @@ function getSnapshot(): StoreState {
 
 function updateState(partial: Partial<StoreState>) {
   state = { ...state, ...partial };
-  // persist changed keys
   if (partial.sales) saveToStorage("sales", state.sales);
-  if (partial.dailyPayments) saveToStorage("dailyPayments", state.dailyPayments);
+  if (partial.dailyPayments)
+    saveToStorage("dailyPayments", state.dailyPayments);
   if (partial.products) saveToStorage("products", state.products);
   if (partial.employees) saveToStorage("employees", state.employees);
   emitChange();
 }
 
-// ── Hook ─────────────────────────────────────────────────────────────
 export function useStore() {
   const snap = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
-  const addSale = useCallback((sale: Omit<Sale, "timestamp">) => {
-    updateState({ sales: [{ ...sale, timestamp: Date.now() }, ...snap.sales] });
-  }, [snap.sales]);
-
-  const deleteSale = useCallback((id: string) => {
-    updateState({ sales: snap.sales.filter((s) => s.id !== id) });
-  }, [snap.sales]);
-
-  const addDailyPayment = useCallback(
-    (payment: Omit<DailyPayment, "id" | "timestamp">) => {
-      updateState({
-        dailyPayments: [
-          {
-            ...payment,
-            id: window.crypto?.randomUUID(),
-            timestamp: Date.now(),
-          },
-          ...snap.dailyPayments,
-        ],
-      });
-    },
-    [snap.dailyPayments],
-  );
-
-  const deleteDailyPayment = useCallback((id: string) => {
+  const addSale = (sale: Omit<Sale, "timestamp">) => {
+    const current = getSnapshot();
     updateState({
-      dailyPayments: snap.dailyPayments.filter((p) => p.id !== id),
+      sales: [{ ...sale, timestamp: Date.now() }, ...current.sales],
     });
-  }, [snap.dailyPayments]);
+    logAudit(
+      "sale_created",
+      `Venda de ${sale.products.length} itens - Total: R$ ${sale.price.total.toFixed(2)}`,
+    );
+  };
 
-  const addProduct = useCallback((product: Omit<Product, "id">) => {
+  const updateSale = (
+    id: string,
+    data: Partial<Omit<Sale, "id" | "timestamp">>,
+  ) => {
+    const current = getSnapshot();
     updateState({
-      products: [...snap.products, { ...product, id: window.crypto?.randomUUID() }],
+      sales: current.sales.map((s) => (s.id === id ? { ...s, ...data } : s)),
     });
-  }, [snap.products]);
+    logAudit("sale_edited", `Venda editada - ID: ${id.slice(0, 8)}`);
+  };
 
-  const deleteProduct = useCallback((id: string) => {
-    updateState({ products: snap.products.filter((p) => p.id !== id) });
-  }, [snap.products]);
+  const deleteSale = (id: string) => {
+    const current = getSnapshot();
+    const sale = current.sales.find((s) => s.id === id);
+    updateState({ sales: current.sales.filter((s) => s.id !== id) });
+    logAudit(
+      "sale_deleted",
+      `Venda excluída - Total: R$ ${sale?.price.total.toFixed(2) ?? "?"}`,
+    );
+  };
 
-  const addEmployee = useCallback((employee: Omit<Employee, "id">) => {
+  const addDailyPayment = (
+    payment: Omit<DailyPayment, "id" | "timestamp">,
+  ) => {
+    const current = getSnapshot();
     updateState({
-      employees: [...snap.employees, { ...employee, id: window.crypto?.randomUUID() }],
+      dailyPayments: [
+        { ...payment, id: crypto.randomUUID(), timestamp: Date.now() },
+        ...current.dailyPayments,
+      ],
     });
-  }, [snap.employees]);
+    logAudit(
+      "payment_created",
+      `Diária de R$ ${payment.amount.toFixed(2)} para ${payment.employeeName}`,
+    );
+  };
 
-  const deleteEmployee = useCallback((id: string) => {
-    updateState({ employees: snap.employees.filter((e) => e.id !== id) });
-  }, [snap.employees]);
+  const deleteDailyPayment = (id: string) => {
+    const current = getSnapshot();
+    const payment = current.dailyPayments.find((p) => p.id === id);
+    updateState({
+      dailyPayments: current.dailyPayments.filter((p) => p.id !== id),
+    });
+    logAudit(
+      "payment_deleted",
+      `Diária excluída - R$ ${payment?.amount.toFixed(2) ?? "?"} de ${payment?.employeeName ?? "?"}`,
+    );
+  };
+
+  const addProduct = (product: Omit<Product, "id">) => {
+    const current = getSnapshot();
+    updateState({
+      products: [
+        ...current.products,
+        { ...product, id: crypto.randomUUID() },
+      ],
+    });
+    logAudit("product_created", `Produto cadastrado: ${product.name}`);
+  };
+
+  const deleteProduct = (id: string) => {
+    const current = getSnapshot();
+    const product = current.products.find((p) => p.id === id);
+    updateState({
+      products: current.products.filter((p) => p.id !== id),
+    });
+    logAudit("product_deleted", `Produto excluído: ${product?.name ?? "?"}`);
+  };
+
+  const addEmployee = (employee: Omit<Employee, "id">) => {
+    const current = getSnapshot();
+    updateState({
+      employees: [
+        ...current.employees,
+        { ...employee, id: crypto.randomUUID() },
+      ],
+    });
+    logAudit("employee_created", `Funcionário cadastrado: ${employee.name}`);
+  };
+
+  const deleteEmployee = (id: string) => {
+    const current = getSnapshot();
+    const emp = current.employees.find((e) => e.id === id);
+    updateState({
+      employees: current.employees.filter((e) => e.id !== id),
+    });
+    logAudit("employee_deleted", `Funcionário excluído: ${emp?.name ?? "?"}`);
+  };
 
   const todayStr = new Date().toISOString().split("T")[0];
 
@@ -140,7 +187,9 @@ export function useStore() {
     .filter((s) => s.paymentMethod === "dinheiro")
     .reduce((sum, s) => sum + s.price.total, 0);
 
-  const todayPayments = snap.dailyPayments.filter((p) => p.date.startsWith(todayStr));
+  const todayPayments = snap.dailyPayments.filter((p) =>
+    p.date.startsWith(todayStr),
+  );
   const todayPaymentsTotal = todayPayments.reduce(
     (sum, p) => sum + p.amount,
     0,
@@ -162,6 +211,7 @@ export function useStore() {
     products: snap.products,
     employees: snap.employees,
     addSale,
+    updateSale,
     deleteSale,
     addDailyPayment,
     deleteDailyPayment,

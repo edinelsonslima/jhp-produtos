@@ -1,6 +1,7 @@
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Sale } from "@/types";
-import { Banknote, ChevronDown, Smartphone } from "lucide-react";
+import { Banknote, ChevronDown, Pencil, Smartphone, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   Collapsible,
   CollapsibleContent,
@@ -9,9 +10,10 @@ import {
 
 interface SaleItemProps {
   sale: Sale;
+  onDelete?: (id: string) => void;
 }
 
-export function SaleItem({ sale }: SaleItemProps) {
+export function SaleItem({ sale, onDelete }: SaleItemProps) {
   return (
     <Collapsible className="border-b last:border-b-0">
       <CollapsibleTrigger asChild>
@@ -23,7 +25,6 @@ export function SaleItem({ sale }: SaleItemProps) {
             <p className="text-xs text-muted-foreground">
               {formatDateTime(sale.date)}
             </p>
-
             <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
               {sale.price.cash > 0 && (
                 <span className="flex items-center gap-1">
@@ -31,7 +32,6 @@ export function SaleItem({ sale }: SaleItemProps) {
                   {formatCurrency(sale.price.cash)}
                 </span>
               )}
-
               {sale.price.pix > 0 && (
                 <span className="flex items-center gap-1">
                   <Smartphone size={12} className="text-pix" />
@@ -40,7 +40,6 @@ export function SaleItem({ sale }: SaleItemProps) {
               )}
             </div>
           </div>
-
           <div className="flex items-center gap-4">
             <span className="font-mono font-bold">
               {formatCurrency(sale.price.total)}
@@ -60,12 +59,27 @@ export function SaleItem({ sale }: SaleItemProps) {
               <span className="truncate">
                 {p.name} ({p.unit === "litro" ? "L" : "un."})
               </span>
-
               <span className="flex-1 mx-2 border-b border-dotted border-muted-foreground/50 translate-y-1" />
-
               <span className="text-muted-foreground">{p.quantity}x</span>
             </div>
           ))}
+        </div>
+
+        <div className="flex gap-2 mt-3 pt-3 border-t border-dashed">
+          <Link
+            to={`/vendas/${sale.id}/editar`}
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium hover:bg-muted transition-colors"
+          >
+            <Pencil size={12} /> Editar
+          </Link>
+          {onDelete && (
+            <button
+              onClick={() => onDelete(sale.id)}
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-destructive/30 px-3 py-2 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors"
+            >
+              <Trash2 size={12} /> Excluir
+            </button>
+          )}
         </div>
       </CollapsibleContent>
     </Collapsible>

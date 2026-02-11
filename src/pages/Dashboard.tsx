@@ -1,5 +1,6 @@
 import { SaleItem } from "@/components/SaleItem";
 import StatCard from "@/components/StatCard";
+import { useAuth } from "@/hooks/useAuth";
 import { useStore } from "@/hooks/useStore";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -10,8 +11,17 @@ import {
   Smartphone,
   TrendingUp,
 } from "lucide-react";
+import { toast } from "sonner";
+
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Bom dia";
+  if (hour < 18) return "Boa tarde";
+  return "Boa noite";
+}
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const {
     todayTotal,
     todayPix,
@@ -21,20 +31,28 @@ export default function Dashboard() {
     monthCash,
     todaySales,
     todayPaymentsTotal,
+    deleteSale,
   } = useStore();
 
   const todayNet = todayTotal - todayPaymentsTotal;
+  const firstName = user?.name?.split(" ")[0] ?? "";
+
+  const handleDelete = (id: string) => {
+    deleteSale(id);
+    toast.success("Venda excluída");
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h2 className="text-2xl font-extrabold tracking-tight">Dashboard</h2>
+        <h2 className="text-2xl font-extrabold tracking-tight">
+          {getGreeting()}, {firstName}!
+        </h2>
         <p className="text-muted-foreground text-sm mt-1">
           Resumo do dia {new Date().toLocaleDateString("pt-BR")}
         </p>
       </motion.div>
 
-      {/* Today */}
       <div>
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
           Hoje
@@ -70,7 +88,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Net today */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -95,7 +112,6 @@ export default function Dashboard() {
         </div>
       </motion.div>
 
-      {/* Month */}
       <div>
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
           Este Mês
@@ -124,7 +140,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent Sales */}
       <div>
         <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
           Vendas de Hoje ({todaySales.length})
@@ -136,7 +151,11 @@ export default function Dashboard() {
         ) : (
           <div className="rounded-xl border bg-card overflow-hidden">
             {todaySales.slice(0, 10).map((sale) => (
-              <SaleItem key={sale.id} sale={sale} />
+              <SaleItem
+                key={sale.id}
+                sale={sale}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         )}

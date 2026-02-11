@@ -1,3 +1,4 @@
+import { CurrencyInput } from "@/components/CurrencyInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,19 +20,25 @@ export default function Products() {
   const { products, addProduct, deleteProduct } = useStore();
   const [name, setName] = useState("");
   const [unit, setUnit] = useState<"unidade" | "litro">("litro");
-  const [price, setPrice] = useState("");
+  const [price, setPrice] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const val = parseFloat(price);
-    if (!name.trim() || !val || val <= 0) {
-      toast.error("Preencha todos os campos");
+
+    if (!name.trim() || name.trim().length < 2) {
+      toast.error("Nome do produto deve ter ao menos 2 caracteres");
       return;
     }
-    addProduct({ name: name.trim(), unit, price: val });
+
+    if (price <= 0) {
+      toast.error("Informe um preço válido");
+      return;
+    }
+
+    addProduct({ name: name.trim(), unit, price });
     toast.success("Produto adicionado!");
     setName("");
-    setPrice("");
+    setPrice(0);
   };
 
   return (
@@ -56,6 +63,7 @@ export default function Products() {
             onChange={(e) => setName(e.target.value)}
             placeholder="Ex: Metazil"
             maxLength={100}
+            minLength={2}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -76,14 +84,10 @@ export default function Products() {
           </div>
           <div className="space-y-2">
             <Label>Preço (R$)</Label>
-            <Input
-              type="number"
-              step="0.01"
-              min="0"
+            <CurrencyInput
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onValueChange={setPrice}
               placeholder="0,00"
-              className="font-mono"
             />
           </div>
         </div>
