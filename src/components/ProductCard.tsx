@@ -1,5 +1,5 @@
 import { cn, formatCurrency } from "@/lib/utils";
-import { Product, SaleProduct } from "@/types";
+import { Product } from "@/types";
 import { motion, useDragControls } from "framer-motion";
 import { Package, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
@@ -8,7 +8,7 @@ import { buttonVariants } from "./ui/button";
 interface Props {
   product: Product;
   quantity: number;
-  onSelect: (product: SaleProduct) => void;
+  onSelect: (product: Product, quantity: number ) => void;
 }
 
 export function ProductCard({ product, quantity, onSelect }: Props) {
@@ -21,7 +21,7 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
 
   const updateProductByQuantity = (quantity: number = 0) => {
     const newQuantity = Math.max(quantity, 0);
-    onSelect({ ...product, quantity: newQuantity });
+    onSelect(product, newQuantity);
     feedbackVibrate(30);
   };
 

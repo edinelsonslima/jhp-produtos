@@ -8,7 +8,7 @@ import { toast } from "@/components/ui/sonner";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency } from "@/lib/utils";
-import { PaymentMethod, Sale } from "@/types";
+import { PaymentMethod, Product, Sale } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { Banknote, Plus, Smartphone } from "lucide-react";
 import { FormEvent, useState } from "react";
@@ -34,13 +34,13 @@ export default function Sales() {
     return acc + price * p.quantity;
   }, 0);
 
-  const addProduct = (product: Sale["products"][number]) => {
+  const addProduct = (product: Product, quantity: number) => {
     setSelected((prev) => {
       const list = [...prev];
-      const idx = list.findIndex((p) => p.productId === product.productId);
+      const idx = list.findIndex((p) => p.productId === product.id);
 
       if (idx === -1) {
-        const found = products.find((p) => p.id === product.productId);
+        const found = products.find((p) => p.id === product.id);
 
         if (!found) {
           toast.error("Produto não encontrado");
@@ -50,12 +50,12 @@ export default function Sales() {
         return [...list, { productId: found.id, quantity: 1 }];
       }
 
-      if (product.quantity === 0) {
+      if (quantity === 0) {
         list.splice(idx, 1);
         return list;
       }
 
-      list[idx] = product;
+      list[idx] = { productId: product.id, quantity };
       return [...list];
     });
   };
@@ -182,7 +182,7 @@ export default function Sales() {
                 <ProductCard
                   key={p.id}
                   product={p}
-                  onSelect={(product) => addProduct(product)}
+                  onSelect={addProduct}
                   quantity={config?.quantity ?? 0}
                 />
               );
