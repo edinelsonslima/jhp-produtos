@@ -1,4 +1,5 @@
 import { logAudit } from "@/lib/audit";
+import { storage } from "@/lib/utils";
 import { useSyncExternalStore } from "react";
 
 export interface AppUser {
@@ -12,23 +13,11 @@ interface AuthState {
   users: AppUser[];
 }
 
-let state: AuthState = {
-  user: (() => {
-    try {
-      const d = localStorage.getItem("auth_user");
-      return d ? JSON.parse(d) : null;
-    } catch {
-      return null;
-    }
-  })(),
-  users: (() => {
-    try {
-      const d = localStorage.getItem("auth_users");
-      return d ? JSON.parse(d) : [];
-    } catch {
-      return [];
-    }
-  })(),
+const authStorage = storage(["auth-user", "auth-users", "auth-passwords"]);
+
+const state: AuthState = {
+  user: authStorage.load<AppUser>("auth-user", null),
+  users: authStorage.load<AppUser[]>("auth-users", []),
 };
 
 const listeners = new Set<() => void>();
@@ -47,25 +36,22 @@ function getSnapshot() {
 }
 
 function update(partial: Partial<AuthState>) {
-  state = { ...state, ...partial };
+  state.user = partial.user ?? state.user;
+  state.users = partial.users ?? state.users;
 
   if (partial.users !== undefined) {
-    localStorage.setItem("auth_users", JSON.stringify(state.users));
+    authStorage.save("auth-users", state.users);
   }
 
   partial.user
-    ? localStorage.setItem("auth_user", JSON.stringify(partial.user))
-    : localStorage.removeItem("auth_user");
+    ? authStorage.save("auth-user", partial.user)
+    : authStorage.remove("auth-user");
 
   emit();
 }
 
-function getPasswords(): Record<string, string> {
-  try {
-    return JSON.parse(localStorage.getItem("auth_passwords") || "{}");
-  } catch {
-    return {};
-  }
+function getPasswords() {
+  return authStorage.load<Record<string, string>>("auth-passwords", {});
 }
 
 export function useAuth() {
@@ -95,7 +81,7 @@ export function useAuth() {
 
     const passwords = getPasswords();
     passwords[newUser.id] = password;
-    localStorage.setItem("auth_passwords", JSON.stringify(passwords));
+    authStorage.save("auth-passwords", passwords);
 
     update({ users: [...snap.users, newUser], user: newUser });
     logAudit("user_registered", `Novo usuário: ${name} (${email})`);

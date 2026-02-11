@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/components/ui/sonner";
-import { useStore } from "@/hooks/useStore";
+import { useStore } from "@/hooks/useSales";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Package, Plus, Trash2 } from "lucide-react";

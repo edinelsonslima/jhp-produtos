@@ -1,7 +1,5 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -9,14 +7,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useStore } from "@/hooks/useStore";
+import { toast } from "@/components/ui/sonner";
+import { useStore } from "@/hooks/useSales";
 import { cn, formatCurrency } from "@/lib/utils";
 import { Employee } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { toast } from "@/components/ui/sonner";
 
 export default function DailyPayments() {
   const {
@@ -164,10 +164,7 @@ export default function DailyPayments() {
                 <DialogHeader>
                   <DialogTitle>Cadastrar Funcionário</DialogTitle>
                 </DialogHeader>
-                <form
-                  onSubmit={handleAddEmployee}
-                  className="space-y-4 mt-2"
-                >
+                <form onSubmit={handleAddEmployee} className="space-y-4 mt-2">
                   <div className="space-y-2">
                     <Label>Nome</Label>
                     <Input

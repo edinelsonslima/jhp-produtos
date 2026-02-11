@@ -1,3 +1,5 @@
+import { storage } from "./utils";
+
 export interface AuditEntry {
   id: string;
   action: string;
@@ -7,19 +9,19 @@ export interface AuditEntry {
   timestamp: number;
 }
 
-function getCurrentUser(): { id: string; name: string } {
-  try {
-    const data = localStorage.getItem("auth_user");
+export const auditStorage = storage(["auth-user", "audit-log"]);
 
-    if (data) {
-      const user = JSON.parse(data);
-      return { id: user.id, name: user.name };
-    }
-  } catch {
-    // ignore
+function getCurrentUser() {
+  const user = auditStorage.load<{ id: string; name: string }>(
+    "auth-user",
+    null,
+  );
+
+  if (!user) {
+    return { id: "system", name: "Sistema" };
   }
 
-  return { id: "system", name: "Sistema" };
+  return { id: user.id, name: user.name };
 }
 
 export function logAudit(action: string, details: string) {
@@ -36,16 +38,13 @@ export function logAudit(action: string, details: string) {
   const log = getAuditLog();
   log.unshift(entry);
 
-  if (log.length > 500) log.length = 500;
+  if (log.length > 500) {
+    log.length = 500;
+  }
 
-  localStorage.setItem("audit_log", JSON.stringify(log));
+  auditStorage.save("audit-log", log);
 }
 
-export function getAuditLog(): AuditEntry[] {
-  try {
-    const data = localStorage.getItem("audit_log");
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
+export function getAuditLog() {
+  return auditStorage.load<AuditEntry[]>("audit-log", []);
 }

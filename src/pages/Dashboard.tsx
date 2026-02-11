@@ -2,7 +2,7 @@ import { SaleItem } from "@/components/SaleItem";
 import StatCard from "@/components/StatCard";
 import { toast } from "@/components/ui/sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useStore } from "@/hooks/useStore";
+import { useStore } from "@/hooks/useSales";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {

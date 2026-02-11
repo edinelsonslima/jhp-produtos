@@ -2,7 +2,7 @@ import { CurrencyInput } from "@/components/CurrencyInput";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
-import { useStore } from "@/hooks/useStore";
+import { useStore } from "@/hooks/useSales";
 import { cn, formatCurrency } from "@/lib/utils";
 import { PaymentMethod, SaleProduct } from "@/types";
 import { motion } from "framer-motion";

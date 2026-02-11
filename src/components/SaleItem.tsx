@@ -26,19 +26,19 @@ export function SaleItem({ sale, onDelete }: SaleItemProps) {
         <button className="w-full flex items-center justify-between px-5 py-4 md:hover:bg-accent/40 transition-colors">
           <div className="flex flex-col items-start gap-1">
             <p className="text-sm font-semibold">
-              Venda • {sale.products.length} itens
+              Venda • {sale.products?.length ?? 0} itens
             </p>
             <p className="text-xs text-muted-foreground">
               {formatDateTime(sale.date)}
             </p>
             <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-              {sale.price.cash > 0 && (
+              {sale.price?.cash > 0 && (
                 <span className="flex items-center gap-1">
                   <Banknote size={12} className="text-cash" />
                   {formatCurrency(sale.price.cash)}
                 </span>
               )}
-              {sale.price.pix > 0 && (
+              {sale.price?.pix > 0 && (
                 <span className="flex items-center gap-1">
                   <Smartphone size={12} className="text-pix" />
                   {formatCurrency(sale.price.pix)}
@@ -48,7 +48,7 @@ export function SaleItem({ sale, onDelete }: SaleItemProps) {
           </div>
           <div className="flex items-center gap-4">
             <span className="font-mono font-bold">
-              {formatCurrency(sale.price.total)}
+              {formatCurrency(sale.price?.total ?? 0)}
             </span>
             <ChevronDown className="h-4 w-4 opacity-50" />
           </div>
@@ -57,7 +57,7 @@ export function SaleItem({ sale, onDelete }: SaleItemProps) {
 
       <CollapsibleContent className="px-5 pb-4 space-y-2 border-t border-dashed">
         <div className="space-y-1 mt-3">
-          {sale.products.map((p) => (
+          {sale.products?.map((p) => (
             <div
               key={p.id}
               className="flex items-center justify-between text-sm"
