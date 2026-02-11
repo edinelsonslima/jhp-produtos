@@ -28,7 +28,7 @@ export interface Employee {
   id: string;
   name: string;
   avatarUrl?: string;
-  defaultRates: [number, number]; // two preset daily rates
+  defaultRates: [number, number];
 }
 
 export interface DailyPayment {

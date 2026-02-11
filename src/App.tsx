@@ -1,7 +1,5 @@
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import AuditLog from "./pages/AuditLog";
@@ -13,8 +11,6 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
-
-const queryClient = new QueryClient();
 
 function AuthGate() {
   const { user } = useAuth();
@@ -38,14 +34,12 @@ function AuthGate() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Sonner />
-      <BrowserRouter>
-        <AuthGate />
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <>
+    <Sonner />
+    <BrowserRouter>
+      <AuthGate />
+    </BrowserRouter>
+  </>
 );
 
 export default App;

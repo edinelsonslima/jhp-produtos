@@ -1,6 +1,12 @@
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Sale } from "@/types";
-import { Banknote, ChevronDown, Pencil, Smartphone, Trash2 } from "lucide-react";
+import {
+  Banknote,
+  ChevronDown,
+  Pencil,
+  Smartphone,
+  Trash2,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Collapsible,
