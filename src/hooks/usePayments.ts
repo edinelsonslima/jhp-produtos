@@ -1,5 +1,6 @@
 import { logAudit } from "@/lib/audit";
 import { Payment } from "@/types";
+import { employeeStore } from "./useEmployees";
 import { createStore } from "./useStore";
 
 type CreatePayment = Omit<Payment, "id" | "timestamp">;
@@ -43,9 +44,14 @@ export const paymentStore = createStore<State, Actions>({
         today: calculateStats(payments, "today"),
       });
 
+      let receiver = data.receiver?.id ?? "?";
+      if (data.receiver?.type === "employee") {
+        receiver = employeeStore.action.get(data.receiver.id)?.name ?? receiver;
+      }
+
       logAudit(
         "payment_created",
-        `Diária de R$ ${data.amount} para ${data.receiver?.id}`,
+        `Diária de R$ ${data.amount} para ${receiver}`,
       );
     },
 

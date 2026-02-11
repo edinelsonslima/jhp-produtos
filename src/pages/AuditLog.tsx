@@ -16,6 +16,7 @@ const ACTION_LABELS: Record<
   sale_created: { label: "Venda", variant: "default" },
   sale_edited: { label: "Edição Venda", variant: "secondary" },
   sale_deleted: { label: "Exclusão Venda", variant: "destructive" },
+  sale_updated: { label: "Atualização Venda", variant: "outline" },
   payment_created: { label: "Diária", variant: "default" },
   payment_deleted: { label: "Exclusão Diária", variant: "destructive" },
   employee_created: { label: "Func. Cadastrado", variant: "default" },

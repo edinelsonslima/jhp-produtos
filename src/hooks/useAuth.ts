@@ -14,6 +14,7 @@ type State = {
 };
 
 type Actions = {
+  getCurrentUser: () => AppUser | null;
   login: (email: string, password: string) => string | null;
   logout: () => void;
   register: (name: string, email: string, password: string) => string | null;
@@ -29,6 +30,10 @@ export const authStore = createStore<State, Actions>({
   }),
 
   createActions: (set, get) => ({
+    getCurrentUser: () => {
+      return get().user;
+    },
+
     login: (email, password) => {
       const users = get().users;
 

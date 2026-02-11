@@ -1,3 +1,4 @@
+import { authStore } from "@/hooks/useAuth";
 import { storage } from "./utils";
 
 export interface AuditEntry {
@@ -9,13 +10,10 @@ export interface AuditEntry {
   timestamp: number;
 }
 
-export const auditStorage = storage(["auth-user", "audit-log"]);
+export const auditStorage = storage(["audit-log"]);
 
 function getCurrentUser() {
-  const user = auditStorage.load<{ id: string; name: string }>(
-    "auth-user",
-    null,
-  );
+  const user = authStore.action.getCurrentUser();
 
   if (!user) {
     return { id: "system", name: "Sistema" };
