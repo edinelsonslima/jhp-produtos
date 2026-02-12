@@ -47,7 +47,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col md:flex-row h-dvh overflow-hidden overflow-y-auto">
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 bg-sidebar text-sidebar-foreground sticky top-0">
+      <aside className="hidden md:flex flex-col w-64 bg-sidebar text-sidebar-foreground sticky top-0 border-r border-sidebar-border">
         <div className="p-6 border-b border-sidebar-border flex items-center justify-between">
           <div>
             <h1 className="text-xl font-extrabold tracking-tight">

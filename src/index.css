@@ -1,27 +1,33 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap");
 
 @import "tailwindcss";
+
 @plugin "daisyui" {
   themes: all;
+  prefix: "daisy-";
+}
+
+@theme {
+  --color-pix: hsl(152 60% 40%);
+  --color-pix-foreground: hsl(0 0% 100%);
+
+  --color-cash: hsl(38 92% 50%);
+  --color-cash-foreground: hsl(0 0% 100%);
+
+  --color-sidebar-background: hsl(200 25% 12%);
+  --color-sidebar-foreground: hsl(210 15% 92%);
+
+  --color-sidebar-primary: hsl(38 92% 50%);
+  --color-sidebar-primary-foreground: hsl(0 0% 100%);
+
+  --color-sidebar-accent: hsl(200 20% 18%);
+  --color-sidebar-accent-foreground: hsl(210 15% 92%);
+
+  --color-sidebar-border: hsl(200 20% 20%);
+  --color-sidebar-ring: hsl(195 80% 40%);
 }
 
 @layer base {
-  :root {
-    --pix: 152 60% 40%;
-    --pix-foreground: 0 0% 100%;
-    --cash: 38 92% 50%;
-    --cash-foreground: 0 0% 100%;
-
-    --sidebar-background: 200 25% 12%;
-    --sidebar-foreground: 210 15% 92%;
-    --sidebar-primary: 38 92% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 20% 18%;
-    --sidebar-accent-foreground: 210 15% 92%;
-    --sidebar-border: 200 20% 20%;
-    --sidebar-ring: 195 80% 40%;
-  }
-
   body {
     font-family: "Inter", sans-serif;
     @apply antialiased;
