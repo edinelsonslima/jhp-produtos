@@ -1,29 +1,35 @@
-import { motion } from 'framer-motion';
-import { LucideIcon } from 'lucide-react';
+import { motion } from "framer-motion";
+import { LucideIcon } from "lucide-react";
 
 interface StatCardProps {
   label: string;
   value: string;
   icon: LucideIcon;
-  variant?: 'default' | 'pix' | 'cash' | 'destructive';
+  variant?: "default" | "pix" | "cash" | "destructive";
   delay?: number;
 }
 
 const variantStyles = {
-  default: 'bg-card border-border',
-  pix: 'bg-pix/10 border-pix/30',
-  cash: 'bg-cash/10 border-cash/30',
-  destructive: 'bg-destructive/10 border-destructive/30',
+  default: "bg-base-100 border-base-300",
+  pix: "bg-pix/10 border-pix/30",
+  cash: "bg-cash/10 border-cash/30",
+  destructive: "bg-error/10 border-error/30",
 };
 
 const iconStyles = {
-  default: 'text-primary',
-  pix: 'text-pix',
-  cash: 'text-cash',
-  destructive: 'text-destructive',
+  default: "text-primary",
+  pix: "text-pix",
+  cash: "text-cash",
+  destructive: "text-error",
 };
 
-export default function StatCard({ label, value, icon: Icon, variant = 'default', delay = 0 }: StatCardProps) {
+export default function StatCard({
+  label,
+  value,
+  icon: Icon,
+  variant = "default",
+  delay = 0,
+}: StatCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -33,10 +39,16 @@ export default function StatCard({ label, value, icon: Icon, variant = 'default'
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{label}</p>
-          <p className="text-xl sm:text-2xl font-extrabold mt-1 font-mono truncate">{value}</p>
+          <p className="text-xs font-medium text-base-content/60 uppercase tracking-wide">
+            {label}
+          </p>
+          <p className="text-xl sm:text-2xl font-extrabold mt-1 font-mono truncate">
+            {value}
+          </p>
         </div>
-        <div className={`p-3 rounded-xl ${variant === 'default' ? 'bg-primary/10' : ''}`}>
+        <div
+          className={`p-3 rounded-xl ${variant === "default" ? "bg-primary/10" : ""}`}
+        >
           <Icon size={22} className={iconStyles[variant]} />
         </div>
       </div>

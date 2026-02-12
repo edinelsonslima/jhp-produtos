@@ -1,5 +1,4 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
 import { productStore } from "@/hooks/useProducts";
@@ -22,7 +21,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 export default function EditSale() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-
   const sale = saleStore.action.get(id!);
 
   const [products, setProducts] = useState<Sale["products"]>(
@@ -37,7 +35,7 @@ export default function EditSale() {
   if (!sale) {
     return (
       <div className="max-w-2xl mx-auto text-center py-20">
-        <p className="text-muted-foreground">Venda não encontrada</p>
+        <p className="text-base-content/60">Venda não encontrada</p>
         <Link to="/" className="text-primary underline mt-4 inline-block">
           Voltar ao Dashboard
         </Link>
@@ -68,12 +66,10 @@ export default function EditSale() {
       toast.error("A venda precisa ter pelo menos um produto");
       return;
     }
-
     if (paymentMethod === "combinado" && Math.abs(mixedTotal - total) > 0.01) {
       toast.error("Valores em dinheiro e PIX devem ser igual ao total");
       return;
     }
-
     saleStore.action.update(sale.id, {
       products,
       paymentMethod,
@@ -93,7 +89,6 @@ export default function EditSale() {
               : 0,
       },
     });
-
     toast.success("Venda atualizada!");
     navigate(-1);
   };
@@ -113,7 +108,7 @@ export default function EditSale() {
       >
         <button
           onClick={() => navigate(-1)}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
+          className="p-2 rounded-lg hover:bg-base-200 transition-colors"
         >
           <ArrowLeft size={20} />
         </button>
@@ -121,33 +116,30 @@ export default function EditSale() {
           <h2 className="text-2xl font-extrabold tracking-tight">
             Editar Venda
           </h2>
-          <p className="text-muted-foreground text-sm mt-1">
+          <p className="text-base-content/60 text-sm mt-1">
             {new Date(sale.date).toLocaleString("pt-BR")}
           </p>
         </div>
       </motion.div>
 
-      <div className="rounded-xl border bg-card p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+      <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">
+        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
           Produtos ({products.length})
         </h3>
         {products.map((p) => {
           const product = productStore.action.get(p.productId);
-
-          if (!product) {
-            return null;
-          }
+          if (!product) return null;
 
           return (
             <div
               key={product.id}
-              className="flex items-center justify-between py-2 border-b last:border-0"
+              className="flex items-center justify-between py-2 border-b border-base-300 last:border-0"
             >
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold truncate">
                   {product.name}
                 </p>
-                <p className="text-xs text-muted-foreground font-mono">
+                <p className="text-xs text-base-content/60 font-mono">
                   {formatCurrency(product.price ?? 0)} /{" "}
                   {product.unit === "litro" ? "L" : "un."}
                 </p>
@@ -156,7 +148,7 @@ export default function EditSale() {
                 <button
                   type="button"
                   onClick={() => updateQuantity(product.id, -1)}
-                  className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-destructive/20 transition-colors"
+                  className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-error/20 transition-colors"
                 >
                   <Minus size={14} />
                 </button>
@@ -166,7 +158,7 @@ export default function EditSale() {
                 <button
                   type="button"
                   onClick={() => updateQuantity(product.id, 1)}
-                  className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-primary/20 transition-colors"
+                  className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-primary/20 transition-colors"
                 >
                   <Plus size={14} />
                 </button>
@@ -175,53 +167,51 @@ export default function EditSale() {
           );
         })}
         {products.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-4">
+          <p className="text-sm text-base-content/60 text-center py-4">
             Todos os produtos foram removidos
           </p>
         )}
       </div>
 
-      <div className="rounded-xl border bg-card p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+      <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">
+        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
           Forma de Pagamento
         </h3>
         <div className="flex gap-2">
-          <Button
+          <button
             type="button"
-            variant={paymentMethod === "dinheiro" ? "default" : "outline"}
             className={cn(
-              "flex-1 gap-2",
-              paymentMethod === "dinheiro" &&
-                "bg-cash text-cash-foreground hover:bg-cash/90",
+              "btn flex-1 gap-2",
+              paymentMethod === "dinheiro"
+                ? "bg-cash text-cash-foreground hover:bg-cash/90 border-0"
+                : "btn-outline",
             )}
             onClick={() => setPaymentMethod("dinheiro")}
           >
             <Banknote size={16} /> Dinheiro
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            variant={paymentMethod === "pix" ? "default" : "outline"}
             className={cn(
-              "flex-1 gap-2",
-              paymentMethod === "pix" &&
-                "bg-pix text-pix-foreground hover:bg-pix/90",
+              "btn flex-1 gap-2",
+              paymentMethod === "pix"
+                ? "bg-pix text-pix-foreground hover:bg-pix/90 border-0"
+                : "btn-outline",
             )}
             onClick={() => setPaymentMethod("pix")}
           >
             <Smartphone size={16} /> Pix
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            variant={paymentMethod === "combinado" ? "default" : "outline"}
             className={cn(
-              "flex-1 gap-2",
-              paymentMethod === "combinado" &&
-                "bg-primary text-primary-foreground hover:bg-primary/90",
+              "btn flex-1 gap-2",
+              paymentMethod === "combinado" ? "btn-primary" : "btn-outline",
             )}
             onClick={() => setPaymentMethod("combinado")}
           >
             <Plus size={16} /> Combinado
-          </Button>
+          </button>
         </div>
 
         {paymentMethod === "combinado" && (
@@ -239,8 +229,8 @@ export default function EditSale() {
               <CurrencyInput value={pixAmount} onValueChange={setPixAmount} />
             </div>
             {mixedTotal > 0 && Math.abs(mixedTotal - total) > 0.01 && (
-              <div className="col-span-full text-center p-2 rounded-lg bg-muted/50">
-                <span className="text-sm text-muted-foreground">
+              <div className="col-span-full text-center p-2 rounded-lg bg-base-200/50">
+                <span className="text-sm text-base-content/60">
                   Total combinado:{" "}
                 </span>
                 <span className="font-mono font-bold">
@@ -249,7 +239,7 @@ export default function EditSale() {
                 <span
                   className={cn(
                     "text-xs ml-2",
-                    mixedTotal < total ? "text-destructive" : "text-success",
+                    mixedTotal < total ? "text-error" : "text-success",
                   )}
                 >
                   (diferença de {formatCurrency(Math.abs(total - mixedTotal))})
@@ -260,8 +250,8 @@ export default function EditSale() {
         )}
       </div>
 
-      <div className="rounded-xl border bg-card p-5">
-        <p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold">
+      <div className="rounded-xl border border-base-300 bg-base-100 p-5">
+        <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
           Total
         </p>
         <p className="text-3xl font-extrabold font-mono text-success mt-1">
@@ -270,17 +260,18 @@ export default function EditSale() {
       </div>
 
       <div className="flex gap-3">
-        <Button onClick={handleSave} className="flex-1 gap-2" size="lg">
+        <button
+          onClick={handleSave}
+          className="btn btn-primary flex-1 gap-2 btn-lg"
+        >
           <Save size={18} /> Salvar Alterações
-        </Button>
-        <Button
+        </button>
+        <button
           onClick={handleDelete}
-          variant="destructive"
-          size="lg"
-          className="gap-2"
+          className="btn btn-error btn-lg gap-2"
         >
           <Trash2 size={18} /> Excluir
-        </Button>
+        </button>
       </div>
     </div>
   );

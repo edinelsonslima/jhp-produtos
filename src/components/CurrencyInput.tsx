@@ -1,4 +1,3 @@
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 interface CurrencyInputProps {
@@ -31,12 +30,12 @@ export function CurrencyInput({
       : "";
 
   return (
-    <Input
+    <input
       inputMode="numeric"
       value={display}
       onChange={handleChange}
       placeholder={placeholder}
-      className={cn("font-mono", className)}
+      className={cn("input input-bordered w-full font-mono", className)}
       {...props}
     />
   );

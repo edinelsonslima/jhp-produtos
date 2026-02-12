@@ -23,10 +23,8 @@ function getGreeting(): string {
 
 export default function Dashboard() {
   const user = authStore.useStore((state) => state.user);
-
   const todaySales = saleStore.useStore((state) => state.today);
   const monthSales = saleStore.useStore((state) => state.month);
-
   const todayPayments = paymentStore.useStore((state) => state.today);
 
   const todayNet = todaySales.total - todayPayments.total;
@@ -43,13 +41,13 @@ export default function Dashboard() {
         <h2 className="text-2xl font-extrabold tracking-tight">
           {getGreeting()}, {firstName}!
         </h2>
-        <p className="text-muted-foreground text-sm mt-1">
+        <p className="text-base-content/60 text-sm mt-1">
           Resumo do dia {new Date().toLocaleDateString("pt-BR")}
         </p>
       </motion.div>
 
       <div>
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
           Hoje
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -87,28 +85,28 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="rounded-xl border bg-card p-6"
+        className="rounded-xl border border-base-300 bg-base-100 p-6"
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <p className="text-xs font-medium text-base-content/60 uppercase tracking-wide">
               Líquido Hoje
             </p>
             <p
-              className={`text-2xl sm:text-3xl font-extrabold mt-1 font-mono ${todayNet >= 0 ? "text-success" : "text-destructive"}`}
+              className={`text-2xl sm:text-3xl font-extrabold mt-1 font-mono ${todayNet >= 0 ? "text-success" : "text-error"}`}
             >
               {formatCurrency(todayNet)}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-base-content/60 mt-1">
               Total vendido − diárias pagas
             </p>
           </div>
-          <TrendingUp size={28} className="text-muted-foreground/40" />
+          <TrendingUp size={28} className="text-base-content/20" />
         </div>
       </motion.div>
 
       <div>
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
           Este Mês
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -136,15 +134,15 @@ export default function Dashboard() {
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
           Vendas de Hoje ({todaySales.saleId.length})
         </h3>
         {todaySales.saleId.length === 0 ? (
-          <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground text-sm">
+          <div className="rounded-xl border border-base-300 bg-base-100 p-8 text-center text-base-content/60 text-sm">
             Nenhuma venda registrada hoje
           </div>
         ) : (
-          <div className="rounded-xl border bg-card overflow-hidden">
+          <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden">
             {todaySales.saleId.slice(0, 10).map((saleId) => (
               <SaleItem key={saleId} saleId={saleId} onDelete={handleDelete} />
             ))}

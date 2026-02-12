@@ -3,24 +3,22 @@ import { Product } from "@/types";
 import { motion, useDragControls } from "framer-motion";
 import { Package, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
-import { buttonVariants } from "./ui/button";
 
 interface Props {
   product: Product;
   quantity: number;
-  onSelect: (product: Product, quantity: number ) => void;
+  onSelect: (product: Product, quantity: number) => void;
 }
 
 export function ProductCard({ product, quantity, onSelect }: Props) {
   const dragControls = useDragControls();
   const [longPressActive, setLongPressActive] = useState(false);
-
   const longPressTimer = useRef<number | null>(null);
   const isDragging = useRef(false);
   const selected = quantity > 0;
 
-  const updateProductByQuantity = (quantity: number = 0) => {
-    const newQuantity = Math.max(quantity, 0);
+  const updateProductByQuantity = (qty: number = 0) => {
+    const newQuantity = Math.max(qty, 0);
     onSelect(product, newQuantity);
     feedbackVibrate(30);
   };
@@ -31,7 +29,6 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
 
   const handlePointerDown = () => {
     if (!selected || longPressActive) return;
-
     longPressTimer.current = window.setTimeout(() => {
       setLongPressActive(true);
       feedbackVibrate(10);
@@ -39,10 +36,7 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
   };
 
   const handlePointerUp = () => {
-    if (!longPressTimer.current) {
-      return;
-    }
-
+    if (!longPressTimer.current) return;
     window.clearTimeout(longPressTimer.current);
     longPressTimer.current = null;
   };
@@ -53,14 +47,8 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
 
   const handleDragEnd = (_: unknown, info: { offset: { x: number } }) => {
     isDragging.current = false;
-
-    if (info.offset.x < -80) {
-      updateProductByQuantity(quantity + 1);
-    }
-
-    if (info.offset.x > 80) {
-      updateProductByQuantity(quantity - 1);
-    }
+    if (info.offset.x < -80) updateProductByQuantity(quantity + 1);
+    if (info.offset.x > 80) updateProductByQuantity(quantity - 1);
   };
 
   const handleClick = () => {
@@ -87,7 +75,7 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
         "flex flex-col items-start p-4 rounded-xl border transition-all text-left select-none touch-pan-y",
         selected
           ? "border-primary bg-primary/10 ring-2 ring-primary/20"
-          : "border-border bg-card md:hover:border-primary/50 md:hover:bg-accent/50",
+          : "border-base-300 bg-base-100 md:hover:border-primary/50 md:hover:bg-base-200/50",
       )}
     >
       <div className="flex items-center gap-2 mb-2 w-full">
@@ -99,15 +87,9 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
 
       {longPressActive && (
         <span
-          className={buttonVariants({
-            variant: "destructive",
-            className: "w-full",
-          })}
+          className="btn btn-error w-full"
           onClick={(e) => {
-            if (longPressTimer.current) {
-              return;
-            }
-
+            if (longPressTimer.current) return;
             e.stopPropagation();
             updateProductByQuantity(0);
             setLongPressActive(false);
@@ -123,10 +105,9 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
           <span className="font-mono font-bold text-sm text-primary">
             {formatCurrency(product.price)}
           </span>
-
           <span
             className={cn(
-              "text-xs text-muted-foreground",
+              "text-xs text-base-content/60",
               quantity && "font-bold text-primary",
             )}
           >
