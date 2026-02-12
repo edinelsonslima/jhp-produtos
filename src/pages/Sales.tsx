@@ -1,8 +1,7 @@
+import { ChangeCalculatorModal } from "@/components/ChangeCalculatorModal";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { ProductCard } from "@/components/ProductCard";
 import { SaleItem } from "@/components/SaleItem";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
 import { productStore } from "@/hooks/useProducts";
@@ -10,7 +9,7 @@ import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency } from "@/lib/utils";
 import { PaymentMethod, Product, Sale } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Plus, Smartphone } from "lucide-react";
+import { Banknote, Calculator, Plus, Smartphone } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 export default function Sales() {
@@ -19,13 +18,12 @@ export default function Sales() {
 
   const [selected, setSelected] = useState<Sale["products"]>([]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("dinheiro");
-
   const [cashAmount, setCashAmount] = useState(0);
   const [pixAmount, setPixAmount] = useState(0);
-
   const [customPrice, setCustomPrice] = useState(0);
   const [customQuantity, setCustomQuantity] = useState("");
   const [customProduct, setCustomProduct] = useState("");
+  const [calcOpen, setCalcOpen] = useState(false);
 
   const totalPaymentCombined = cashAmount + pixAmount;
 
@@ -41,12 +39,10 @@ export default function Sales() {
 
       if (idx === -1) {
         const found = products.find((p) => p.id === product.id);
-
         if (!found) {
           toast.error("Produto não encontrado");
           return prev;
         }
-
         return [...list, { productId: found.id, quantity: 1 }];
       }
 
@@ -62,23 +58,19 @@ export default function Sales() {
 
   const handleSubmitCustomItem = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (customPrice <= 0) {
       toast.error("Informe um preço válido para o item personalizado");
       return;
     }
-
     const qty = parseInt(customQuantity) || 1;
     if (qty <= 0) {
       toast.error("Quantidade deve ser maior que zero");
       return;
     }
-
     const customProductItem: Sale["products"][number] = {
       productId: `custom-${Date.now()}`,
       quantity: qty,
     };
-
     setSelected((prev) => [...prev, customProductItem]);
     setCustomPrice(0);
     setCustomQuantity("");
@@ -88,19 +80,15 @@ export default function Sales() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!selected.length) {
       toast.error("Adicione pelo menos um produto à venda");
       return;
     }
-
     const isCombined = paymentMethod === "combinado";
-
     if (isCombined && totalPaymentCombined <= 0) {
       toast.error("Informe os valores em dinheiro e/ou PIX");
       return;
     }
-
     if (isCombined && Math.abs(totalPaymentCombined - total) > 0.01) {
       toast.error(
         "Valores em Dinheiro e PIX devem ser igual ao total da venda",
@@ -148,8 +136,8 @@ export default function Sales() {
       <div className="max-w-4xl mx-auto space-y-8 mb-8">
         <p
           className={cn(
-            "text-2xl font-extrabold font-mono fixed top-16 md:top-4 right-2 bg-card shadow-sm p-2 pr-4 rounded-lg z-50",
-            total > 0 ? "text-success" : "text-destructive",
+            "text-2xl font-extrabold font-mono fixed top-16 md:top-4 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-50",
+            total > 0 ? "text-success" : "text-error",
           )}
         >
           {formatCurrency(total)}
@@ -159,7 +147,7 @@ export default function Sales() {
           <h2 className="text-2xl font-extrabold tracking-tight">
             Registrar Venda
           </h2>
-          <p className="text-muted-foreground text-md mt-1">
+          <p className="text-base-content/60 text-md mt-1">
             Adicione vendas ao caixa de hoje
           </p>
         </motion.div>
@@ -167,14 +155,13 @@ export default function Sales() {
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl border bg-card p-3"
+          className="rounded-xl border border-base-300 bg-base-100 p-3"
         >
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
               Selecione um Produto
             </h3>
           </div>
-
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
             {products.map((p) => {
               const config = selected.find((sp) => sp.productId === p.id);
@@ -191,62 +178,58 @@ export default function Sales() {
         </motion.div>
 
         <motion.form
-          className="rounded-xl border bg-card p-3"
+          className="rounded-xl border border-base-300 bg-base-100 p-3"
           onSubmit={handleSubmitCustomItem}
         >
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
             Item Personalizado
           </h3>
-
           <Label className="mb-1">Preço</Label>
           <CurrencyInput
             value={customPrice}
             onValueChange={setCustomPrice}
             className="w-full mb-3"
           />
-
           <div className="flex gap-2">
             <div className="flex-2 min-w-[60%]">
               <Label>Produto</Label>
-              <Input
+              <input
                 type="text"
                 value={customProduct}
                 onChange={(e) => setCustomProduct(e.target.value)}
                 placeholder="Descrição do item personalizado"
                 maxLength={100}
-                className="font-mono w-full"
+                className="input input-bordered w-full font-mono"
               />
             </div>
-
             <div className="flex-1 min-w-[40%]">
               <Label className="mt-4 mb-1">Quantidade</Label>
-              <Input
+              <input
                 type="number"
                 step="1"
                 min="1"
                 value={customQuantity}
                 onChange={(e) => setCustomQuantity(e.target.value)}
                 placeholder="1"
-                className="font-mono w-full"
+                className="input input-bordered w-full font-mono"
               />
             </div>
           </div>
-
-          <Button type="submit" variant="outline" className="mt-6 w-full">
+          <button type="submit" className="btn btn-outline mt-6 w-full gap-2">
             <Plus size={16} /> Adicionar Item Personalizado
-          </Button>
+          </button>
         </motion.form>
 
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
             Últimas Vendas
           </h3>
-          <div className="rounded-xl border bg-card overflow-hidden">
+          <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden">
             {sales.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground text-sm">
+              <div className="p-8 text-center text-base-content/60 text-sm">
                 Nenhuma venda registrada
               </div>
             ) : (
@@ -268,45 +251,43 @@ export default function Sales() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="space-y-3 sticky bottom-12 md:bottom-0 pt-2 pb-4 bg-background border-t border-border md:max-w-4xl md:mx-auto"
+        className="space-y-3 sticky bottom-12 md:bottom-0 pt-2 pb-4 bg-base-100 border-t border-base-300 md:max-w-4xl md:mx-auto"
       >
         <div className="flex gap-2">
-          <Button
+          <button
             type="button"
-            variant={paymentMethod === "dinheiro" ? "default" : "outline"}
             className={cn(
-              "flex-1 gap-2",
-              paymentMethod === "dinheiro" &&
-                "bg-cash text-cash-foreground hover:bg-cash/90",
+              "btn flex-1 gap-2",
+              paymentMethod === "dinheiro"
+                ? "bg-cash text-cash-foreground hover:bg-cash/90 border-0"
+                : "btn-outline",
             )}
             onClick={() => setPaymentMethod("dinheiro")}
           >
             <Banknote size={16} /> Dinheiro
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            variant={paymentMethod === "pix" ? "default" : "outline"}
             className={cn(
-              "flex-1 gap-2",
-              paymentMethod === "pix" &&
-                "bg-pix text-pix-foreground hover:bg-pix/90",
+              "btn flex-1 gap-2",
+              paymentMethod === "pix"
+                ? "bg-pix text-pix-foreground hover:bg-pix/90 border-0"
+                : "btn-outline",
             )}
             onClick={() => setPaymentMethod("pix")}
           >
             <Smartphone size={16} /> Pix
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            variant={paymentMethod === "combinado" ? "default" : "outline"}
             className={cn(
-              "flex-1 gap-2",
-              paymentMethod === "combinado" &&
-                "bg-primary text-primary-foreground hover:bg-primary/90",
+              "btn flex-1 gap-2",
+              paymentMethod === "combinado" ? "btn-primary" : "btn-outline",
             )}
             onClick={() => setPaymentMethod("combinado")}
           >
             <Plus size={16} /> Combinado
-          </Button>
+          </button>
         </div>
 
         <AnimatePresence>
@@ -326,7 +307,7 @@ export default function Sales() {
                 <CurrencyInput
                   value={cashAmount}
                   onValueChange={setCashAmount}
-                  className="border-cash/30 focus-visible:ring-cash"
+                  className="border-cash/30 focus:border-cash"
                 />
               </div>
               <div className="space-y-2">
@@ -337,27 +318,24 @@ export default function Sales() {
                 <CurrencyInput
                   value={pixAmount}
                   onValueChange={setPixAmount}
-                  className="border-pix/30 focus-visible:ring-pix"
+                  className="border-pix/30 focus:border-pix"
                 />
               </div>
-
               {totalPaymentCombined > 0 && (
-                <div className="col-span-full text-center p-2 rounded-lg bg-muted/50">
-                  <span className="text-sm text-muted-foreground">
+                <div className="col-span-full text-center p-2 rounded-lg bg-base-200/50">
+                  <span className="text-sm text-base-content/60">
                     Total combinado:{" "}
                   </span>
-
                   <span className="font-mono font-bold">
                     {formatCurrency(totalPaymentCombined)}
                   </span>
-
                   {total > 0 &&
                     Math.abs(totalPaymentCombined - total) > 0.01 && (
                       <span
                         className={cn(
                           "text-xs ml-2",
                           totalPaymentCombined < total
-                            ? "text-destructive"
+                            ? "text-error"
                             : "text-success",
                         )}
                       >
@@ -372,10 +350,29 @@ export default function Sales() {
           )}
         </AnimatePresence>
 
-        <Button type="submit" size="lg" className="w-full gap-2">
-          <Plus size={18} /> Registrar Venda
-        </Button>
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            className="btn btn-primary btn-lg flex-1 min-w-0 gap-2"
+          >
+            <Plus size={18} /> Registrar Venda
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline btn-lg"
+            onClick={() => setCalcOpen(true)}
+            title="Calculadora de Troco"
+          >
+            <Calculator size={18} />
+          </button>
+        </div>
       </motion.form>
+
+      <ChangeCalculatorModal
+        saleTotal={total}
+        open={calcOpen}
+        onClose={() => setCalcOpen(false)}
+      />
     </>
   );
 }

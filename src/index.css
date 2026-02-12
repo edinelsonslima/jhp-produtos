@@ -6,47 +6,10 @@
 
 @layer base {
   :root {
-    --background: 210 20% 96%;
-    --foreground: 200 25% 10%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 200 25% 10%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 200 25% 10%;
-
-    --primary: 195 80% 28%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 200 15% 90%;
-    --secondary-foreground: 200 25% 15%;
-
-    --muted: 210 15% 92%;
-    --muted-foreground: 200 10% 45%;
-
-    --accent: 38 92% 50%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-
-    --success: 152 60% 40%;
-    --success-foreground: 0 0% 100%;
-
     --pix: 152 60% 40%;
     --pix-foreground: 0 0% 100%;
-
     --cash: 38 92% 50%;
     --cash-foreground: 0 0% 100%;
-
-    --border: 210 18% 87%;
-    --input: 210 18% 87%;
-    --ring: 195 80% 28%;
-
-    --radius: 0.75rem;
 
     --sidebar-background: 200 25% 12%;
     --sidebar-foreground: 210 15% 92%;
@@ -57,16 +20,10 @@
     --sidebar-border: 200 20% 20%;
     --sidebar-ring: 195 80% 40%;
   }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
     font-family: "Inter", sans-serif;
+    @apply antialiased;
   }
 
   .font-mono {

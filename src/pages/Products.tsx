@@ -1,14 +1,5 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "@/components/ui/sonner";
 import { productStore } from "@/hooks/useProducts";
 import { formatCurrency } from "@/lib/utils";
@@ -25,17 +16,14 @@ export default function Products() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!name.trim() || name.trim().length < 2) {
       toast.error("Nome do produto deve ter ao menos 2 caracteres");
       return;
     }
-
     if (price <= 0) {
       toast.error("Informe um preço válido");
       return;
     }
-
     productStore.action.add({ name: name.trim(), unit, price });
     toast.success("Produto adicionado!");
     setName("");
@@ -46,7 +34,7 @@ export default function Products() {
     <div className="max-w-2xl mx-auto space-y-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <h2 className="text-2xl font-extrabold tracking-tight">Produtos</h2>
-        <p className="text-muted-foreground text-sm mt-1">
+        <p className="text-base-content/60 text-sm mt-1">
           Gerencie seu catálogo de produtos
         </p>
       </motion.div>
@@ -55,11 +43,12 @@ export default function Products() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="rounded-xl border bg-card p-6 space-y-4"
+        className="rounded-xl border border-base-300 bg-base-100 p-6 space-y-4"
       >
         <div className="space-y-2">
           <Label>Nome do Produto</Label>
-          <Input
+          <input
+            className="input input-bordered w-full"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Ex: Metazil"
@@ -70,18 +59,16 @@ export default function Products() {
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Unidade</Label>
-            <Select
+            <select
+              className="select select-bordered w-full"
               value={unit}
-              onValueChange={(v) => setUnit(v as "unidade" | "litro")}
+              onChange={(e) =>
+                setUnit(e.target.value as "unidade" | "litro")
+              }
             >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="litro">Por Litro</SelectItem>
-                <SelectItem value="unidade">Por Unidade</SelectItem>
-              </SelectContent>
-            </Select>
+              <option value="litro">Por Litro</option>
+              <option value="unidade">Por Unidade</option>
+            </select>
           </div>
           <div className="space-y-2">
             <Label>Preço (R$)</Label>
@@ -92,16 +79,16 @@ export default function Products() {
             />
           </div>
         </div>
-        <Button type="submit" className="w-full gap-2">
+        <button type="submit" className="btn btn-primary w-full gap-2">
           <Plus size={18} /> Adicionar Produto
-        </Button>
+        </button>
       </motion.form>
 
       <div>
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
           Catálogo ({products.length})
         </h3>
-        <div className="rounded-xl border bg-card overflow-hidden divide-y divide-border">
+        <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden divide-y divide-base-300">
           {products.map((p) => (
             <div
               key={p.id}
@@ -111,7 +98,7 @@ export default function Products() {
                 <Package size={16} className="text-primary" />
                 <div>
                   <p className="text-sm font-semibold">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-base-content/60">
                     {p.unit === "litro" ? "Por litro" : "Por unidade"}
                   </p>
                 </div>
@@ -125,7 +112,7 @@ export default function Products() {
                     productStore.action.delete(p.id);
                     toast.info("Produto removido");
                   }}
-                  className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  className="p-2 rounded-lg text-base-content/60 hover:text-error hover:bg-error/10 transition-colors"
                 >
                   <Trash2 size={14} />
                 </button>

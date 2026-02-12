@@ -1,39 +1,39 @@
 import { cn } from "@/lib/utils";
 import { authStore } from "@/hooks/useAuth";
+import { THEMES, themeStore, Theme } from "@/hooks/useTheme";
 import {
-  Calculator,
+  Circle,
   ClipboardList,
   LayoutDashboard,
   LogOut,
   Package,
+  Palette,
   ShoppingCart,
   Users,
 } from "lucide-react";
 import { Fragment, ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const mainNavItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/calculadora", icon: Calculator, label: "Troco" },
+  { to: "", icon: Circle, label: "" },
   { to: "/vendas", icon: ShoppingCart, label: "Vendas" },
   { to: "/diarias", icon: Users, label: "Diárias" },
   { to: "/produtos", icon: Package, label: "Produtos" },
 ];
 
 const sidebarNavItems = [
-  ...mainNavItems,
+  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/vendas", icon: ShoppingCart, label: "Vendas" },
+  { to: "/diarias", icon: Users, label: "Diárias" },
+  { to: "/produtos", icon: Package, label: "Produtos" },
   { to: "/auditoria", icon: ClipboardList, label: "Auditoria" },
 ];
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const user = authStore.useStore((state) => state.user);
+  const theme = themeStore.useStore((state) => state.theme);
 
   const initials = user?.name
     ? user.name
@@ -57,28 +57,36 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               Gestão de Vendas
             </p>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-9 h-9 rounded-full bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">
-                {initials}
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <div className="px-3 py-2 border-b">
-                <p className="text-sm font-semibold truncate">{user?.name}</p>
-                <p className="text-xs text-muted-foreground truncate">
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="w-9 h-9 rounded-full bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center text-xs font-bold shrink-0 cursor-pointer"
+            >
+              {initials}
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-base-200 rounded-box z-50 w-48 p-2 shadow-lg"
+            >
+              <li className="menu-title">
+                <span className="truncate">{user?.name}</span>
+                <span className="text-xs opacity-60 truncate">
                   {user?.email}
-                </p>
-              </div>
-              <DropdownMenuItem
-                onClick={() => authStore.action.logout()}
-                className="gap-2 text-destructive focus:text-destructive"
-              >
-                <LogOut size={14} /> Sair
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                </span>
+              </li>
+              <li>
+                <button
+                  onClick={() => authStore.action.logout()}
+                  className="text-error"
+                >
+                  <LogOut size={14} /> Sair
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
+
         <nav className="flex-1 p-4 space-y-1">
           {sidebarNavItems.map((item) => {
             const active = location.pathname === item.to;
@@ -99,59 +107,116 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
+
+        <div className="p-4 border-t border-sidebar-border">
+          <div className="flex items-center gap-2 mb-2">
+            <Palette size={14} className="text-sidebar-foreground/60" />
+            <label className="text-xs text-sidebar-foreground/60 uppercase tracking-wider font-semibold">
+              Tema
+            </label>
+          </div>
+          <select
+            className="select select-sm w-full bg-sidebar-accent text-sidebar-foreground border-sidebar-border"
+            value={theme}
+            onChange={(e) =>
+              themeStore.action.setTheme(e.target.value as Theme)
+            }
+          >
+            {THEMES.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </div>
       </aside>
 
+      {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between px-4 py-3 bg-sidebar text-sidebar-foreground sticky top-0 z-40">
         <h1 className="text-lg font-extrabold">
           <span className="text-sidebar-primary">JHP</span> Produtos
         </h1>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="w-8 h-8 rounded-full bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center text-xs font-bold">
-              {initials}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <div className="px-3 py-2 border-b">
-              <p className="text-sm font-semibold truncate">{user?.name}</p>
-              <p className="text-xs text-muted-foreground truncate">
+        <div className="dropdown dropdown-end">
+          <div
+            tabIndex={0}
+            role="button"
+            className="w-8 h-8 rounded-full bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center text-xs font-bold cursor-pointer"
+          >
+            {initials}
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-200 rounded-box z-50 w-52 p-2 shadow-lg"
+          >
+            <li className="menu-title">
+              <span className="truncate">{user?.name}</span>
+              <span className="text-xs opacity-60 truncate">
                 {user?.email}
-              </p>
-            </div>
-            <DropdownMenuItem asChild>
-              <Link to="/auditoria" className="gap-2">
+              </span>
+            </li>
+            <li>
+              <Link to="/auditoria">
                 <ClipboardList size={14} /> Auditoria
               </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => authStore.action.logout()}
-              className="gap-2 text-destructive focus:text-destructive"
-            >
-              <LogOut size={14} /> Sair
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </li>
+            <li>
+              <div className="flex items-center gap-2">
+                <Palette size={14} />
+                <select
+                  className="select select-xs flex-1 bg-transparent border-0 p-0"
+                  value={theme}
+                  onChange={(e) =>
+                    themeStore.action.setTheme(e.target.value as Theme)
+                  }
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {THEMES.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </li>
+            <li>
+              <button
+                onClick={() => authStore.action.logout()}
+                className="text-error"
+              >
+                <LogOut size={14} /> Sair
+              </button>
+            </li>
+          </ul>
+        </div>
       </header>
 
       <main className="flex-1 p-4 md:p-8">{children}</main>
 
       {/* Mobile Bottom Nav */}
       <aside className="md:hidden sticky bottom-0 z-40">
-        <nav className="flex flex-1 align-center justify-around gap-5 py-1 px-4 bg-sidebar">
-          {mainNavItems.map((item) => {
+        <nav className="flex flex-1 items-center justify-around gap-5 py-1 px-4 bg-sidebar">
+          {mainNavItems.map((item, idx) => {
+            if (!item.to) {
+              return (
+                <div key={`placeholder-${idx}`} className="px-4 py-2.5">
+                  <item.icon
+                    size={20}
+                    className="text-sidebar-foreground/20"
+                  />
+                </div>
+              );
+            }
+
             const active = location.pathname === item.to;
 
             if (item.to === "/vendas") {
               return (
                 <Fragment key={item.to}>
-                  <item.icon
-                    size={20}
-                    className="bg-transparent invisible"
-                  />
+                  <item.icon size={20} className="invisible" />
                   <Link
                     to={item.to}
                     className={cn(
-                      "absolute bottom-2 flex items-center justify-center gap-3 p-4 rounded-full text-sm font-medium transition-all border-b border-2 border-sidebar-foreground",
+                      "absolute bottom-2 flex items-center justify-center p-4 rounded-full text-sm font-medium transition-all border-2 border-sidebar-foreground",
                       active
                         ? "bg-sidebar-accent text-sidebar-primary"
                         : "bg-sidebar text-sidebar-foreground",

@@ -3,7 +3,6 @@ import { authStore } from "@/hooks/useAuth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import AuditLog from "./pages/AuditLog";
-import ChangeCalculator from "./pages/ChangeCalculator";
 import DailyPayments from "./pages/DailyPayments";
 import EditSale from "./pages/EditSale";
 import Index from "./pages/Index";
@@ -25,7 +24,6 @@ function AuthGate() {
         <Route path="/" element={<Index />} />
         <Route path="/vendas" element={<Sales />} />
         <Route path="/vendas/:id/editar" element={<EditSale />} />
-        <Route path="/calculadora" element={<ChangeCalculator />} />
         <Route path="/diarias" element={<DailyPayments />} />
         <Route path="/produtos" element={<Products />} />
         <Route path="/auditoria" element={<AuditLog />} />
