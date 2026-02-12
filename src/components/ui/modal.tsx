@@ -21,7 +21,7 @@ const ModalContext = createContext<ModalContextValue>({
 
 export function Modal({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDialogElement>(null);
-  
+
   let trigger: ReactNode;
   const childrenWithoutTrigger = Children.map(children, (child) => {
     if (isValidElement(child) && Modal.Trigger === child.type) {
@@ -41,6 +41,9 @@ export function Modal({ children }: PropsWithChildren) {
         className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
       >
         <div className="daisy-modal-box">{childrenWithoutTrigger}</div>
+        <form method="dialog" className="daisy-modal-backdrop">
+          <button>close</button>
+        </form>
       </dialog>
     </ModalContext>
   );
