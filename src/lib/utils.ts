@@ -16,6 +16,10 @@ export function formatDateTime(dateString: string) {
   });
 }
 
+export function vibrate(pattern: number | number[]) {
+  window?.navigator?.vibrate(pattern);
+}
+
 export function storage<T extends Lowercase<`${string}-${string}`>>(keys: T[]) {
   if (!keys.length) {
     throw new Error("At least one key must be provided");
