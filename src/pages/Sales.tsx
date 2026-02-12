@@ -9,7 +9,7 @@ import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency } from "@/lib/utils";
 import { PaymentMethod, Product, Sale } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Calculator, Plus, Smartphone } from "lucide-react";
+import { Banknote, Plus, Smartphone } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 export default function Sales() {
@@ -18,13 +18,14 @@ export default function Sales() {
 
   const [selected, setSelected] = useState<Sale["products"]>([]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("dinheiro");
+  
   const [cashAmount, setCashAmount] = useState(0);
   const [pixAmount, setPixAmount] = useState(0);
+  
   const [customPrice, setCustomPrice] = useState(0);
   const [customQuantity, setCustomQuantity] = useState("");
   const [customProduct, setCustomProduct] = useState("");
-  const [calcOpen, setCalcOpen] = useState(false);
-
+  
   const totalPaymentCombined = cashAmount + pixAmount;
 
   const total = selected.reduce((acc, p) => {
@@ -257,10 +258,10 @@ export default function Sales() {
           <button
             type="button"
             className={cn(
-              "btn flex-1 gap-2",
+              "daisy-btn flex-1 gap-2",
               paymentMethod === "dinheiro"
-                ? "bg-cash text-cash-foreground hover:bg-cash/90 border-0"
-                : "btn-outline",
+                ? "daisy-btn-primary text-cash-foreground hover:bg-cash/90 border-0"
+                : "daisy-btn-outline",
             )}
             onClick={() => setPaymentMethod("dinheiro")}
           >
@@ -269,10 +270,10 @@ export default function Sales() {
           <button
             type="button"
             className={cn(
-              "btn flex-1 gap-2",
+              "daisy-btn flex-1 gap-2",
               paymentMethod === "pix"
-                ? "bg-pix text-pix-foreground hover:bg-pix/90 border-0"
-                : "btn-outline",
+                ? "daisy-btn-primary text-pix-foreground hover:bg-pix/90 border-0"
+                : "daisy-btn-outline",
             )}
             onClick={() => setPaymentMethod("pix")}
           >
@@ -281,8 +282,10 @@ export default function Sales() {
           <button
             type="button"
             className={cn(
-              "btn flex-1 gap-2",
-              paymentMethod === "combinado" ? "btn-primary" : "btn-outline",
+              "daisy-btn flex-1 gap-2",
+              paymentMethod === "combinado"
+                ? "daisy-btn-primary"
+                : "daisy-btn-outline",
             )}
             onClick={() => setPaymentMethod("combinado")}
           >
@@ -353,26 +356,16 @@ export default function Sales() {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="btn btn-primary btn-lg flex-1 min-w-0 gap-2"
+            className="daisy-btn daisy-btn-primary daisy-btn-lg flex-1 min-w-0 gap-2"
           >
             <Plus size={18} /> Registrar Venda
           </button>
-          <button
-            type="button"
-            className="btn btn-outline btn-lg"
-            onClick={() => setCalcOpen(true)}
-            title="Calculadora de Troco"
-          >
-            <Calculator size={18} />
-          </button>
+
+          <ChangeCalculatorModal
+            saleTotal={total}
+          />
         </div>
       </motion.form>
-
-      <ChangeCalculatorModal
-        saleTotal={total}
-        open={calcOpen}
-        onClose={() => setCalcOpen(false)}
-      />
     </>
   );
 }

@@ -1,60 +1,60 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { formatCurrency } from "@/lib/utils";
 import { Calculator } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { Modal } from "./ui/modal";
 
 interface Props {
   saleTotal: number;
-  open: boolean;
-  onClose: () => void;
 }
 
-export function ChangeCalculatorModal({ saleTotal, open, onClose }: Props) {
-  const ref = useRef<HTMLDialogElement>(null);
+export function ChangeCalculatorModal({ saleTotal }: Props) {
   const [amountPaid, setAmountPaid] = useState(0);
 
-  useEffect(() => {
-    const dialog = ref.current;
-    if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
-    else if (!open && dialog.open) dialog.close();
-  }, [open]);
-
-  useEffect(() => {
-    if (open) setAmountPaid(0);
-  }, [open]);
-
-  const change = amountPaid - saleTotal;
-
   const getBreakdown = (value: number) => {
-    if (value <= 0) return [];
-    const denominations = [100, 50, 20, 10, 5, 2, 1, 0.5, 0.25, 0.1, 0.05];
+    if (value <= 0) {
+      return [];
+    }
+
     const result: { denom: number; count: number }[] = [];
+    const denominations = [100, 50, 20, 10, 5, 2, 1, 0.5, 0.25, 0.1, 0.05];
+
     let remaining = Math.round(value * 100) / 100;
+
     for (const d of denominations) {
       const count = Math.floor(remaining / d);
+
       if (count > 0) {
         result.push({ denom: d, count });
         remaining = Math.round((remaining - d * count) * 100) / 100;
       }
     }
+
     return result;
   };
 
+  const change = amountPaid - saleTotal;
   const breakdown = getBreakdown(change);
 
   return (
-    <dialog
-      ref={ref}
-      className="modal modal-bottom md:modal-middle"
-      onClose={onClose}
-    >
-      <div className="modal-box w-full max-h-[70dvh] md:max-h-none md:max-w-md space-y-5">
+    <Modal>
+      <Modal.Trigger
+        as="button"
+        type="button"
+        title="Calculadora de Troco"
+        className="daisy-btn daisy-btn-outline daisy-btn-lg"
+      >
+        <Calculator size={18} />
+      </Modal.Trigger>
+
+      <Modal.Title>
         <div className="flex items-center gap-3">
           <Calculator size={20} className="text-primary" />
           <h3 className="text-lg font-bold">Calculadora de Troco</h3>
         </div>
+      </Modal.Title>
 
+      <Modal.Content>
         <div className="space-y-1">
           <label className="text-sm font-medium text-base-content/60">
             Valor da Venda
@@ -112,16 +112,16 @@ export function ChangeCalculatorModal({ saleTotal, open, onClose }: Props) {
             )}
           </div>
         )}
+      </Modal.Content>
 
-        <div className="modal-action">
-          <form method="dialog">
-            <button className="btn">Fechar</button>
-          </form>
-        </div>
-      </div>
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
+      <Modal.Close
+        as="button"
+        type="button"
+        onClick={() => setAmountPaid(0)}
+        className="daisy-btn daisy-btn-outline daisy-btn-lg mt-5 w-full"
+      >
+        Fechar
+      </Modal.Close>
+    </Modal>
   );
 }
