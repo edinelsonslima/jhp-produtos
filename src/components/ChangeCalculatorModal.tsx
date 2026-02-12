@@ -1,5 +1,5 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, vibrate } from "@/lib/utils";
 import { Calculator } from "lucide-react";
 import { useState } from "react";
 import { Modal } from "./ui/modal";
@@ -43,6 +43,7 @@ export function ChangeCalculatorModal({ saleTotal }: Props) {
         type="button"
         title="Calculadora de Troco"
         className="daisy-btn daisy-btn-outline daisy-btn-lg"
+        onClick={() => vibrate(100)}
       >
         <Calculator size={18} />
       </Modal.Trigger>

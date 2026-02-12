@@ -1,4 +1,4 @@
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, vibrate } from "@/lib/utils";
 import { Product } from "@/types";
 import { motion, useDragControls } from "framer-motion";
 import { Package, Trash2 } from "lucide-react";
@@ -20,18 +20,14 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
   const updateProductByQuantity = (qty: number = 0) => {
     const newQuantity = Math.max(qty, 0);
     onSelect(product, newQuantity);
-    feedbackVibrate(30);
-  };
-
-  const feedbackVibrate = (pattern: number | number[]) => {
-    window?.navigator?.vibrate(pattern);
+    vibrate(30);
   };
 
   const handlePointerDown = () => {
     if (!selected || longPressActive) return;
     longPressTimer.current = window.setTimeout(() => {
       setLongPressActive(true);
-      feedbackVibrate(10);
+      vibrate(10);
     }, 500);
   };
 
