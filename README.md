@@ -57,7 +57,7 @@ This project is built with:
 - Vite
 - TypeScript
 - React
-- shadcn-ui
+- daisyui
 - Tailwind CSS
 
 ## How can I deploy this project?
