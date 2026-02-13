@@ -249,6 +249,8 @@ function AppLayoutMobile({
   user,
   initials,
 }: PropsWithChildren<AppLayoutMobileProps>) {
+  const theme = themeStore.useStore((state) => state.theme);
+
   return (
     <>
       <nav className="daisy-navbar daisy-glass w-full flex justify-between sticky top-0 z-50">
@@ -351,10 +353,13 @@ function AppLayoutMobile({
               <li key={t} onClick={() => themeStore.action.set(t)}>
                 <input
                   type="radio"
-                  name="theme-dropdown"
-                  className="daisy-theme-controller w-full daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost justify-start"
-                  aria-label={t}
                   value={t}
+                  aria-label={t}
+                  checked={theme === t}
+                  name="theme-dropdown"
+                  className={
+                    "daisy-theme-controller daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost w-full justify-start"
+                  }
                 />
               </li>
             ))}
