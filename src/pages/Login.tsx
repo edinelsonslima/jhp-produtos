@@ -1,3 +1,4 @@
+import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
 import { authStore } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
@@ -45,9 +46,9 @@ export default function Login() {
     if (!EMAIL_REGEX.test(email.trim())) {
       return toast.error("Informe um e-mail válido");
     }
-    
+
     const err = authStore.action.login(email.trim().toLowerCase(), password);
-    
+
     return err ? toast.error(err) : toast.success("Bem-vindo de volta!");
   };
 
@@ -73,41 +74,105 @@ export default function Login() {
         >
           {isRegister && (
             <div className="space-y-2">
-              <label className="text-sm font-medium">Nome</label>
-              <input
-                className="input input-bordered w-full"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Seu nome"
-                maxLength={100}
-                minLength={2}
-              />
+              <Label>Nome</Label>
+              <label className="daisy-input daisy-validator">
+                <svg
+                  className="h-[1em] opacity-50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </g>
+                </svg>
+                <input
+                  required
+                  type="text"
+                  title="Somente letras, números ou traços. Deve começar com letra."
+                  pattern="[A-Za-z][A-Za-z0-9\-]*"
+                  placeholder="Seu nome"
+                  onChange={(e) => setName(e.target.value)}
+                  value={name}
+                  maxLength={100}
+                  minLength={2}
+                />
+              </label>
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">E-mail</label>
-            <input
-              className="input input-bordered w-full"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="seu@email.com"
-              maxLength={255}
-            />
+            <Label>E-mail</Label>
+            <label className="daisy-input daisy-validator">
+              <svg
+                className="h-[1em] opacity-50"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  strokeWidth="2.5"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                </g>
+              </svg>
+              <input
+                type="email"
+                required
+                value={email}
+                placeholder="seu@email.com"
+                onChange={(e) => setEmail(e.target.value)}
+                maxLength={255}
+              />
+            </label>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Senha</label>
-            <input
-              className="input input-bordered w-full"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••"
-              maxLength={100}
-              minLength={4}
-            />
+            <Label>Senha</Label>
+            <label className="daisy-input daisy-validator">
+              <svg
+                className="h-[1em] opacity-50"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  strokeWidth="2.5"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path>
+                  <circle
+                    cx="16.5"
+                    cy="7.5"
+                    r=".5"
+                    fill="currentColor"
+                  ></circle>
+                </g>
+              </svg>
+              <input
+                type="password"
+                required
+                // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                title="A senha deve conter ao menos 8 caracteres, incluindo letras maiúsculas, minúsculas e números."
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••"
+                maxLength={100}
+                minLength={4}
+              />
+            </label>
           </div>
 
           <button type="submit" className="daisy-btn daisy-btn-primary w-full">
@@ -119,7 +184,7 @@ export default function Login() {
           {isRegister ? "Já tem conta?" : "Não tem conta?"}{" "}
           <button
             type="button"
-            onClick={() => setIsRegister(!isRegister)}
+            onClick={() => setIsRegister((prev) => !prev)}
             className="text-primary font-semibold hover:underline"
           >
             {isRegister ? "Entrar" : "Criar conta"}

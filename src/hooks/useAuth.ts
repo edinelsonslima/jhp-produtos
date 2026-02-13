@@ -38,9 +38,6 @@ export const authStore = createStore<State, Actions>({
       const users = get().users;
 
       const found = users.find((u) => u.email === email);
-      console.log({
-        found, email, users
-      })
 
       if (!found) {
         return "Usuário não encontrado";
