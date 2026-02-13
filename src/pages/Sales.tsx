@@ -134,7 +134,7 @@ export default function Sales() {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto space-y-8 mb-8">
+      <div className="max-w-4xl mx-auto space-y-8 mb-16">
         <p
           className={cn(
             "text-3xl font-extrabold font-mono fixed top-20 md:top-4 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
@@ -184,8 +184,11 @@ export default function Sales() {
             Item Personalizado
           </h3>
 
-          <Label className="daisy-label">Preço</Label>
-          <CurrencyInput value={customPrice} onValueChange={setCustomPrice} />
+          <CurrencyInput
+            label="Preço"
+            value={customPrice}
+            onValueChange={setCustomPrice}
+          />
 
           <div className="flex gap-4 items-end">
             <div className="flex-2">
@@ -216,7 +219,7 @@ export default function Sales() {
 
           <button
             type="submit"
-            className="daisy-btn daisy-btn-outline mt-6 w-full gap-2"
+            className="daisy-btn daisy-btn-soft mt-6 w-full gap-2"
           >
             <Plus size={16} /> Adicionar Item Personalizado
           </button>
@@ -226,7 +229,7 @@ export default function Sales() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
+          <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
             Últimas Vendas
           </h3>
           <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden">

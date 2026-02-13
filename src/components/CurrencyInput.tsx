@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Label } from "./ui/label";
 
 interface CurrencyInputProps {
   value: number;
@@ -32,8 +33,9 @@ export function CurrencyInput({
       : "";
 
   return (
-    <fieldset className="daisy-fieldset w-full">
-      {label && <legend className="daisy-fieldset-legend">{label}</legend>}
+    <>
+      {label && <Label className="daisy-label">{label}</Label>}
+
       <label className={cn("daisy-input w-full", className)}>
         <span className="daisy-label">R$</span>
         <input
@@ -46,6 +48,6 @@ export function CurrencyInput({
           onChange={handleChange}
         />
       </label>
-    </fieldset>
+    </>
   );
 }
