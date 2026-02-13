@@ -1,19 +1,19 @@
 import { cn } from "@/lib/utils";
 
 const variantClasses = {
-  default: "btn-primary",
-  destructive: "btn-error",
-  outline: "btn-outline",
-  secondary: "btn-secondary",
-  ghost: "btn-ghost",
-  link: "btn-link",
+  default: "daisy-btn-primary",
+  destructive: "daisy-btn-error",
+  outline: "daisy-btn-outline",
+  secondary: "daisy-btn-secondary",
+  ghost: "daisy-btn-ghost",
+  link: "daisy-btn-link",
 } as const;
 
 const sizeClasses = {
-  default: "",
-  sm: "btn-sm",
-  lg: "btn-lg",
-  icon: "btn-square btn-sm",
+  default: "daisy-btn-md",
+  sm: "daisy-btn-sm",
+  lg: "daisy-btn-lg",
+  icon: "daisy-btn-square daisy-btn-sm",
 } as const;
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -30,7 +30,7 @@ function Button({
   return (
     <button
       className={cn(
-        "btn",
+        "daisy-btn",
         variantClasses[variant],
         sizeClasses[size],
         className,
@@ -48,8 +48,9 @@ function buttonVariants({
   className?: string;
 }) {
   return cn(
-    "btn",
-    variantClasses[variant as keyof typeof variantClasses] ?? "btn-primary",
+    "daisy-btn",
+    variantClasses[variant as keyof typeof variantClasses] ??
+      "daisy-btn-primary",
     className,
   );
 }
