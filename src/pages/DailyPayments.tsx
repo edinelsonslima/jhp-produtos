@@ -88,16 +88,16 @@ export default function DailyPayments() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-base-300 bg-base-100 p-4"
+        className="rounded-xl border border-base-300 bg-base-100"
       >
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto p-4">
           <div className="flex gap-4 pb-2">
             {employees.map((emp) => (
               <button
                 key={emp.id}
                 onClick={() => handleSelectEmployee(emp)}
                 className={cn(
-                  "flex flex-col items-center gap-2 min-w-[80px] p-3 rounded-xl transition-all duration-200",
+                  "flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200",
                   employee?.id === emp.id
                     ? "bg-primary/10 ring-2 ring-primary scale-105"
                     : "hover:bg-base-200",
@@ -129,9 +129,9 @@ export default function DailyPayments() {
 
             <button
               onClick={() => dialogRef.current?.showModal()}
-              className="flex flex-col items-center gap-2 min-w-[80px] p-3 rounded-xl hover:bg-base-200 transition-colors"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-base-200 transition-colors"
             >
-              <div className="w-14 h-14 rounded-full bg-base-200 border-2 border-dashed border-base-content/20 flex items-center justify-center">
+              <div className="size-14 rounded-full bg-base-200 border-2 border-dashed border-base-content/20 flex items-center justify-center">
                 <Plus size={20} className="text-base-content/60" />
               </div>
               <span className="text-xs font-semibold text-base-content/60">
@@ -142,14 +142,14 @@ export default function DailyPayments() {
         </div>
       </motion.div>
 
-      <dialog ref={dialogRef} className="modal">
-        <div className="modal-box">
+      <dialog ref={dialogRef} className="daisy-modal">
+        <div className="daisy-modal-box">
           <h3 className="text-lg font-bold">Cadastrar Funcionário</h3>
           <form onSubmit={handleAddEmployee} className="space-y-4 mt-4">
             <div className="space-y-2">
               <Label>Nome</Label>
               <input
-                className="input input-bordered w-full"
+                className="daisy-input daisy-input-bordered w-full"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
                 placeholder="Nome do funcionário"
@@ -175,13 +175,16 @@ export default function DailyPayments() {
                 />
               </div>
             </div>
-            <div className="modal-action">
-              <button type="submit" className="btn btn-primary gap-2">
+            <div className="daisy-modal-action">
+              <button
+                type="submit"
+                className="daisy-btn daisy-btn-primary gap-2"
+              >
                 <Plus size={16} /> Cadastrar
               </button>
               <button
                 type="button"
-                className="btn"
+                className="daisy-btn"
                 onClick={() => dialogRef.current?.close()}
               >
                 Cancelar
@@ -189,7 +192,7 @@ export default function DailyPayments() {
             </div>
           </form>
         </div>
-        <form method="dialog" className="modal-backdrop">
+        <form method="dialog" className="daisy-modal-backdrop">
           <button>close</button>
         </form>
       </dialog>
@@ -205,7 +208,7 @@ export default function DailyPayments() {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">
+                <div className="size-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">
                   {employee.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -233,7 +236,7 @@ export default function DailyPayments() {
                 .map((rate, i) => (
                   <button
                     key={i}
-                    className="btn btn-outline h-16 text-lg font-mono font-bold hover:bg-primary/10 hover:border-primary"
+                    className="daisy-btn daisy-btn-outline h-16 text-lg font-mono font-bold hover:bg-primary/10 hover:border-primary"
                     onClick={() => handlePayPreset(rate)}
                   >
                     {formatCurrency(rate)}
@@ -250,7 +253,7 @@ export default function DailyPayments() {
               />
               <button
                 onClick={handlePayCustom}
-                className="btn btn-primary gap-2 shrink-0"
+                className="daisy-btn daisy-btn-primary gap-2 shrink-0"
               >
                 <Plus size={16} /> Registrar
               </button>
@@ -276,9 +279,14 @@ export default function DailyPayments() {
           <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden divide-y divide-base-300">
             {todayPayments.paymentId.map((paymentId) => {
               const payment = paymentStore.action.get(paymentId);
-              if (!payment?.receiver?.id) return null;
+              if (!payment?.receiver?.id) {
+                return null;
+              }
+
               const emp = employeeStore.action.get(payment.receiver.id);
-              if (!emp) return null;
+              if (!emp) {
+                return null;
+              }
 
               return (
                 <div
