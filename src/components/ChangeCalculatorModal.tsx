@@ -2,6 +2,7 @@ import { CurrencyInput } from "@/components/CurrencyInput";
 import { formatCurrency, vibrate } from "@/lib/utils";
 import { Calculator } from "lucide-react";
 import { useState } from "react";
+import { Label } from "./ui/label";
 import { Modal } from "./ui/modal";
 
 interface Props {
@@ -49,28 +50,26 @@ export function ChangeCalculatorModal({ saleTotal }: Props) {
       </Modal.Trigger>
 
       <Modal.Title>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-6">
           <Calculator size={20} className="text-primary" />
           <h3 className="text-lg font-bold">Calculadora de Troco</h3>
         </div>
       </Modal.Title>
 
       <Modal.Content>
-        <div className="space-y-1">
-          <label className="text-sm font-medium text-base-content/60">
-            Valor da Venda
-          </label>
+        <div className="mb-3">
+          <Label>Valor da Venda</Label>
           <p className="text-2xl font-extrabold font-mono text-primary">
             {formatCurrency(saleTotal)}
           </p>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Valor Recebido (R$)</label>
+        <div className="">
           <CurrencyInput
+            className="text-lg"
+            label="Valor Recebido (R$)"
             value={amountPaid}
             onValueChange={setAmountPaid}
-            className="text-lg"
           />
         </div>
 

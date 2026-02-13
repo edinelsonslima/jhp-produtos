@@ -34,7 +34,7 @@ export function CurrencyInput({
 
   return (
     <>
-      {label && <Label className="daisy-label">{label}</Label>}
+      {label && <Label>{label}</Label>}
 
       <label className={cn("daisy-input w-full", className)}>
         <span className="daisy-label">R$</span>
