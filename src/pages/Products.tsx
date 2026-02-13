@@ -16,14 +16,17 @@ export default function Products() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!name.trim() || name.trim().length < 2) {
       toast.error("Nome do produto deve ter ao menos 2 caracteres");
       return;
     }
+
     if (price <= 0) {
       toast.error("Informe um preço válido");
       return;
     }
+
     productStore.action.add({ name: name.trim(), unit, price });
     toast.success("Produto adicionado!");
     setName("");
@@ -48,10 +51,10 @@ export default function Products() {
         <div className="space-y-2">
           <Label>Nome do Produto</Label>
           <input
-            className="input input-bordered w-full"
+            className="daisy-input w-full"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Ex: Metazil"
+            placeholder="Ex: Água Mineral, Gasolina, etc."
             maxLength={100}
             minLength={2}
           />
@@ -60,26 +63,24 @@ export default function Products() {
           <div className="space-y-2">
             <Label>Unidade</Label>
             <select
-              className="select select-bordered w-full"
+              className="daisy-select w-full"
               value={unit}
-              onChange={(e) =>
-                setUnit(e.target.value as "unidade" | "litro")
-              }
+              onChange={(e) => setUnit(e.target.value as "unidade" | "litro")}
             >
               <option value="litro">Por Litro</option>
               <option value="unidade">Por Unidade</option>
             </select>
           </div>
           <div className="space-y-2">
-            <Label>Preço (R$)</Label>
             <CurrencyInput
               value={price}
+              label="Preço (R$)"
               onValueChange={setPrice}
               placeholder="0,00"
             />
           </div>
         </div>
-        <button type="submit" className="btn btn-primary w-full gap-2">
+        <button type="submit" className="daisy-btn daisy-btn-primary w-full gap-2">
           <Plus size={18} /> Adicionar Produto
         </button>
       </motion.form>
