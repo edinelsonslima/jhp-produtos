@@ -8,8 +8,10 @@ import {
   ReactNode,
   RefObject,
   useContext,
+  useEffect,
   useRef,
 } from "react";
+import { createPortal } from "react-dom";
 
 interface ModalContextValue {
   ref: RefObject<HTMLDialogElement | null>;
@@ -32,20 +34,24 @@ export function Modal({ children }: PropsWithChildren) {
     return child;
   });
 
+  useEffect(() => {
+    return () => {
+      ref.current?.remove();
+    };
+  }, []);
+
   return (
     <ModalContext value={{ ref }}>
       {trigger}
-
-      <dialog
-        ref={ref}
-        className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
-      >
-        <div className="daisy-modal-box">{childrenWithoutTrigger}</div>
-        <div
-          className="daisy-modal-backdrop"
-          onClick={() => ref.current?.close()}
-        />
-      </dialog>
+      {createPortal(
+        <dialog
+          ref={ref}
+          className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
+        >
+          <div className="daisy-modal-box">{childrenWithoutTrigger}</div>
+        </dialog>,
+        document.body,
+      )}
     </ModalContext>
   );
 }

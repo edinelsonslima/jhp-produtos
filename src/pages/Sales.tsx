@@ -134,10 +134,10 @@ export default function Sales() {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto space-y-8 mb-16">
+      <div className="h-full max-w-4xl mx-auto space-y-8">
         <p
           className={cn(
-            "text-3xl font-extrabold font-mono fixed top-20 md:top-4 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
+            "text-3xl font-extrabold font-mono fixed top-20 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
             total > 0 ? "text-success" : "text-error",
           )}
         >
@@ -162,7 +162,7 @@ export default function Sales() {
             Selecione um Produto
           </h3>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
             {products.map((p) => (
               <ProductCard
                 key={p.id}
@@ -256,9 +256,7 @@ export default function Sales() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="
-          space-y-3 sticky bottom-16 daisy-glass border-t border-base-300 -mx-4 p-4
-          md:max-w-4xl md:mx-auto md:bottom-0"
+        className="space-y-3 sticky bottom-16 daisy-glass border-t border-base-300 -mx-4 -mb-16 p-4"
       >
         <div className="flex gap-2">
           <button
