@@ -1,10 +1,10 @@
 import { cn } from "@/lib/utils";
 
 const variantClasses = {
-  default: "badge-primary",
-  secondary: "badge-secondary",
-  destructive: "badge-error",
-  outline: "badge-outline",
+  default: "daisy-badge-primary",
+  secondary: "daisy-badge-secondary",
+  destructive: "daisy-badge-error",
+  outline: "daisy-badge-outline",
 } as const;
 
 interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -18,7 +18,7 @@ function Badge({
 }: BadgeProps) {
   return (
     <div
-      className={cn("badge", variantClasses[variant], className)}
+      className={cn("daisy-badge", variantClasses[variant], className)}
       {...props}
     />
   );

@@ -5,7 +5,10 @@ import { ClipboardList } from "lucide-react";
 
 const ACTION_LABELS: Record<
   string,
-  { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
+  {
+    label: string;
+    variant: "default" | "secondary" | "destructive" | "outline";
+  }
 > = {
   login: { label: "Login", variant: "default" },
   logout: { label: "Logout", variant: "secondary" },
@@ -26,7 +29,7 @@ export default function AuditLog() {
   const entries = getAuditLog();
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-6 mb-20">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <h2 className="text-2xl font-extrabold tracking-tight">Auditoria</h2>
         <p className="text-base-content/60 text-sm mt-1">
@@ -48,15 +51,16 @@ export default function AuditLog() {
             };
 
             return (
-              <div key={entry.id} className="px-4 py-3 flex items-start gap-3">
-                <Badge
-                  variant={config.variant}
-                  className="mt-0.5 shrink-0 text-xs"
-                >
+              <div
+                key={entry.id}
+                className="px-4 py-3 flex flex-col items-start gap-3"
+              >
+                <Badge variant={config.variant} className="text-xs">
                   {config.label}
                 </Badge>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm">{entry.details}</p>
+
+                <div className="min-w-0">
+                  <p className="text-sm truncate">{entry.details}</p>
                   <p className="text-xs text-base-content/60 mt-0.5">
                     {entry.userName} •{" "}
                     {new Date(entry.timestamp).toLocaleString("pt-BR")}
