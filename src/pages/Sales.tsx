@@ -158,23 +158,21 @@ export default function Sales() {
           animate={{ opacity: 1, y: 0 }}
           className="rounded-xl border border-base-300 bg-base-100 p-3"
         >
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
-              Selecione um Produto
-            </h3>
-          </div>
+          <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
+            Selecione um Produto
+          </h3>
+
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
-            {products.map((p) => {
-              const config = selected.find((sp) => sp.productId === p.id);
-              return (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  onSelect={addProduct}
-                  quantity={config?.quantity ?? 0}
-                />
-              );
-            })}
+            {products.map((p) => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                onSelect={addProduct}
+                quantity={
+                  selected.find((sp) => sp.productId === p.id)?.quantity
+                }
+              />
+            ))}
           </div>
         </motion.div>
 
@@ -182,29 +180,28 @@ export default function Sales() {
           className="rounded-xl border border-base-300 bg-base-100 p-3"
           onSubmit={handleSubmitCustomItem}
         >
-          <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
+          <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
             Item Personalizado
           </h3>
-          <Label className="mb-1">Preço</Label>
-          <CurrencyInput
-            value={customPrice}
-            onValueChange={setCustomPrice}
-            className="w-full mb-3"
-          />
-          <div className="flex gap-2">
-            <div className="flex-2 min-w-[60%]">
-              <Label>Produto</Label>
+
+          <Label className="daisy-label">Preço</Label>
+          <CurrencyInput value={customPrice} onValueChange={setCustomPrice} />
+
+          <div className="flex gap-4 items-end">
+            <div className="flex-2">
+              <Label className="daisy-label">Produto</Label>
               <input
                 type="text"
                 value={customProduct}
                 onChange={(e) => setCustomProduct(e.target.value)}
                 placeholder="Descrição do item personalizado"
                 maxLength={100}
-                className="input input-bordered w-full font-mono"
+                className="daisy-input daisy-input-bordered w-full font-mono"
               />
             </div>
-            <div className="flex-1 min-w-[40%]">
-              <Label className="mt-4 mb-1">Quantidade</Label>
+
+            <div className="flex-1">
+              <Label className="daisy-label mt-4 mb-1">Quantidade</Label>
               <input
                 type="number"
                 step="1"
@@ -212,11 +209,15 @@ export default function Sales() {
                 value={customQuantity}
                 onChange={(e) => setCustomQuantity(e.target.value)}
                 placeholder="1"
-                className="input input-bordered w-full font-mono"
+                className="daisy-input daisy-input-bordered w-full font-mono"
               />
             </div>
           </div>
-          <button type="submit" className="btn btn-outline mt-6 w-full gap-2">
+
+          <button
+            type="submit"
+            className="daisy-btn daisy-btn-outline mt-6 w-full gap-2"
+          >
             <Plus size={16} /> Adicionar Item Personalizado
           </button>
         </motion.form>

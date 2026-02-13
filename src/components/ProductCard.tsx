@@ -6,11 +6,11 @@ import { useRef, useState } from "react";
 
 interface Props {
   product: Product;
-  quantity: number;
+  quantity?: number;
   onSelect: (product: Product, quantity: number) => void;
 }
 
-export function ProductCard({ product, quantity, onSelect }: Props) {
+export function ProductCard({ product, quantity = 0, onSelect }: Props) {
   const dragControls = useDragControls();
   const [longPressActive, setLongPressActive] = useState(false);
   const longPressTimer = useRef<number | null>(null);
@@ -71,7 +71,7 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
         "flex flex-col items-start p-4 rounded-xl border transition-all text-left select-none touch-pan-y",
         selected
           ? "border-primary bg-primary/10 ring-2 ring-primary/20"
-          : "bg-base-100 border-primary/40 hover:bg-base-200/50",
+          : "bg-base-200 border-primary/20 hover:bg-base-200/50",
       )}
     >
       <div className="flex items-center gap-2 mb-2 w-full">

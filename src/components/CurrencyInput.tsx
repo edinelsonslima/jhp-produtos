@@ -2,18 +2,20 @@ import { cn } from "@/lib/utils";
 
 interface CurrencyInputProps {
   value: number;
-  onValueChange: (value: number) => void;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  label?: string;
+  onValueChange: (value: number) => void;
 }
 
 export function CurrencyInput({
   value,
-  onValueChange,
-  placeholder = "R$ 0,00",
+  label,
   className,
-  ...props
+  disabled,
+  placeholder = "0,00",
+  onValueChange,
 }: CurrencyInputProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "");
@@ -30,13 +32,20 @@ export function CurrencyInput({
       : "";
 
   return (
-    <input
-      inputMode="numeric"
-      value={display}
-      onChange={handleChange}
-      placeholder={placeholder}
-      className={cn("daisy-input daisy-input-bordered w-full font-mono", className)}
-      {...props}
-    />
+    <fieldset className="daisy-fieldset w-full">
+      {label && <legend className="daisy-fieldset-legend">{label}</legend>}
+      <label className={cn("daisy-input w-full", className)}>
+        <span className="daisy-label">R$</span>
+        <input
+          type="text"
+          className="grow font-mono w-full"
+          placeholder={placeholder}
+          inputMode="numeric"
+          value={display}
+          disabled={disabled}
+          onChange={handleChange}
+        />
+      </label>
+    </fieldset>
   );
 }
