@@ -5,22 +5,22 @@ interface StatCardProps {
   label: string;
   value: string;
   icon: LucideIcon;
-  variant?: "default" | "pix" | "cash" | "destructive";
   delay?: number;
+  variant?: "default" | "success" | "warning" | "error";
 }
 
 const variantStyles = {
   default: "bg-base-100 border-base-300",
-  pix: "bg-pix/10 border-pix/30",
-  cash: "bg-cash/10 border-cash/30",
-  destructive: "bg-error/10 border-error/30",
+  success: "bg-success/10 border-success/30",
+  warning: "bg-warning/10 border-warning/30",
+  error: "bg-error/10 border-error/30",
 };
 
 const iconStyles = {
   default: "text-primary",
-  pix: "text-pix",
-  cash: "text-cash",
-  destructive: "text-error",
+  success: "text-success",
+  warning: "text-warning",
+  error: "text-error",
 };
 
 export default function StatCard({

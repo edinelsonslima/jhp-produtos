@@ -137,7 +137,7 @@ export default function Sales() {
       <div className="max-w-4xl mx-auto space-y-8 mb-8">
         <p
           className={cn(
-            "text-2xl font-extrabold font-mono fixed top-16 md:top-4 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
+            "text-3xl font-extrabold font-mono fixed top-20 md:top-4 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
             total > 0 ? "text-success" : "text-error",
           )}
         >
@@ -252,42 +252,44 @@ export default function Sales() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="space-y-3 sticky bottom-12 md:bottom-0 pt-2 pb-4 bg-base-100 border-t border-base-300 md:max-w-4xl md:mx-auto"
+        className="
+          space-y-3 sticky bottom-16 daisy-glass border-t border-base-300 -mx-4 p-4
+          md:max-w-4xl md:mx-auto md:bottom-0"
       >
         <div className="flex gap-2">
           <button
             type="button"
+            onClick={() => setPaymentMethod("dinheiro")}
             className={cn(
               "daisy-btn flex-1 gap-2",
               paymentMethod === "dinheiro"
-                ? "daisy-btn-primary text-cash-foreground hover:bg-cash/90 border-0"
+                ? "daisy-btn-warning"
                 : "daisy-btn-outline",
             )}
-            onClick={() => setPaymentMethod("dinheiro")}
           >
             <Banknote size={16} /> Dinheiro
           </button>
           <button
             type="button"
+            onClick={() => setPaymentMethod("pix")}
             className={cn(
               "daisy-btn flex-1 gap-2",
               paymentMethod === "pix"
-                ? "daisy-btn-primary text-pix-foreground hover:bg-pix/90 border-0"
+                ? "daisy-btn-success"
                 : "daisy-btn-outline",
             )}
-            onClick={() => setPaymentMethod("pix")}
           >
             <Smartphone size={16} /> Pix
           </button>
           <button
             type="button"
+            onClick={() => setPaymentMethod("combinado")}
             className={cn(
               "daisy-btn flex-1 gap-2",
               paymentMethod === "combinado"
                 ? "daisy-btn-primary"
                 : "daisy-btn-outline",
             )}
-            onClick={() => setPaymentMethod("combinado")}
           >
             <Plus size={16} /> Combinado
           </button>
@@ -304,24 +306,24 @@ export default function Sales() {
             >
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <Banknote size={14} className="text-cash" />
+                  <Banknote size={14} className="text-warning" />
                   Valor em Dinheiro
                 </Label>
                 <CurrencyInput
                   value={cashAmount}
                   onValueChange={setCashAmount}
-                  className="border-cash/30 focus:border-cash"
+                  className="border-warning/30 focus:border-warning"
                 />
               </div>
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
-                  <Smartphone size={14} className="text-pix" />
+                  <Smartphone size={14} className="text-success" />
                   Valor em PIX
                 </Label>
                 <CurrencyInput
                   value={pixAmount}
                   onValueChange={setPixAmount}
-                  className="border-pix/30 focus:border-pix"
+                  className="border-success/30 focus:border-success"
                 />
               </div>
               {totalPaymentCombined > 0 && (
@@ -356,6 +358,7 @@ export default function Sales() {
         <div className="flex gap-2">
           <button
             type="submit"
+            disabled={total <= 0}
             className="daisy-btn daisy-btn-primary daisy-btn-lg flex-1 min-w-0 gap-2"
           >
             <Plus size={18} /> Registrar Venda

@@ -308,7 +308,7 @@ function AppLayoutMobile({
 
       <div className="p-4">{children}</div>
 
-      <div className="daisy-dock daisy-dock-md">
+      <div className="daisy-dock daisy-dock-md border-t border-base-content/10">
         {dockerItems.map((item) => (
           <NavLink
             to={item.to}

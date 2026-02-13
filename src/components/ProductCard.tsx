@@ -71,7 +71,7 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
         "flex flex-col items-start p-4 rounded-xl border transition-all text-left select-none touch-pan-y",
         selected
           ? "border-primary bg-primary/10 ring-2 ring-primary/20"
-          : "border-base-300 bg-base-100 md:hover:border-primary/50 md:hover:bg-base-200/50",
+          : "bg-base-100 border-primary/40 hover:bg-base-200/50",
       )}
     >
       <div className="flex items-center gap-2 mb-2 w-full">
@@ -83,9 +83,12 @@ export function ProductCard({ product, quantity, onSelect }: Props) {
 
       {longPressActive && (
         <span
-          className="btn btn-error w-full"
+          className="daisy-btn daisy-btn-error w-full"
           onClick={(e) => {
-            if (longPressTimer.current) return;
+            if (longPressTimer.current) {
+              return;
+            }
+
             e.stopPropagation();
             updateProductByQuantity(0);
             setLongPressActive(false);

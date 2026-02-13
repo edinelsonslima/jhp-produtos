@@ -41,13 +41,13 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
           <div className="flex items-center gap-3 text-xs text-base-content/60 mt-1">
             {sale.price?.cash > 0 && (
               <span className="flex items-center gap-1">
-                <Banknote size={12} className="text-cash" />
+                <Banknote size={12} className="text-warning" />
                 {formatCurrency(sale.price.cash)}
               </span>
             )}
             {sale.price?.pix > 0 && (
               <span className="flex items-center gap-1">
-                <Smartphone size={12} className="text-pix" />
+                <Smartphone size={12} className="text-success" />
                 {formatCurrency(sale.price.pix)}
               </span>
             )}

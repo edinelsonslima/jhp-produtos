@@ -57,25 +57,26 @@ export default function Dashboard() {
             icon={DollarSign}
             delay={0}
           />
+
           <StatCard
             label="Pix"
             value={formatCurrency(todaySales.pix)}
             icon={Smartphone}
-            variant="pix"
+            variant="success"
             delay={0.05}
           />
           <StatCard
             label="Dinheiro"
             value={formatCurrency(todaySales.cash)}
             icon={Banknote}
-            variant="cash"
+            variant="warning"
             delay={0.1}
           />
           <StatCard
             label="Diárias Pagas"
             value={formatCurrency(todayPayments.total)}
             icon={Minus}
-            variant="destructive"
+            variant="error"
             delay={0.15}
           />
         </div>
@@ -120,14 +121,14 @@ export default function Dashboard() {
             label="Pix no Mês"
             value={formatCurrency(monthSales.pix)}
             icon={Smartphone}
-            variant="pix"
+            variant="success"
             delay={0.3}
           />
           <StatCard
             label="Dinheiro no Mês"
             value={formatCurrency(monthSales.cash)}
             icon={Banknote}
-            variant="cash"
+            variant="warning"
             delay={0.35}
           />
         </div>

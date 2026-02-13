@@ -50,15 +50,15 @@ export default function EditSale() {
   }, 0);
 
   const updateQuantity = (productId: string, delta: number) => {
-    setProducts((prev) =>
-      prev
-        .map((p) =>
-          p.productId === productId
-            ? { ...p, quantity: Math.max(0, p.quantity + delta) }
-            : p,
-        )
-        .filter((p) => p.quantity > 0),
-    );
+    setProducts((prev) => {
+      const updated = prev.map((p) =>
+        p.productId === productId
+          ? { ...p, quantity: Math.max(0, p.quantity + delta) }
+          : p,
+      );
+
+      return updated.filter((p) => p.quantity > 0);
+    });
   };
 
   const handleSave = () => {
@@ -66,10 +66,12 @@ export default function EditSale() {
       toast.error("A venda precisa ter pelo menos um produto");
       return;
     }
+
     if (paymentMethod === "combinado" && Math.abs(mixedTotal - total) > 0.01) {
       toast.error("Valores em dinheiro e PIX devem ser igual ao total");
       return;
     }
+
     saleStore.action.update(sale.id, {
       products,
       paymentMethod,
@@ -89,6 +91,7 @@ export default function EditSale() {
               : 0,
       },
     });
+
     toast.success("Venda atualizada!");
     navigate(-1);
   };
@@ -112,10 +115,12 @@ export default function EditSale() {
         >
           <ArrowLeft size={20} />
         </button>
+
         <div>
           <h2 className="text-2xl font-extrabold tracking-tight">
             Editar Venda
           </h2>
+
           <p className="text-base-content/60 text-sm mt-1">
             {new Date(sale.date).toLocaleString("pt-BR")}
           </p>
@@ -126,9 +131,13 @@ export default function EditSale() {
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
           Produtos ({products.length})
         </h3>
+
         {products.map((p) => {
           const product = productStore.action.get(p.productId);
-          if (!product) return null;
+
+          if (!product) {
+            return null;
+          }
 
           return (
             <div
@@ -136,9 +145,7 @@ export default function EditSale() {
               className="flex items-center justify-between py-2 border-b border-base-300 last:border-0"
             >
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold truncate">
-                  {product.name}
-                </p>
+                <p className="text-sm font-semibold truncate">{product.name}</p>
                 <p className="text-xs text-base-content/60 font-mono">
                   {formatCurrency(product.price ?? 0)} /{" "}
                   {product.unit === "litro" ? "L" : "un."}
@@ -180,35 +187,37 @@ export default function EditSale() {
         <div className="flex gap-2">
           <button
             type="button"
-            className={cn(
-              "btn flex-1 gap-2",
-              paymentMethod === "dinheiro"
-                ? "bg-cash text-cash-foreground hover:bg-cash/90 border-0"
-                : "btn-outline",
-            )}
             onClick={() => setPaymentMethod("dinheiro")}
+            className={cn(
+              "daisy-btn flex-1 gap-2",
+              paymentMethod === "dinheiro"
+                ? "bg-warning text-base-content hover:bg-warning/90 border-0"
+                : "daisy-btn-outline",
+            )}
           >
             <Banknote size={16} /> Dinheiro
           </button>
           <button
             type="button"
-            className={cn(
-              "btn flex-1 gap-2",
-              paymentMethod === "pix"
-                ? "bg-pix text-pix-foreground hover:bg-pix/90 border-0"
-                : "btn-outline",
-            )}
             onClick={() => setPaymentMethod("pix")}
+            className={cn(
+              "daisy-btn flex-1 gap-2",
+              paymentMethod === "pix"
+                ? "bg-success text-base-content hover:bg-success/90 border-0"
+                : "daisy-btn-outline",
+            )}
           >
             <Smartphone size={16} /> Pix
           </button>
           <button
             type="button"
-            className={cn(
-              "btn flex-1 gap-2",
-              paymentMethod === "combinado" ? "btn-primary" : "btn-outline",
-            )}
             onClick={() => setPaymentMethod("combinado")}
+            className={cn(
+              "daisy-btn flex-1 gap-2",
+              paymentMethod === "combinado"
+                ? "daisy-btn-primary"
+                : "daisy-btn-outline",
+            )}
           >
             <Plus size={16} /> Combinado
           </button>
@@ -218,13 +227,13 @@ export default function EditSale() {
           <div className="grid grid-cols-2 gap-3 mt-3">
             <div className="space-y-1">
               <Label className="flex items-center gap-2 text-xs">
-                <Banknote size={12} className="text-cash" /> Dinheiro
+                <Banknote size={12} className="text-warning" /> Dinheiro
               </Label>
               <CurrencyInput value={cashAmount} onValueChange={setCashAmount} />
             </div>
             <div className="space-y-1">
               <Label className="flex items-center gap-2 text-xs">
-                <Smartphone size={12} className="text-pix" /> PIX
+                <Smartphone size={12} className="text-success" /> PIX
               </Label>
               <CurrencyInput value={pixAmount} onValueChange={setPixAmount} />
             </div>
@@ -262,13 +271,14 @@ export default function EditSale() {
       <div className="flex gap-3">
         <button
           onClick={handleSave}
-          className="btn btn-primary flex-1 gap-2 btn-lg"
+          className="daisy-btn daisy-btn-primary daisy-btn-lg flex-1 gap-2"
         >
           <Save size={18} /> Salvar Alterações
         </button>
+
         <button
           onClick={handleDelete}
-          className="btn btn-error btn-lg gap-2"
+          className="daisy-btn daisy-btn-error daisy-btn-lg gap-2"
         >
           <Trash2 size={18} /> Excluir
         </button>

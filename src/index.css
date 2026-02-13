@@ -7,26 +7,6 @@
   prefix: "daisy-";
 }
 
-@theme {
-  --color-pix: hsl(152 60% 40%);
-  --color-pix-foreground: hsl(0 0% 100%);
-
-  --color-cash: hsl(38 92% 50%);
-  --color-cash-foreground: hsl(0 0% 100%);
-
-  --color-sidebar-background: hsl(200 25% 12%);
-  --color-sidebar-foreground: hsl(210 15% 92%);
-
-  --color-sidebar-primary: hsl(38 92% 50%);
-  --color-sidebar-primary-foreground: hsl(0 0% 100%);
-
-  --color-sidebar-accent: hsl(200 20% 18%);
-  --color-sidebar-accent-foreground: hsl(210 15% 92%);
-
-  --color-sidebar-border: hsl(200 20% 20%);
-  --color-sidebar-ring: hsl(195 80% 40%);
-}
-
 @layer base {
   body {
     font-family: "Inter", sans-serif;
