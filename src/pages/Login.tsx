@@ -95,8 +95,6 @@ export default function Login() {
                 <input
                   required
                   type="text"
-                  title="Somente letras, números ou traços. Deve começar com letra."
-                  pattern="[A-Za-z][A-Za-z0-9\-]*"
                   placeholder="Seu nome"
                   onChange={(e) => setName(e.target.value)}
                   value={name}
