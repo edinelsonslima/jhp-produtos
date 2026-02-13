@@ -348,7 +348,7 @@ function AppLayoutMobile({
             </form>
           </div>
 
-          <ul className="mt-4 w-full">
+          <ul className="mt-4 w-full max-h-1/2">
             {themeStore.action.list().map((t) => (
               <li key={t} onClick={() => themeStore.action.set(t)}>
                 <input
