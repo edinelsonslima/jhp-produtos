@@ -41,9 +41,10 @@ export function Modal({ children }: PropsWithChildren) {
         className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
       >
         <div className="daisy-modal-box">{childrenWithoutTrigger}</div>
-        <form method="dialog" className="daisy-modal-backdrop">
-          <button>close</button>
-        </form>
+        <div
+          className="daisy-modal-backdrop"
+          onClick={() => ref.current?.close()}
+        />
       </dialog>
     </ModalContext>
   );

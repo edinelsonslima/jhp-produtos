@@ -1,6 +1,6 @@
 import { createStore } from "./useStore";
 
-export const THEMES = [
+const THEMES = [
   "light",
   "dark",
   "cupcake",
@@ -37,15 +37,24 @@ export const THEMES = [
 
 export type Theme = (typeof THEMES)[number];
 
-type State = { theme: Theme };
-type Actions = { setTheme: (theme: Theme) => void };
+type Actions = {
+  get: () => Theme;
+  list: () => Theme[];
+  set: (theme: Theme) => void;
+};
+
+type State = {
+  theme: Theme;
+};
 
 export const themeStore = createStore<State, Actions>({
   persist: { key: "theme" },
 
   createState: () => {
     document.documentElement.setAttribute("data-theme", "light");
-    return { theme: "light" };
+    return {
+      theme: "light",
+    };
   },
 
   createActions: (set, get) => {
@@ -53,7 +62,11 @@ export const themeStore = createStore<State, Actions>({
     document.documentElement.setAttribute("data-theme", get().theme);
 
     return {
-      setTheme: (theme) => {
+      get: () => get().theme,
+
+      list: () => [...THEMES],
+
+      set: (theme) => {
         document.documentElement.setAttribute("data-theme", theme);
         set({ theme });
       },

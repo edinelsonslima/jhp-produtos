@@ -35,7 +35,7 @@ export function CurrencyInput({
       value={display}
       onChange={handleChange}
       placeholder={placeholder}
-      className={cn("input input-bordered w-full font-mono", className)}
+      className={cn("daisy-input daisy-input-bordered w-full font-mono", className)}
       {...props}
     />
   );

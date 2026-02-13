@@ -1,7 +1,7 @@
 import { toast } from "@/components/ui/sonner";
 import { authStore } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -11,24 +11,28 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (isRegister) {
       if (!name.trim() || name.trim().length < 2) {
         return toast.error("Nome deve ter ao menos 2 caracteres");
       }
+
       if (!EMAIL_REGEX.test(email.trim())) {
         return toast.error("Informe um e-mail válido");
       }
+
       if (password.length < 4) {
         return toast.error("Senha deve ter ao menos 4 caracteres");
       }
+
       const err = authStore.action.register(
         name.trim(),
         email.trim().toLowerCase(),
         password,
       );
+
       return err
         ? toast.error(err)
         : toast.success("Conta criada com sucesso!");
@@ -37,10 +41,13 @@ export default function Login() {
     if (!email.trim() || !password) {
       return toast.error("Preencha todos os campos");
     }
+
     if (!EMAIL_REGEX.test(email.trim())) {
       return toast.error("Informe um e-mail válido");
     }
+    
     const err = authStore.action.login(email.trim().toLowerCase(), password);
+    
     return err ? toast.error(err) : toast.success("Bem-vindo de volta!");
   };
 
@@ -103,7 +110,7 @@ export default function Login() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-full">
+          <button type="submit" className="daisy-btn daisy-btn-primary w-full">
             {isRegister ? "Criar Conta" : "Entrar"}
           </button>
         </form>

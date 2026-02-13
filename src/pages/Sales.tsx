@@ -18,14 +18,14 @@ export default function Sales() {
 
   const [selected, setSelected] = useState<Sale["products"]>([]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("dinheiro");
-  
+
   const [cashAmount, setCashAmount] = useState(0);
   const [pixAmount, setPixAmount] = useState(0);
-  
+
   const [customPrice, setCustomPrice] = useState(0);
   const [customQuantity, setCustomQuantity] = useState("");
   const [customProduct, setCustomProduct] = useState("");
-  
+
   const totalPaymentCombined = cashAmount + pixAmount;
 
   const total = selected.reduce((acc, p) => {
@@ -137,7 +137,7 @@ export default function Sales() {
       <div className="max-w-4xl mx-auto space-y-8 mb-8">
         <p
           className={cn(
-            "text-2xl font-extrabold font-mono fixed top-16 md:top-4 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-50",
+            "text-2xl font-extrabold font-mono fixed top-16 md:top-4 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
             total > 0 ? "text-success" : "text-error",
           )}
         >
@@ -361,9 +361,7 @@ export default function Sales() {
             <Plus size={18} /> Registrar Venda
           </button>
 
-          <ChangeCalculatorModal
-            saleTotal={total}
-          />
+          <ChangeCalculatorModal saleTotal={total} />
         </div>
       </motion.form>
     </>
