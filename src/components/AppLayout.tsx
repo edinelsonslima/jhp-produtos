@@ -346,7 +346,7 @@ function AppLayoutMobile({
             </form>
           </div>
 
-          <ul>
+          <ul className="mt-4 w-full">
             {themeStore.action.list().map((t) => (
               <li key={t} onClick={() => themeStore.action.set(t)}>
                 <input
@@ -360,12 +360,11 @@ function AppLayoutMobile({
             ))}
           </ul>
         </div>
+
         <div
           className="daisy-modal-backdrop"
           onClick={() =>
-            document
-              .querySelector<HTMLDialogElement>("#dialog-theme")
-              ?.close()
+            document.querySelector<HTMLDialogElement>("#dialog-theme")?.close()
           }
         />
       </dialog>
