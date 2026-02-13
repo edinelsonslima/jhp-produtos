@@ -353,9 +353,8 @@ function AppLayoutMobile({
               <li key={t} onClick={() => themeStore.action.set(t)}>
                 <input
                   type="radio"
-                  value={t}
                   aria-label={t}
-                  checked={theme === t}
+                  defaultChecked={theme === t}
                   name="theme-dropdown"
                   className={
                     "daisy-theme-controller daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost w-full justify-start"
