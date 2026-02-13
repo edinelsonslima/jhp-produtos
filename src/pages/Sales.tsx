@@ -199,7 +199,7 @@ export default function Sales() {
                 onChange={(e) => setCustomProduct(e.target.value)}
                 placeholder="Descrição do item personalizado"
                 maxLength={100}
-                className="daisy-input daisy-input-bordered w-full font-mono"
+                className="daisy-input w-full font-mono"
               />
             </div>
 
@@ -212,7 +212,7 @@ export default function Sales() {
                 value={customQuantity}
                 onChange={(e) => setCustomQuantity(e.target.value)}
                 placeholder="1"
-                className="daisy-input daisy-input-bordered w-full font-mono"
+                className="daisy-input w-full font-mono"
               />
             </div>
           </div>
