@@ -50,10 +50,8 @@ export function ChangeCalculatorModal({ saleTotal }: Props) {
       </Modal.Trigger>
 
       <Modal.Title>
-        <div className="flex items-center gap-3 mb-6">
-          <Calculator size={20} className="text-primary" />
-          <h3 className="text-lg font-bold">Calculadora de Troco</h3>
-        </div>
+        <Calculator size={20} className="text-primary" />
+        <h3 className="text-lg font-bold">Calculadora de Troco</h3>
       </Modal.Title>
 
       <Modal.Content>

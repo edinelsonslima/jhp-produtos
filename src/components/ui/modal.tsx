@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
   Children,
   ComponentProps,
@@ -65,19 +66,29 @@ Modal.Content = function ({ children }: PropsWithChildren) {
   return children;
 };
 
-Modal.Title = function ({ children }: PropsWithChildren) {
-  return children;
+Modal.Title = function ({
+  children,
+  className,
+  ...props
+}: PropsWithChildren<ComponentProps<"div">>) {
+  return (
+    <div className={cn("flex items-center gap-3 mb-6", className)} {...props}>
+      {children}
+    </div>
+  );
 };
 
 Modal.Actions = function ({
+  className,
   children,
-}: {
+  ...props
+}: Omit<ComponentProps<"div">, "children"> & {
   children: ({ close }: { close: () => void }) => ReactNode;
 }) {
   const { ref } = useContext(ModalContext);
 
   return (
-    <div className="daisy-modal-action">
+    <div className={cn("daisy-modal-action", className)} {...props}>
       {children({ close: () => ref.current?.close() })}
     </div>
   );
