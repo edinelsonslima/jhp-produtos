@@ -133,7 +133,7 @@ export default function Sales() {
   };
 
   return (
-    <div className="min-h-full relative max-w-4xl mx-auto space-y-8 pb-32">
+    <div className="min-h-full relative max-w-4xl mx-auto space-y-8 pb-28 ">
       <p
         className={cn(
           "text-3xl font-extrabold font-mono fixed top-20 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",

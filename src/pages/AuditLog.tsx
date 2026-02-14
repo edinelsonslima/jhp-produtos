@@ -3,13 +3,12 @@ import { getAuditLog } from "@/lib/audit";
 import { motion } from "framer-motion";
 import { ClipboardList } from "lucide-react";
 
-const ACTION_LABELS: Record<
-  string,
-  {
-    label: string;
-    variant: "default" | "secondary" | "destructive" | "outline";
-  }
-> = {
+interface ActionConfig {
+  label: string;
+  variant: "default" | "secondary" | "destructive" | "outline";
+}
+
+const ACTION_LABELS: Record<string, ActionConfig> = {
   login: { label: "Login", variant: "default" },
   logout: { label: "Logout", variant: "secondary" },
   user_registered: { label: "Cadastro", variant: "default" },
