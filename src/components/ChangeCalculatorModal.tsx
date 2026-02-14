@@ -49,14 +49,14 @@ export function ChangeCalculatorModal({ saleTotal }: Props) {
         <Calculator size={18} />
       </Modal.Trigger>
 
-      <Modal.Content>
-        <Modal.Title>
-          <div className="flex items-center gap-3 mb-6">
-            <Calculator size={20} className="text-primary" />
-            <h3 className="text-lg font-bold">Calculadora de Troco</h3>
-          </div>
-        </Modal.Title>
+      <Modal.Title>
+        <div className="flex items-center gap-3 mb-6">
+          <Calculator size={20} className="text-primary" />
+          <h3 className="text-lg font-bold">Calculadora de Troco</h3>
+        </div>
+      </Modal.Title>
 
+      <Modal.Content>
         <div className="mb-3">
           <Label>Valor da Venda</Label>
           <p className="text-2xl font-extrabold font-mono text-primary">
@@ -112,19 +112,19 @@ export function ChangeCalculatorModal({ saleTotal }: Props) {
             )}
           </div>
         )}
-
-        <Modal.Actions>
-          {({ close }) => (
-            <button
-              type="button"
-              className="daisy-btn daisy-btn-outline"
-              onClick={() => (setAmountPaid(0), close())}
-            >
-              Fechar
-            </button>
-          )}
-        </Modal.Actions>
       </Modal.Content>
+
+      <Modal.Actions>
+        {({ close }) => (
+          <button
+            type="button"
+            className="daisy-btn daisy-btn-outline"
+            onClick={() => (setAmountPaid(0), close())}
+          >
+            Fechar
+          </button>
+        )}
+      </Modal.Actions>
     </Modal>
   );
 }
