@@ -44,7 +44,7 @@ export function ChangeCalculatorModal({ saleTotal }: Props) {
         type="button"
         title="Calculadora de Troco"
         className="daisy-btn daisy-btn-outline daisy-btn-lg"
-        onClick={() => vibrate(100)}
+        onClick={() => vibrate(10)}
       >
         <Calculator size={18} />
       </Modal.Trigger>

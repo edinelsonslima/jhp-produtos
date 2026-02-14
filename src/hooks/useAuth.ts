@@ -55,7 +55,7 @@ export const authStore = createStore<State, Actions>({
 
     logout: () => {
       const userName = get().user?.name ?? "?";
-      
+
       set({ ...get(), user: null });
       logAudit("logout", `Logout: ${userName}`);
     },
@@ -68,13 +68,13 @@ export const authStore = createStore<State, Actions>({
       }
 
       const user = {
-        id: crypto.randomUUID(),
+        id: Math.random().toString(36).substring(2, 10), // Gerar id no backend
         password,
         name,
         email,
       };
 
-      set({ users: [...get().users, user], user: user });
+      set({ users: [...get().users, user], user });
       logAudit("user_registered", `Novo usuário: ${name} (${email})`);
 
       return null;
