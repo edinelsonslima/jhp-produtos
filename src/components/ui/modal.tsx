@@ -49,6 +49,11 @@ export function Modal({ children }: PropsWithChildren) {
           className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
         >
           <div className="daisy-modal-box">{childrenWithoutTrigger}</div>
+
+          <div
+            className="daisy-modal-backdrop"
+            onClick={() => ref?.current?.close()}
+          />
         </dialog>,
         document.body,
       )}
@@ -64,6 +69,20 @@ Modal.Title = function ({ children }: PropsWithChildren) {
   return children;
 };
 
+Modal.Actions = function ({
+  children,
+}: {
+  children: ({ close }: { close: () => void }) => ReactNode;
+}) {
+  const { ref } = useContext(ModalContext);
+
+  return (
+    <div className="daisy-modal-action">
+      {children({ close: () => ref.current?.close() })}
+    </div>
+  );
+};
+
 Modal.Trigger = function <TElement extends keyof React.JSX.IntrinsicElements>({
   children,
   as,
@@ -73,17 +92,5 @@ Modal.Trigger = function <TElement extends keyof React.JSX.IntrinsicElements>({
   const { ref } = useContext(ModalContext);
 
   const handleClick = (e: any) => (ref.current?.showModal(), onClick?.(e));
-  return createElement(as, { ...props, onClick: handleClick }, children);
-};
-
-Modal.Close = function <TElement extends keyof React.JSX.IntrinsicElements>({
-  children,
-  as,
-  onClick,
-  ...props
-}: ComponentProps<TElement> & { as: TElement }) {
-  const { ref } = useContext(ModalContext);
-
-  const handleClick = (e: any) => (ref.current?.close(), onClick?.(e));
   return createElement(as, { ...props, onClick: handleClick }, children);
 };
