@@ -62,8 +62,12 @@ export function Modal({ children }: PropsWithChildren) {
   );
 }
 
-Modal.Content = function ({ children }: PropsWithChildren) {
-  return children;
+Modal.Content = function <TElement extends keyof React.JSX.IntrinsicElements>({
+  as,
+  children,
+  ...props
+}: ComponentProps<TElement> & { as?: TElement }) {
+  return as ? createElement(as, props, children) : children;
 };
 
 Modal.Title = function ({

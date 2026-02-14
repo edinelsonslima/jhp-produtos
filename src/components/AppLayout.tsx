@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { PropsWithChildren, ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { Modal } from "./ui/modal";
 
 const dockerItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -283,17 +284,50 @@ function AppLayoutMobile({
             </li>
 
             <li>
-              <button
-                className="flex gap-2 items-center size-full"
-                onClick={() => {
-                  document
-                    .querySelector<HTMLDialogElement>("#dialog-theme")
-                    ?.showModal();
-                }}
-              >
-                <Palette size={14} />
-                Tema
-              </button>
+              <Modal>
+                <Modal.Trigger
+                  as="button"
+                  type="button"
+                  className="flex gap-2 items-center size-full"
+                  title="Calculadora de Troco"
+                >
+                  <Palette size={14} />
+                  Tema
+                </Modal.Trigger>
+
+                <Modal.Title className="flex items-center justify-between sticky daisy-glass -top-6 h-14 px-6 -mx-6 -mt-6 z-10">
+                  <div className="flex items-center gap-3">
+                    <Palette size={20} />
+                    <h3 className="font-bold text-lg">Escolha o tema</h3>
+                  </div>
+
+                  <Modal.Actions className="mt-0">
+                    {({ close }) => (
+                      <X
+                        size={18}
+                        onClick={close}
+                        className="daisy-btn daisy-btn-xs daisy-btn-ghost"
+                      />
+                    )}
+                  </Modal.Actions>
+                </Modal.Title>
+
+                <Modal.Content as="ul" className="mt-4 w-full max-h-1/2">
+                  {themeStore.action.list().map((t) => (
+                    <li key={t} onClick={() => themeStore.action.set(t)}>
+                      <input
+                        type="radio"
+                        aria-label={t}
+                        defaultChecked={theme === t}
+                        name="theme-dropdown"
+                        className={
+                          "daisy-theme-controller daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost w-full justify-start"
+                        }
+                      />
+                    </li>
+                  ))}
+                </Modal.Content>
+              </Modal>
             </li>
 
             <li className="border-t border-black/15 pt-1 mt-1">
@@ -329,49 +363,6 @@ function AppLayoutMobile({
           </NavLink>
         ))}
       </div>
-
-      <dialog
-        id="dialog-theme"
-        className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
-      >
-        <div className="daisy-modal-box">
-          <div className="flex justify-between items-center sticky daisy-glass -top-6 h-14 px-4 -mx-6 -mt-6 z-10">
-            <div className="flex items-center gap-2 text-base-content font-extrabold">
-              <Palette size={20} />
-              <h3 className="font-bold text-lg">Escolha o tema</h3>
-            </div>
-
-            <form method="dialog">
-              <button className="daisy-btn daisy-btn-sm daisy-btn-soft">
-                <X />
-              </button>
-            </form>
-          </div>
-
-          <ul className="mt-4 w-full max-h-1/2">
-            {themeStore.action.list().map((t) => (
-              <li key={t} onClick={() => themeStore.action.set(t)}>
-                <input
-                  type="radio"
-                  aria-label={t}
-                  defaultChecked={theme === t}
-                  name="theme-dropdown"
-                  className={
-                    "daisy-theme-controller daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost w-full justify-start"
-                  }
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div
-          className="daisy-modal-backdrop"
-          onClick={() =>
-            document.querySelector<HTMLDialogElement>("#dialog-theme")?.close()
-          }
-        />
-      </dialog>
     </>
   );
 }
