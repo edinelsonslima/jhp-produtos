@@ -19,7 +19,7 @@ const dockerItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/404", icon: Circle, label: "not found" },
   { to: "/vendas", icon: ShoppingCart, label: "Vendas" },
-  { to: "/diarias", icon: Users, label: "Diárias" },
+  { to: "/pagamentos", icon: Users, label: "Diárias" },
   { to: "/produtos", icon: Package, label: "Produtos" },
 ];
 
@@ -342,7 +342,9 @@ function AppLayoutMobile({
         </div>
       </nav>
 
-      <div className="min-h-full p-4 pb-20 max-w-2xl mx-auto space-y-8">{children}</div>
+      <div className="min-h-full p-4 pb-20 max-w-2xl mx-auto space-y-8">
+        {children}
+      </div>
 
       <div className="daisy-dock daisy-dock-md border-t border-base-content/10">
         {dockerItems.map((item) => (

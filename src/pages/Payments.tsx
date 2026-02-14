@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-export default function DailyPayments() {
+export default function Payments() {
   const payments = paymentStore.useStore((state) => state.payments);
   const employees = employeeStore.useStore((state) => state.employees);
   const todayPayments = paymentStore.useStore((state) => state.today);

@@ -3,11 +3,11 @@ import { authStore } from "@/hooks/useAuth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
 import AuditLog from "./pages/AuditLog";
-import DailyPayments from "./pages/DailyPayments";
 import EditSale from "./pages/EditSale";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
+import Payments from "./pages/Payments";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
 
@@ -24,7 +24,7 @@ function AuthGate() {
         <Route path="/" element={<Index />} />
         <Route path="/vendas" element={<Sales />} />
         <Route path="/vendas/:id/editar" element={<EditSale />} />
-        <Route path="/diarias" element={<DailyPayments />} />
+        <Route path="/pagamentos" element={<Payments />} />
         <Route path="/produtos" element={<Products />} />
         <Route path="/auditoria" element={<AuditLog />} />
         <Route path="*" element={<NotFound />} />
