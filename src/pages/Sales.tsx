@@ -133,130 +133,126 @@ export default function Sales() {
   };
 
   return (
-    <>
-      <div className="h-full max-w-4xl mx-auto space-y-8">
-        <p
-          className={cn(
-            "text-3xl font-extrabold font-mono fixed top-20 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
-            total > 0 ? "text-success" : "text-error",
-          )}
-        >
-          {formatCurrency(total)}
+    <div className="min-h-full relative max-w-4xl mx-auto space-y-8 pb-32">
+      <p
+        className={cn(
+          "text-3xl font-extrabold font-mono fixed top-20 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
+          total > 0 ? "text-success" : "text-error",
+        )}
+      >
+        {formatCurrency(total)}
+      </p>
+
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <h2 className="text-2xl font-extrabold tracking-tight">
+          Registrar Venda
+        </h2>
+        <p className="text-base-content/60 text-md mt-1">
+          Adicione vendas ao caixa de hoje
         </p>
+      </motion.div>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h2 className="text-2xl font-extrabold tracking-tight">
-            Registrar Venda
-          </h2>
-          <p className="text-base-content/60 text-md mt-1">
-            Adicione vendas ao caixa de hoje
-          </p>
-        </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-xl border border-base-300 bg-base-100 p-3"
+      >
+        <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
+          Selecione um Produto
+        </h3>
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl border border-base-300 bg-base-100 p-3"
-        >
-          <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
-            Selecione um Produto
-          </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
+          {products.map((p) => (
+            <ProductCard
+              key={p.id}
+              product={p}
+              onSelect={addProduct}
+              quantity={selected.find((sp) => sp.productId === p.id)?.quantity}
+            />
+          ))}
+        </div>
+      </motion.div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
-            {products.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                onSelect={addProduct}
-                quantity={
-                  selected.find((sp) => sp.productId === p.id)?.quantity
-                }
-              />
-            ))}
+      <motion.form
+        className="rounded-xl border border-base-300 bg-base-100 p-3"
+        onSubmit={handleSubmitCustomItem}
+      >
+        <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
+          Item Personalizado
+        </h3>
+
+        <CurrencyInput
+          label="Preço"
+          value={customPrice}
+          onValueChange={setCustomPrice}
+        />
+
+        <div className="flex gap-4 items-end">
+          <div className="flex-2">
+            <Label className="daisy-label">Produto</Label>
+            <input
+              type="text"
+              value={customProduct}
+              onChange={(e) => setCustomProduct(e.target.value)}
+              placeholder="Descrição do item personalizado"
+              maxLength={100}
+              className="daisy-input w-full font-mono"
+            />
           </div>
-        </motion.div>
 
-        <motion.form
-          className="rounded-xl border border-base-300 bg-base-100 p-3"
-          onSubmit={handleSubmitCustomItem}
+          <div className="flex-1">
+            <Label className="daisy-label mt-4 mb-1">Quantidade</Label>
+            <input
+              type="number"
+              step="1"
+              min="1"
+              value={customQuantity}
+              onChange={(e) => setCustomQuantity(e.target.value)}
+              placeholder="1"
+              className="daisy-input w-full font-mono"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="daisy-btn daisy-btn-soft mt-6 w-full gap-2"
         >
-          <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
-            Item Personalizado
-          </h3>
+          <Plus size={16} /> Adicionar Item Personalizado
+        </button>
+      </motion.form>
 
-          <CurrencyInput
-            label="Preço"
-            value={customPrice}
-            onValueChange={setCustomPrice}
-          />
-
-          <div className="flex gap-4 items-end">
-            <div className="flex-2">
-              <Label className="daisy-label">Produto</Label>
-              <input
-                type="text"
-                value={customProduct}
-                onChange={(e) => setCustomProduct(e.target.value)}
-                placeholder="Descrição do item personalizado"
-                maxLength={100}
-                className="daisy-input w-full font-mono"
-              />
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
+          Últimas Vendas
+        </h3>
+        <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden">
+          {sales.length === 0 ? (
+            <div className="p-8 text-center text-base-content/60 text-sm">
+              Nenhuma venda registrada
             </div>
-
-            <div className="flex-1">
-              <Label className="daisy-label mt-4 mb-1">Quantidade</Label>
-              <input
-                type="number"
-                step="1"
-                min="1"
-                value={customQuantity}
-                onChange={(e) => setCustomQuantity(e.target.value)}
-                placeholder="1"
-                className="daisy-input w-full font-mono"
-              />
+          ) : (
+            <div>
+              {sales.slice(0, 20).map((sale) => (
+                <SaleItem
+                  key={sale.id}
+                  saleId={sale.id}
+                  onDelete={handleDeleteSale}
+                />
+              ))}
             </div>
-          </div>
-
-          <button
-            type="submit"
-            className="daisy-btn daisy-btn-soft mt-6 w-full gap-2"
-          >
-            <Plus size={16} /> Adicionar Item Personalizado
-          </button>
-        </motion.form>
-
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
-            Últimas Vendas
-          </h3>
-          <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden">
-            {sales.length === 0 ? (
-              <div className="p-8 text-center text-base-content/60 text-sm">
-                Nenhuma venda registrada
-              </div>
-            ) : (
-              <div>
-                {sales.slice(0, 20).map((sale) => (
-                  <SaleItem
-                    key={sale.id}
-                    saleId={sale.id}
-                    onDelete={handleDeleteSale}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </motion.div>
-      </div>
+          )}
+        </div>
+      </motion.div>
 
       <motion.form
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="space-y-3 sticky bottom-16 daisy-glass border-t border-base-300 -mx-4 -mb-16 p-4"
+        className="daisy-glass fixed bottom-16 border-t border-base-300 right-0 left-0 space-y-3 p-4"
       >
         <div className="flex gap-2">
           <button
@@ -369,6 +365,6 @@ export default function Sales() {
           <ChangeCalculatorModal saleTotal={total} />
         </div>
       </motion.form>
-    </>
+    </div>
   );
 }

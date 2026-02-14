@@ -29,7 +29,7 @@ export default function AuditLog() {
   const entries = getAuditLog();
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 mb-20">
+    <div className="max-w-3xl mx-auto space-y-6">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <h2 className="text-2xl font-extrabold tracking-tight">Auditoria</h2>
         <p className="text-base-content/60 text-sm mt-1">

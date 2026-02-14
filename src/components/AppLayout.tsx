@@ -308,7 +308,7 @@ function AppLayoutMobile({
         </div>
       </nav>
 
-      <div className="h-full p-4 mb-20">{children}</div>
+      <div className="min-h-full p-4 pb-20">{children}</div>
 
       <div className="daisy-dock daisy-dock-md border-t border-base-content/10">
         {dockerItems.map((item) => (
