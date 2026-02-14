@@ -1,4 +1,5 @@
 import { logAudit } from "@/lib/audit";
+import { generateUUID } from "@/lib/utils";
 import { Sale } from "@/types";
 import { createStore } from "./useStore";
 
@@ -36,7 +37,7 @@ export const saleStore = createStore<State, Actions>({
       const count = data.products.reduce((s, p) => s + p.quantity, 0);
 
       const sales = [
-        { ...data, id: crypto.randomUUID(), timestamp: Date.now() },
+        { ...data, id: generateUUID(), timestamp: Date.now() },
         ...get().sales,
       ];
 

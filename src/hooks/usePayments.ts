@@ -1,4 +1,5 @@
 import { logAudit } from "@/lib/audit";
+import { generateUUID } from "@/lib/utils";
 import { Payment } from "@/types";
 import { employeeStore } from "./useEmployees";
 import { createStore } from "./useStore";
@@ -34,7 +35,7 @@ export const paymentStore = createStore<State, Actions>({
 
     add: (data) => {
       const payments = [
-        { ...data, id: crypto.randomUUID(), timestamp: Date.now() },
+        { ...data, id: generateUUID(), timestamp: Date.now() },
         ...get().payments,
       ];
 

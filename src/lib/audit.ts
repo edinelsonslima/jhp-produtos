@@ -1,5 +1,5 @@
 import { authStore } from "@/hooks/useAuth";
-import { storage } from "./utils";
+import { generateUUID, storage } from "./utils";
 
 export interface AuditEntry {
   id: string;
@@ -25,7 +25,7 @@ function getCurrentUser() {
 export function logAudit(action: string, details: string) {
   const user = getCurrentUser();
   const entry: AuditEntry = {
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     action,
     details,
     userName: user.name,

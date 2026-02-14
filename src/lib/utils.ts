@@ -20,6 +20,14 @@ export function vibrate(pattern: number | number[]) {
   window?.navigator?.vibrate(pattern);
 }
 
+export function generateUUID(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export function storage<T extends Lowercase<`${string}-${string}`>>(keys: T[]) {
   if (!keys.length) {
     throw new Error("At least one key must be provided");

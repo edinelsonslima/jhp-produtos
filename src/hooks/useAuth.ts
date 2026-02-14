@@ -1,5 +1,6 @@
 import { logAudit } from "@/lib/audit";
 import { createStore } from "./useStore";
+import { generateUUID } from "@/lib/utils";
 
 export interface AppUser {
   id: string;
@@ -68,7 +69,7 @@ export const authStore = createStore<State, Actions>({
       }
 
       const user = {
-        id: Math.random().toString(36).substring(2, 10), // Gerar id no backend
+        id: generateUUID(),
         password,
         name,
         email,

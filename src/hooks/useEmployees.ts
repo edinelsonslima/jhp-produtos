@@ -1,6 +1,7 @@
 import { logAudit } from "@/lib/audit";
 import { Employee } from "@/types";
 import { createStore } from "./useStore";
+import { generateUUID } from "@/lib/utils";
 
 type CreateEmployee = Omit<Employee, "id">;
 
@@ -29,7 +30,7 @@ export const employeeStore = createStore<State, Actions>({
       const employees = get().employees;
 
       set({
-        employees: [...employees, { ...data, id: crypto.randomUUID() }],
+        employees: [...employees, { ...data, id: generateUUID() }],
       });
 
       logAudit("employee_created", `Funcionário cadastrado: ${data.name}`);

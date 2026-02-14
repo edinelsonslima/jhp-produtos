@@ -1,4 +1,5 @@
 import { logAudit } from "@/lib/audit";
+import { generateUUID } from "@/lib/utils";
 import { Product } from "@/types";
 import { createStore } from "./useStore";
 
@@ -29,7 +30,7 @@ export const productStore = createStore<State, Actions>({
       const products = get().products;
 
       set({
-        products: [...products, { ...data, id: crypto.randomUUID() }],
+        products: [...products, { ...data, id: generateUUID() }],
       });
 
       logAudit("product_created", `Produto cadastrado: ${data.name}`);

@@ -28,31 +28,41 @@ export default function Payments() {
   };
 
   const handlePayPreset = (amount: number) => {
-    if (!employee) return;
+    if (!employee) {
+      return;
+    }
+
     paymentStore.action.add({
       date: new Date().toISOString(),
       amount,
       receiver: { id: employee.id, type: "employee" },
     });
+
     toast.success(
       `Diária de ${formatCurrency(amount)} registrada para ${employee.name}!`,
     );
   };
 
   const handlePayCustom = () => {
-    if (!employee) return;
+    if (!employee) {
+      return;
+    }
+
     if (customAmount <= 0) {
       toast.error("Informe um valor válido");
       return;
     }
+
     paymentStore.action.add({
       date: new Date().toISOString(),
       amount: customAmount,
       receiver: { id: employee.id, type: "employee" },
     });
+
     toast.success(
       `Diária de ${formatCurrency(customAmount)} registrada para ${employee.name}!`,
     );
+
     setCustomAmount(0);
   };
 
