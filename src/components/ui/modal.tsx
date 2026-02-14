@@ -49,7 +49,9 @@ export function Modal({ children }: PropsWithChildren) {
           ref={ref}
           className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
         >
-          <div className="daisy-modal-box max-h-dvh">{childrenWithoutTrigger}</div>
+          <div className="daisy-modal-box max-h-dvh">
+            {childrenWithoutTrigger}
+          </div>
 
           <div
             className="daisy-modal-backdrop"

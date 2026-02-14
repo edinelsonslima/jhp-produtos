@@ -1,5 +1,6 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Label } from "@/components/ui/label";
+import { Modal } from "@/components/ui/modal";
 import { toast } from "@/components/ui/sonner";
 import { employeeStore } from "@/hooks/useEmployees";
 import { paymentStore } from "@/hooks/usePayments";
@@ -7,7 +8,7 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { Employee } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 export default function DailyPayments() {
   const payments = paymentStore.useStore((state) => state.payments);
@@ -20,7 +21,6 @@ export default function DailyPayments() {
   const [newName, setNewName] = useState("");
   const [newRate1, setNewRate1] = useState(0);
   const [newRate2, setNewRate2] = useState(0);
-  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const handleSelectEmployee = (emp: Employee) => {
     setEmployee(emp);
@@ -62,15 +62,16 @@ export default function DailyPayments() {
       toast.error("Nome deve ter ao menos 2 caracteres");
       return;
     }
+
     employeeStore.action.add({
       name: newName.trim(),
       defaultRates: [newRate1, newRate2],
     });
+
     toast.success("Funcionário cadastrado!");
     setNewName("");
     setNewRate1(0);
     setNewRate2(0);
-    dialogRef.current?.close();
   };
 
   const todayStr = new Date().toISOString().split("T")[0];
@@ -88,64 +89,32 @@ export default function DailyPayments() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-base-300 bg-base-100"
+        className="flex gap-4 w-full overflow-x-auto p-4 rounded-xl border border-base-300 bg-base-100"
       >
-        <div className="w-full overflow-x-auto p-4">
-          <div className="flex gap-4 pb-2">
-            {employees.map((emp) => (
-              <button
-                key={emp.id}
-                onClick={() => handleSelectEmployee(emp)}
-                className={cn(
-                  "flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200",
-                  employee?.id === emp.id
-                    ? "bg-primary/10 ring-2 ring-primary scale-105"
-                    : "hover:bg-base-200",
-                )}
-              >
-                <div
-                  className={cn(
-                    "w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold transition-colors",
-                    employee?.id === emp.id
-                      ? "bg-primary text-primary-content"
-                      : "bg-base-200 text-base-content/60",
-                  )}
-                >
-                  {emp.avatarUrl ? (
-                    <img
-                      src={emp.avatarUrl}
-                      alt={emp.name}
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    emp.name.charAt(0).toUpperCase()
-                  )}
-                </div>
-                <span className="text-xs font-semibold text-center truncate w-full">
-                  {emp.name}
-                </span>
-              </button>
-            ))}
+        <Modal>
+          <Modal.Trigger
+            as="button"
+            type="button"
+            className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-base-200 transition-colors cursor-pointer"
+          >
+            <div className="size-14 rounded-full bg-base-200 border-2 border-dashed border-base-content/20 flex items-center justify-center">
+              <Plus size={20} className="text-base-content/60" />
+            </div>
+            <span className="text-xs font-semibold text-base-content/60">
+              Novo
+            </span>
+          </Modal.Trigger>
 
-            <button
-              onClick={() => dialogRef.current?.showModal()}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-base-200 transition-colors"
-            >
-              <div className="size-14 rounded-full bg-base-200 border-2 border-dashed border-base-content/20 flex items-center justify-center">
-                <Plus size={20} className="text-base-content/60" />
-              </div>
-              <span className="text-xs font-semibold text-base-content/60">
-                Novo
-              </span>
-            </button>
-          </div>
-        </div>
-      </motion.div>
+          <Modal.Title className="text-lg font-bold">
+            Cadastrar Funcionário
+          </Modal.Title>
 
-      <dialog ref={dialogRef} className="daisy-modal">
-        <div className="daisy-modal-box">
-          <h3 className="text-lg font-bold">Cadastrar Funcionário</h3>
-          <form onSubmit={handleAddEmployee} className="space-y-4 mt-4">
+          <Modal.Content
+            as="form"
+            id="add-employee-form"
+            className="space-y-4 mt-4"
+            onSubmit={handleAddEmployee}
+          >
             <div className="space-y-2">
               <Label>Nome</Label>
               <input
@@ -159,43 +128,82 @@ export default function DailyPayments() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label>Diária Opção 1 (R$)</Label>
                 <CurrencyInput
                   value={newRate1}
+                  label="Diária Opção 1 (R$)"
+                  placeholder="Ex: 20,00"
                   onValueChange={setNewRate1}
-                  placeholder="Ex: 80,00"
                 />
               </div>
+
               <div className="space-y-2">
-                <Label>Diária Opção 2 (R$)</Label>
                 <CurrencyInput
                   value={newRate2}
+                  label="Diária Opção 2 (R$)"
+                  placeholder="Ex: 40,00"
                   onValueChange={setNewRate2}
-                  placeholder="Ex: 100,00"
                 />
               </div>
             </div>
-            <div className="daisy-modal-action">
+          </Modal.Content>
+
+          <Modal.Actions>
+            {({ close }) => [
               <button
+                key="submit"
                 type="submit"
+                form="add-employee-form"
                 className="daisy-btn daisy-btn-primary gap-2"
               >
                 <Plus size={16} /> Cadastrar
-              </button>
+              </button>,
               <button
+                key="button"
                 type="button"
                 className="daisy-btn"
-                onClick={() => dialogRef.current?.close()}
+                onClick={close}
               >
                 Cancelar
-              </button>
+              </button>,
+            ]}
+          </Modal.Actions>
+        </Modal>
+
+        {employees.map((emp) => (
+          <button
+            key={emp.id}
+            onClick={() => handleSelectEmployee(emp)}
+            className={cn(
+              "flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200 cursor-pointer",
+              employee?.id === emp.id
+                ? "bg-primary/10 ring-2 ring-primary scale-105"
+                : "hover:bg-base-200",
+            )}
+          >
+            <div
+              className={cn(
+                "w-14 h-14 rounded-full flex items-center justify-center text-lg font-bold transition-colors",
+                employee?.id === emp.id
+                  ? "bg-primary text-primary-content"
+                  : "bg-base-200 text-base-content/60",
+              )}
+            >
+              {emp.avatarUrl ? (
+                <img
+                  src={emp.avatarUrl}
+                  alt={emp.name}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                emp.name.charAt(0).toUpperCase()
+              )}
             </div>
-          </form>
-        </div>
-        <form method="dialog" className="daisy-modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
+            <span className="text-xs font-semibold text-center truncate w-full">
+              {emp.name}
+            </span>
+          </button>
+        ))}
+      </motion.div>
 
       <AnimatePresence>
         {employee && (
