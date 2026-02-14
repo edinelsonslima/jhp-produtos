@@ -34,7 +34,7 @@ export default function EditSale() {
 
   if (!sale) {
     return (
-      <div className="max-w-2xl mx-auto text-center py-20">
+      <div className="text-center py-20">
         <p className="text-base-content/60">Venda não encontrada</p>
         <Link to="/" className="text-primary underline mt-4 inline-block">
           Voltar ao Dashboard
@@ -103,7 +103,7 @@ export default function EditSale() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -283,6 +283,6 @@ export default function EditSale() {
           <Trash2 size={18} /> Excluir
         </button>
       </div>
-    </div>
+    </>
   );
 }

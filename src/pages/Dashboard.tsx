@@ -36,7 +36,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <h2 className="text-2xl font-extrabold tracking-tight">
           {getGreeting()}, {firstName}!
@@ -150,6 +150,6 @@ export default function Dashboard() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

@@ -34,7 +34,7 @@ export default function Products() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
+    <>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
         <h2 className="text-2xl font-extrabold tracking-tight">Produtos</h2>
         <p className="text-base-content/60 text-sm mt-1">
@@ -122,6 +122,6 @@ export default function Products() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
