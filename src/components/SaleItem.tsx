@@ -27,6 +27,16 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
     return null;
   }
 
+  const getProducts = () => {
+    return (sale.products?.regular ?? [])
+      .map((p) => {
+        const product = productStore.action.get(p.id);
+        return product ? { ...product, quantity: p.quantity } : null;
+      })
+      .concat(sale.products?.custom ?? [])
+      .filter((p) => !!p);
+  };
+
   return (
     <div className="border-b border-base-300 last:border-b-0">
       <button
@@ -35,7 +45,7 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
       >
         <div className="flex flex-col items-start gap-1">
           <p className="text-sm font-semibold">
-            Venda • {sale.products?.length ?? 0} itens
+            Venda • {getProducts()?.length ?? 0} itens
           </p>
           <p className="text-xs text-base-content/60">
             {formatDateTime(sale.date)}
@@ -71,27 +81,20 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
       {open && (
         <div className="px-5 pb-4 space-y-2">
           <div className="space-y-1 pt-3 border-t border-dashed border-base-300">
-            {sale.products?.map((p) => {
-              const product = productStore.action.get(p.id);
-              console.log(p);
-
-              if (!product) {
-                return null;
-              }
-
-              return (
-                <div
-                  key={product.id}
-                  className="flex items-center justify-between text-sm"
-                >
-                  <span className="truncate">
-                    {product.name} ({product.unit === "litro" ? "L" : "un."})
-                  </span>
-                  <span className="flex-1 mx-2 border-b border-dotted border-base-content/20 translate-y-1" />
-                  <span className="text-base-content/60">{p.quantity}x</span>
-                </div>
-              );
-            })}
+            {getProducts()?.map((product) => (
+              <div
+                key={product.id}
+                className="flex items-center justify-between text-sm"
+              >
+                <span className="truncate">
+                  {product.name} ({product.unit === "litro" ? "L" : "un."})
+                </span>
+                <span className="flex-1 mx-2 border-b border-dotted border-base-content/20 translate-y-1" />
+                <span className="text-base-content/60">
+                  {product.quantity}x
+                </span>
+              </div>
+            ))}
           </div>
 
           <div className="flex gap-2 mt-3 pt-3 border-t border-dashed border-base-300">
