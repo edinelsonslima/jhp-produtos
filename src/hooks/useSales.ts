@@ -10,7 +10,6 @@ type Actions = {
   add: (data: CreateSale) => void;
   update: (id: string, data: Partial<CreateSale>) => void;
   delete: (id: string) => void;
-  getProductSales: (productId: string) => Sale[];
 };
 
 type State = {
@@ -80,15 +79,6 @@ export const saleStore = createStore<State, Actions>({
       });
 
       logAudit("sale_deleted", `Venda excluída - Total: R$ ${total}`);
-    },
-
-    getProductSales: (productId) => {
-      return get().sales.filter((s) => {
-        const regular = s.products.regular.some((p) => p.id === productId);
-        const custom = s.products.custom.some((p) => p.id === productId);
-
-        return regular || custom;
-      });
     },
   }),
 });

@@ -21,11 +21,13 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 export default function EditSale() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const sale = saleStore.action.get(id!);
+
+  const sale = saleStore.useStore((s) => s.sales.find((s) => s.id === id));
 
   const [products, setProducts] = useState<Sale["products"]>(
-    sale?.products ?? [],
+    sale?.products ?? { regular: [], custom: [] },
   );
+
   const [cashAmount, setCashAmount] = useState(sale?.price.cash ?? 0);
   const [pixAmount, setPixAmount] = useState(sale?.price.pix ?? 0);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
@@ -44,25 +46,44 @@ export default function EditSale() {
   }
 
   const mixedTotal = cashAmount + pixAmount;
-  const total = products.reduce((sum, p) => {
-    const price = productStore.action.get(p.id)?.price ?? 0;
-    return sum + price * p.quantity;
-  }, 0);
+  const total =
+    products.custom.reduce((acc, p) => acc + p.price * p.quantity, 0) +
+    products.regular.reduce((acc, p) => {
+      return acc + (productStore.action.get(p.id)?.price ?? 0) * p.quantity;
+    }, 0);
 
   const updateQuantity = (productId: string, delta: number) => {
     setProducts((prev) => {
-      const updated = prev.map((p) =>
+      const isCustom = prev.custom.some((p) => p.id === productId);
+
+      if (isCustom) {
+        const updated = prev.custom.map((p) =>
+          p.id === productId
+            ? { ...p, quantity: Math.max(0, p.quantity + delta) }
+            : p,
+        );
+
+        return {
+          ...prev,
+          custom: updated.filter((p) => p.quantity > 0),
+        };
+      }
+
+      const updated = prev.regular.map((p) =>
         p.id === productId
           ? { ...p, quantity: Math.max(0, p.quantity + delta) }
           : p,
       );
 
-      return updated.filter((p) => p.quantity > 0);
+      return {
+        ...prev,
+        regular: updated.filter((p) => p.quantity > 0),
+      };
     });
   };
 
   const handleSave = () => {
-    if (products.length === 0) {
+    if (products.regular.length === 0 && products.custom.length === 0) {
       toast.error("A venda precisa ter pelo menos um produto");
       return;
     }
@@ -102,6 +123,16 @@ export default function EditSale() {
     navigate(-1);
   };
 
+  const getProducts = () => {
+    return (sale.products?.regular ?? [])
+      .map((p) => {
+        const product = productStore.action.get(p.id);
+        return product ? { ...product, quantity: p.quantity } : null;
+      })
+      .concat(sale.products?.custom ?? [])
+      .filter((p) => !!p);
+  };
+
   return (
     <>
       <motion.div
@@ -129,51 +160,44 @@ export default function EditSale() {
 
       <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
-          Produtos ({products.length})
+          Produtos ({products.regular.length + products.custom.length})
         </h3>
 
-        {products.map((p) => {
-          const product = productStore.action.get(p.id);
-
-          if (!product) {
-            return null;
-          }
-
-          return (
-            <div
-              key={product.id}
-              className="flex items-center justify-between py-2 border-b border-base-300 last:border-0"
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold truncate">{product.name}</p>
-                <p className="text-xs text-base-content/60 font-mono">
-                  {formatCurrency(product.price ?? 0)} /{" "}
-                  {product.unit === "litro" ? "L" : "un."}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => updateQuantity(product.id, -1)}
-                  className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-error/20 transition-colors"
-                >
-                  <Minus size={14} />
-                </button>
-                <span className="w-8 text-center font-mono font-bold">
-                  {p.quantity}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => updateQuantity(product.id, 1)}
-                  className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-primary/20 transition-colors"
-                >
-                  <Plus size={14} />
-                </button>
-              </div>
+        {getProducts().map((product) => (
+          <div
+            key={product.id}
+            className="flex items-center justify-between py-2 border-b border-base-300 last:border-0"
+          >
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold truncate">{product.name}</p>
+              <p className="text-xs text-base-content/60 font-mono">
+                {formatCurrency(product.price ?? 0)} /{" "}
+                {product.unit === "litro" ? "L" : "un."}
+              </p>
             </div>
-          );
-        })}
-        {products.length === 0 && (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => updateQuantity(product.id, -1)}
+                className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-error/20 transition-colors"
+              >
+                <Minus size={14} />
+              </button>
+              <span className="w-8 text-center font-mono font-bold">
+                {product.quantity}
+              </span>
+              <button
+                type="button"
+                onClick={() => updateQuantity(product.id, 1)}
+                className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-primary/20 transition-colors"
+              >
+                <Plus size={14} />
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {getProducts().length === 0 && (
           <p className="text-sm text-base-content/60 text-center py-4">
             Todos os produtos foram removidos
           </p>
