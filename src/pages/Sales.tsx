@@ -6,90 +6,72 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
-import { cn, formatCurrency } from "@/lib/utils";
-import { PaymentMethod, Product, Sale } from "@/types";
+import { cn, formatCurrency, generateUUID, vibrate } from "@/lib/utils";
+import { PaymentMethod, Product, SaleProducts } from "@/types";
 import { AnimatePresence, motion } from "framer-motion";
-import { Banknote, Plus, Smartphone } from "lucide-react";
+import { Banknote, Plus, Smartphone, Trash2 } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 export default function Sales() {
   const sales = saleStore.useStore((state) => state.sales);
   const products = productStore.useStore((state) => state.products);
 
-  const [selected, setSelected] = useState<Sale["products"]>([]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("dinheiro");
+  const [selected, setSelected] = useState<SaleProducts>({
+    custom: [],
+    regular: [],
+  });
 
   const [cashAmount, setCashAmount] = useState(0);
   const [pixAmount, setPixAmount] = useState(0);
 
-  const [customPrice, setCustomPrice] = useState(0);
-  const [customQuantity, setCustomQuantity] = useState("");
-  const [customProduct, setCustomProduct] = useState("");
-
-  const totalPaymentCombined = cashAmount + pixAmount;
-
-  const total = selected.reduce((acc, p) => {
-    const price = productStore.action.get(p.productId)?.price ?? 0;
-    return acc + price * p.quantity;
-  }, 0);
-
-  const addProduct = (product: Product, quantity: number) => {
+  const handleAddProduct = (product: Product, quantity: number) => {
     setSelected((prev) => {
-      const list = [...prev];
-      const idx = list.findIndex((p) => p.productId === product.id);
+      const list = [...prev.regular];
+
+      const idx = list.findIndex((p) => p.id === product.id);
 
       if (idx === -1) {
         const found = products.find((p) => p.id === product.id);
+
         if (!found) {
           toast.error("Produto não encontrado");
           return prev;
         }
-        return [...list, { productId: found.id, quantity: 1 }];
+
+        return { ...prev, regular: [...list, { id: found.id, quantity: 1 }] };
       }
 
       if (quantity === 0) {
         list.splice(idx, 1);
-        return list;
+        return { ...prev, regular: list };
       }
 
-      list[idx] = { productId: product.id, quantity };
-      return [...list];
+      list[idx] = { ...list[idx], quantity };
+      return { ...prev, regular: [...list] };
     });
   };
 
-  const handleSubmitCustomItem = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (customPrice <= 0) {
-      toast.error("Informe um preço válido para o item personalizado");
-      return;
-    }
-    const qty = parseInt(customQuantity) || 1;
-    if (qty <= 0) {
-      toast.error("Quantidade deve ser maior que zero");
-      return;
-    }
-    const customProductItem: Sale["products"][number] = {
-      productId: `custom-${Date.now()}`,
-      quantity: qty,
-    };
-    setSelected((prev) => [...prev, customProductItem]);
-    setCustomPrice(0);
-    setCustomQuantity("");
-    setCustomProduct("");
-    toast.success("Item personalizado adicionado");
+  const handleDeleteSale = (id: string) => {
+    saleStore.action.delete(id);
+    toast.success("Venda excluída");
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selected.length) {
+
+    if (!selected.regular.length && !selected.custom.length) {
       toast.error("Adicione pelo menos um produto à venda");
       return;
     }
+
     const isCombined = paymentMethod === "combinado";
+
     if (isCombined && totalPaymentCombined <= 0) {
       toast.error("Informe os valores em dinheiro e/ou PIX");
       return;
     }
+
     if (isCombined && Math.abs(totalPaymentCombined - total) > 0.01) {
       toast.error(
         "Valores em Dinheiro e PIX devem ser igual ao total da venda",
@@ -97,40 +79,89 @@ export default function Sales() {
       return;
     }
 
+    let cash = 0;
+    let pix = 0;
+
+    if (paymentMethod === "dinheiro") {
+      cash = total;
+    }
+
+    if (paymentMethod === "pix") {
+      pix = total;
+    }
+
+    if (paymentMethod === "combinado") {
+      cash = cashAmount;
+      pix = pixAmount;
+    }
+
     saleStore.action.add({
-      products: selected,
-      date: new Date().toISOString(),
       paymentMethod,
-      price: {
-        total,
-        cash:
-          paymentMethod === "dinheiro"
-            ? total
-            : paymentMethod === "combinado"
-              ? cashAmount
-              : 0,
-        pix:
-          paymentMethod === "pix"
-            ? total
-            : paymentMethod === "combinado"
-              ? pixAmount
-              : 0,
-      },
+      products: selected,
+      price: { total, cash, pix },
+      date: new Date().toISOString(),
     });
 
-    setSelected([]);
-    setCustomQuantity("");
-    setCustomPrice(0);
     setCashAmount(0);
     setPixAmount(0);
     setPaymentMethod("dinheiro");
+    setSelected({ custom: [], regular: [] });
     toast.success("Venda registrada!");
   };
 
-  const handleDeleteSale = (id: string) => {
-    saleStore.action.delete(id);
-    toast.success("Venda excluída");
+  const handleAddCustomItem = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+
+    const brutPrice = formData.get("price")?.toString().replace(/\D/g, "");
+    const price = parseInt(brutPrice || "0", 10) / 100;
+
+    const name = formData.get("name")?.toString().trim() || "";
+    const quantity = formData.get("quantity")?.toString().trim() || "1";
+
+    if (price <= 0) {
+      toast.error("Informe um preço válido para o item personalizado");
+      return;
+    }
+
+    const qty = parseInt(quantity) || 1;
+
+    if (qty <= 0) {
+      toast.error("Quantidade deve ser maior que zero");
+      return;
+    }
+
+    const customProductItem: SaleProducts["custom"][number] = {
+      name: name || `Item Personalizado (${formatCurrency(price)})`,
+      id: generateUUID(),
+      unit: "unidade",
+      quantity: qty,
+      price: price,
+    };
+
+    setSelected((prev) => ({
+      ...prev,
+      custom: [...prev.custom, customProductItem],
+    }));
+
+    toast.success(`Item ${customProductItem.name} adicionado`);
   };
+
+  const handleDeleteCustomItem = (id: string) => {
+    setSelected((prev) => ({
+      ...prev,
+      custom: prev.custom.filter((c) => c.id !== id),
+    }));
+  };
+
+  const totalPaymentCombined = cashAmount + pixAmount;
+
+  const total =
+    selected.custom.reduce((acc, p) => acc + p.price * p.quantity, 0) +
+    selected.regular.reduce((acc, p) => {
+      return acc + (productStore.action.get(p.id)?.price ?? 0) * p.quantity;
+    }, 0);
 
   return (
     <>
@@ -158,43 +189,48 @@ export default function Sales() {
         animate={{ opacity: 1, y: 0 }}
         className="rounded-xl border border-base-300 bg-base-100 p-3"
       >
-        <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
-          Selecione um Produto
-        </h3>
+        {products.length ? (
+          <>
+            <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
+              Selecione um Produto
+            </h3>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
-          {products.map((p) => (
-            <ProductCard
-              key={p.id}
-              product={p}
-              onSelect={addProduct}
-              quantity={selected.find((sp) => sp.productId === p.id)?.quantity}
-            />
-          ))}
-        </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
+              {products.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  onSelect={handleAddProduct}
+                  quantity={
+                    selected.regular.find((s) => s.id === p.id)?.quantity
+                  }
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="p-8 text-center text-base-content/60 text-sm">
+            Nenhum produto cadastrado
+          </div>
+        )}
       </motion.div>
 
       <motion.form
         className="rounded-xl border border-base-300 bg-base-100 p-3"
-        onSubmit={handleSubmitCustomItem}
+        onSubmit={handleAddCustomItem}
       >
         <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
           Item Personalizado
         </h3>
 
-        <CurrencyInput
-          label="Preço"
-          value={customPrice}
-          onValueChange={setCustomPrice}
-        />
+        <CurrencyInput name="price" label="Preço" />
 
         <div className="flex gap-4 items-end">
           <div className="flex-2">
             <Label className="daisy-label">Produto</Label>
             <input
+              name="name"
               type="text"
-              value={customProduct}
-              onChange={(e) => setCustomProduct(e.target.value)}
               placeholder="Descrição do item personalizado"
               maxLength={100}
               className="daisy-input w-full font-mono"
@@ -204,11 +240,10 @@ export default function Sales() {
           <div className="flex-1">
             <Label className="daisy-label mt-4 mb-1">Quantidade</Label>
             <input
+              name="quantity"
               type="number"
               step="1"
               min="1"
-              value={customQuantity}
-              onChange={(e) => setCustomQuantity(e.target.value)}
               placeholder="1"
               className="daisy-input w-full font-mono"
             />
@@ -218,10 +253,73 @@ export default function Sales() {
         <button
           type="submit"
           className="daisy-btn daisy-btn-soft mt-6 w-full gap-2"
+          onClick={() => vibrate(10)}
         >
           <Plus size={16} /> Adicionar Item Personalizado
         </button>
       </motion.form>
+
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 12 }}
+          className="rounded-xl border border-base-300 bg-base-100 p-3"
+        >
+          <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
+            Itens
+          </h3>
+
+          {selected.regular.length === 0 && selected.custom.length === 0 && (
+            <div className="p-4 text-center text-base-content/60 text-sm">
+              Nenhum item adicionado
+            </div>
+          )}
+
+          <div className="space-y-2 max-h-80 overflow-y-auto overflow-x-hidden py-2">
+            {selected.regular
+              .map((prd) => ({
+                ...productStore.action.get(prd.id)!,
+                quantity: prd.quantity,
+                type: "regular",
+              }))
+              .concat(selected.custom.map((c) => ({ ...c, type: "custom" })))
+              .map((product) => (
+                <div key={product.id} className="flex items-end justify-between gap-2">
+                  <div className="w-full">
+                    <div className="flex justify-between items-end">
+                      <p className="font-semibold">{product?.name}</p>
+                    </div>
+
+                    <div className="flex items-center">
+                      <p className="text-sm text-base-content/60">
+                        {formatCurrency(product?.price ?? 0)} x{" "}
+                        {product?.quantity}
+                      </p>
+                      <span className="flex-1 mx-2 border-b border-dotted border-base-content/20 translate-y-1" />
+                      <span className="font-mono font-bold">
+                        {formatCurrency(
+                          (product?.price ?? 0) * (product?.quantity ?? 0),
+                        )}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Trash2
+                    size={22}
+                    className="text-error cursor-pointer daisy-btn daisy-btn-xs p-1"
+                    onClick={() => (
+                      vibrate(10),
+                      product.type === "regular"
+                        ? handleAddProduct(product, 0)
+                        : handleDeleteCustomItem(product.id)
+                    )}
+                  />
+                </div>
+              ))}
+          </div>
+        </motion.div>
+      </AnimatePresence>
 
       <motion.div
         initial={{ opacity: 0, y: 12 }}

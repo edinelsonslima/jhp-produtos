@@ -8,9 +8,15 @@ interface Props {
   product: Product;
   quantity?: number;
   onSelect: (product: Product, quantity: number) => void;
+  className?: string;
 }
 
-export function ProductCard({ product, quantity = 0, onSelect }: Props) {
+export function ProductCard({
+  product,
+  className,
+  quantity = 0,
+  onSelect,
+}: Props) {
   const dragControls = useDragControls();
   const [longPressActive, setLongPressActive] = useState(false);
   const longPressTimer = useRef<number | null>(null);
@@ -69,6 +75,7 @@ export function ProductCard({ product, quantity = 0, onSelect }: Props) {
       whileTap={{ scale: 0.98 }}
       className={cn(
         "flex flex-col items-start p-4 rounded-xl border transition-all text-left select-none touch-pan-y",
+        className,
         selected
           ? "border-primary bg-primary/10 ring-2 ring-primary/20"
           : "bg-base-200 border-primary/20 hover:bg-base-200/50",

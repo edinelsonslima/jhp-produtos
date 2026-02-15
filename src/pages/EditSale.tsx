@@ -45,14 +45,14 @@ export default function EditSale() {
 
   const mixedTotal = cashAmount + pixAmount;
   const total = products.reduce((sum, p) => {
-    const price = productStore.action.get(p.productId)?.price ?? 0;
+    const price = productStore.action.get(p.id)?.price ?? 0;
     return sum + price * p.quantity;
   }, 0);
 
   const updateQuantity = (productId: string, delta: number) => {
     setProducts((prev) => {
       const updated = prev.map((p) =>
-        p.productId === productId
+        p.id === productId
           ? { ...p, quantity: Math.max(0, p.quantity + delta) }
           : p,
       );
@@ -133,7 +133,7 @@ export default function EditSale() {
         </h3>
 
         {products.map((p) => {
-          const product = productStore.action.get(p.productId);
+          const product = productStore.action.get(p.id);
 
           if (!product) {
             return null;

@@ -7,20 +7,18 @@ export interface Product {
   price: number;
 }
 
+export interface SaleProducts {
+  regular: { id: string; quantity: number }[];
+  custom: (Product & { quantity: number })[];
+}
+
 export interface Sale {
   id: string;
   date: string;
   timestamp: number;
   paymentMethod: PaymentMethod;
-  products: {
-    productId: string;
-    quantity: number;
-  }[];
-  price: {
-    total: number;
-    cash: number;
-    pix: number;
-  };
+  price: { total: number; cash: number; pix: number };
+  products: SaleProducts;
 }
 
 export interface Employee {

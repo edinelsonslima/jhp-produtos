@@ -10,6 +10,7 @@ type Actions = {
   add: (data: CreateSale) => void;
   update: (id: string, data: Partial<CreateSale>) => void;
   delete: (id: string) => void;
+  getProductSales: (productId: string) => Sale[];
 };
 
 type State = {
@@ -34,7 +35,9 @@ export const saleStore = createStore<State, Actions>({
 
     add: (data) => {
       const total = data.price.total;
-      const count = data.products.reduce((s, p) => s + p.quantity, 0);
+      const regular = data.products.regular.reduce((s, p) => s + p.quantity, 0);
+      const custom = data.products.custom.reduce((s, p) => s + p.quantity, 0);
+      const count = regular + custom;
 
       const sales = [
         { ...data, id: generateUUID(), timestamp: Date.now() },
@@ -77,6 +80,15 @@ export const saleStore = createStore<State, Actions>({
       });
 
       logAudit("sale_deleted", `Venda excluída - Total: R$ ${total}`);
+    },
+
+    getProductSales: (productId) => {
+      return get().sales.filter((s) => {
+        const regular = s.products.regular.some((p) => p.id === productId);
+        const custom = s.products.custom.some((p) => p.id === productId);
+
+        return regular || custom;
+      });
     },
   }),
 });

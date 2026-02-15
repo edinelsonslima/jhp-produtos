@@ -23,7 +23,9 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
     return state.sales.find((s) => s.id === saleId);
   });
 
-  if (!sale) return null;
+  if (!sale) {
+    return null;
+  }
 
   return (
     <div className="border-b border-base-300 last:border-b-0">
@@ -70,8 +72,12 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
         <div className="px-5 pb-4 space-y-2">
           <div className="space-y-1 pt-3 border-t border-dashed border-base-300">
             {sale.products?.map((p) => {
-              const product = productStore.action.get(p.productId);
-              if (!product) return null;
+              const product = productStore.action.get(p.id);
+              console.log(p);
+
+              if (!product) {
+                return null;
+              }
 
               return (
                 <div

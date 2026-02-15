@@ -2,16 +2,20 @@ import { cn } from "@/lib/utils";
 import { Label } from "./ui/label";
 
 interface CurrencyInputProps {
-  value: number;
+  name?: string;
+  value?: number;
+  defaultValue?: number;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
   label?: string;
-  onValueChange: (value: number) => void;
+  onValueChange?: (value: number) => void;
 }
 
 export function CurrencyInput({
+  name,
   value,
+  defaultValue,
   label,
   className,
   disabled,
@@ -21,16 +25,24 @@ export function CurrencyInput({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "");
     const cents = parseInt(raw || "0", 10);
-    onValueChange(cents / 100);
+    onValueChange?.(cents / 100);
   };
 
-  const display =
-    value > 0
-      ? value.toLocaleString("pt-BR", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })
-      : "";
+  let display;
+
+  if (defaultValue) {
+    display = defaultValue.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  if (value) {
+    display = value.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
 
   return (
     <>
@@ -39,13 +51,29 @@ export function CurrencyInput({
       <label className={cn("daisy-input w-full", className)}>
         <span className="daisy-label">R$</span>
         <input
+          name={name}
           type="text"
           className="grow font-mono w-full"
           placeholder={placeholder}
           inputMode="numeric"
-          value={display}
           disabled={disabled}
-          onChange={handleChange}
+          defaultValue={defaultValue ? display : undefined}
+          value={value ? display : undefined}
+          onChange={onValueChange ? handleChange : undefined}
+          onInput={(e) => {
+            const input = e.currentTarget;
+            const raw = input.value.replace(/\D/g, "");
+            const cents = parseInt(raw || "0", 10);
+
+            const formatted = (cents / 100).toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            });
+
+            input.value = formatted;
+
+            return e;
+          }}
         />
       </label>
     </>

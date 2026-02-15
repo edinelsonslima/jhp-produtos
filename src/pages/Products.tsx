@@ -46,7 +46,7 @@ export default function Products() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="rounded-xl border border-base-300 bg-base-100 p-6 space-y-4"
+        className="rounded-xl border border-base-300 bg-base-100 p-3 space-y-4"
       >
         <div className="space-y-2">
           <Label>Nome do Produto</Label>
