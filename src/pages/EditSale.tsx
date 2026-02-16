@@ -124,12 +124,12 @@ export default function EditSale() {
   };
 
   const getProducts = () => {
-    return (sale.products?.regular ?? [])
+    return (products?.regular ?? [])
       .map((p) => {
         const product = productStore.action.get(p.id);
         return product ? { ...product, quantity: p.quantity } : null;
       })
-      .concat(sale.products?.custom ?? [])
+      .concat(products?.custom ?? [])
       .filter((p) => !!p);
   };
 
@@ -179,7 +179,7 @@ export default function EditSale() {
               <button
                 type="button"
                 onClick={() => updateQuantity(product.id, -1)}
-                className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-error/20 transition-colors"
+                className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-error/20 transition-colors cursor-pointer"
               >
                 <Minus size={14} />
               </button>
@@ -189,7 +189,7 @@ export default function EditSale() {
               <button
                 type="button"
                 onClick={() => updateQuantity(product.id, 1)}
-                className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-primary/20 transition-colors"
+                className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-primary/20 transition-colors cursor-pointer"
               >
                 <Plus size={14} />
               </button>
