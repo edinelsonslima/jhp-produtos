@@ -1,7 +1,9 @@
 import { authStore } from "@/hooks/useAuth";
+import { useMatchMedia } from "@/hooks/useMatchMedia";
 import { themeStore } from "@/hooks/useTheme";
 import { ComponentProps, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
+import { Desktop } from "./desktop";
 import { Mobile } from "./mobile";
 import { Title } from "./title";
 
@@ -14,6 +16,7 @@ function getGreeting(): string {
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const params = useLocation();
+  const isNotMobile = useMatchMedia("md");
 
   const user = authStore.useStore((state) => state.user);
   const theme = themeStore.useStore((state) => state.theme);
@@ -42,9 +45,20 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <Mobile user={user} theme={theme}>
-      <Title {...titleMap[params.pathname]} />
-      {children}
-    </Mobile>
+    <>
+      {!isNotMobile && (
+        <Mobile user={user} theme={theme}>
+          <Title {...titleMap[params.pathname]} />
+          {children}
+        </Mobile>
+      )}
+
+      {isNotMobile && (
+        <Desktop>
+          <Title {...titleMap[params.pathname]} />
+          {children}
+        </Desktop>
+      )}
+    </>
   );
 }
