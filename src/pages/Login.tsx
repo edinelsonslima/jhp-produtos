@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
@@ -173,20 +174,20 @@ export default function Login() {
             </label>
           </div>
 
-          <button type="submit" className="daisy-btn daisy-btn-primary w-full">
+          <Button type="submit" variant="primary" modifier="block">
             {isRegister ? "Criar Conta" : "Entrar"}
-          </button>
+          </Button>
         </form>
 
         <p className="text-center text-sm text-base-content/60">
           {isRegister ? "Já tem conta?" : "Não tem conta?"}{" "}
-          <button
+          <Button
             type="button"
+            appearance="link"
             onClick={() => setIsRegister((prev) => !prev)}
-            className="text-primary font-semibold hover:underline"
           >
             {isRegister ? "Entrar" : "Criar conta"}
-          </button>
+          </Button>
         </p>
       </motion.div>
     </div>

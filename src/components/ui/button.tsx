@@ -43,7 +43,9 @@ interface StylesProps {
   modifier?: keyof typeof modifiers;
 }
 
-interface ButtonProps extends ComponentProps<"button">, StylesProps {}
+interface ButtonProps extends ComponentProps<"button">, StylesProps {
+  disableDefaultStyles?: boolean;
+}
 
 export function Button({
   variant,
@@ -51,17 +53,18 @@ export function Button({
   appearance,
   modifier,
   className,
+  disableDefaultStyles = false,
   ...props
 }: ButtonProps) {
   return (
     <button
       className={cn(
-        "daisy-btn",
-        size && sizes[size],
-        variant && variants[variant],
-        appearance && appearances[appearance],
-        modifier && modifiers[modifier],
-        props.disabled && "daisy-btn-disabled",
+        !disableDefaultStyles && "daisy-btn",
+        !disableDefaultStyles && size && sizes[size],
+        !disableDefaultStyles && variant && variants[variant],
+        !disableDefaultStyles && appearance && appearances[appearance],
+        !disableDefaultStyles && modifier && modifiers[modifier],
+        !disableDefaultStyles && props.disabled && "daisy-btn-disabled",
         className,
       )}
       {...props}

@@ -40,7 +40,8 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
 
   return (
     <div className="border-b border-base-300 last:border-b-0">
-      <button
+      <Button
+        disableDefaultStyles
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-5 py-4 md:hover:bg-base-200/50 transition-colors"
       >
@@ -77,7 +78,7 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
             )}
           />
         </div>
-      </button>
+      </Button>
 
       {open && (
         <div className="px-5 pb-4 space-y-2">

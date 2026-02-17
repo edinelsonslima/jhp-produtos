@@ -3,6 +3,7 @@ import { CurrencyInput } from "@/components/CurrencyInput";
 import { Title } from "@/components/Layout/title";
 import { ProductCard } from "@/components/ProductCard";
 import { SaleItem } from "@/components/SaleItem";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
@@ -243,13 +244,15 @@ export default function Sales() {
           </div>
         </div>
 
-        <button
+        <Button
+          appearance="soft"
+          modifier="block"
+          className="mt-4"
           type="submit"
-          className="daisy-btn daisy-btn-soft mt-6 w-full gap-2"
           onClick={() => vibrate(10)}
         >
           <Plus size={16} /> Adicionar Item Personalizado
-        </button>
+        </Button>
       </motion.form>
 
       <AnimatePresence>
@@ -352,7 +355,7 @@ export default function Sales() {
         className="daisy-glass fixed bottom-16 space-y-3 p-4 border-t border-base-300 right-0 left-0"
       >
         <div className="flex gap-2">
-          <button
+          <Button
             type="button"
             onClick={() => setPaymentMethod("dinheiro")}
             className={cn(
@@ -363,8 +366,9 @@ export default function Sales() {
             )}
           >
             <Banknote size={16} /> Dinheiro
-          </button>
-          <button
+          </Button>
+
+          <Button
             type="button"
             onClick={() => setPaymentMethod("pix")}
             className={cn(
@@ -375,8 +379,9 @@ export default function Sales() {
             )}
           >
             <Smartphone size={16} /> Pix
-          </button>
-          <button
+          </Button>
+
+          <Button
             type="button"
             onClick={() => setPaymentMethod("combinado")}
             className={cn(
@@ -387,7 +392,7 @@ export default function Sales() {
             )}
           >
             <Plus size={16} /> Combinado
-          </button>
+          </Button>
         </div>
 
         <AnimatePresence>
@@ -451,13 +456,13 @@ export default function Sales() {
         </AnimatePresence>
 
         <div className="flex gap-2">
-          <button
+          <Button
             type="submit"
             disabled={total <= 0}
             className="daisy-btn daisy-btn-primary daisy-btn-lg flex-1 min-w-0 gap-2"
           >
             <Plus size={18} /> Registrar Venda
-          </button>
+          </Button>
 
           <ChangeCalculatorModal saleTotal={total} />
         </div>

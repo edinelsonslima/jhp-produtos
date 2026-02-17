@@ -1,5 +1,6 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Title } from "@/components/Layout/title";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
@@ -36,10 +37,7 @@ export default function Products() {
 
   return (
     <>
-      <Title 
-        title="Produtos"
-        subtitle="Gerencie seu catálogo de produtos"
-      />
+      <Title title="Produtos" subtitle="Gerencie seu catálogo de produtos" />
 
       <motion.form
         initial={{ opacity: 0, y: 12 }}
@@ -79,12 +77,9 @@ export default function Products() {
             />
           </div>
         </div>
-        <button
-          type="submit"
-          className="daisy-btn daisy-btn-primary w-full gap-2"
-        >
+        <Button type="submit" variant="primary" modifier="block">
           <Plus size={18} /> Adicionar Produto
-        </button>
+        </Button>
       </motion.form>
 
       <div>
@@ -110,15 +105,17 @@ export default function Products() {
                 <p className="text-sm font-bold font-mono">
                   {formatCurrency(p.price)}
                 </p>
-                <button
+                <Button
+                  size="sm"
+                  variant="error"
+                  appearance="ghost"
                   onClick={() => {
                     productStore.action.delete(p.id);
                     toast.info("Produto removido");
                   }}
-                  className="p-2 rounded-lg text-base-content/60 hover:text-error hover:bg-error/10 transition-colors"
                 >
                   <Trash2 size={14} />
-                </button>
+                </Button>
               </div>
             </div>
           ))}

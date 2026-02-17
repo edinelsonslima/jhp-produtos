@@ -1,5 +1,6 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Title } from "@/components/Layout/title";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
 import { toast } from "@/components/ui/toast";
@@ -102,7 +103,8 @@ export default function Payments() {
       >
         <Modal>
           <Modal.Trigger
-            as="button"
+            as={Button}
+            disableDefaultStyles
             type="button"
             className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-base-200 transition-colors cursor-pointer"
           >
@@ -158,29 +160,26 @@ export default function Payments() {
 
           <Modal.Actions>
             {({ close }) => [
-              <button
+              <Button
                 key="submit"
                 type="submit"
                 form="add-employee-form"
-                className="daisy-btn daisy-btn-primary gap-2"
+                variant="primary"
               >
                 <Plus size={16} /> Cadastrar
-              </button>,
-              <button
-                key="button"
-                type="button"
-                className="daisy-btn"
-                onClick={close}
-              >
+              </Button>,
+
+              <Button key="button" type="button" onClick={close}>
                 Cancelar
-              </button>,
+              </Button>,
             ]}
           </Modal.Actions>
         </Modal>
 
         {employees.map((emp) => (
-          <button
+          <Button
             key={emp.id}
+            disableDefaultStyles
             onClick={() => handleSelectEmployee(emp)}
             className={cn(
               "flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200 cursor-pointer",
@@ -210,11 +209,11 @@ export default function Payments() {
             <span className="text-xs font-semibold text-center truncate w-full">
               {emp.name}
             </span>
-          </button>
+          </Button>
         ))}
       </motion.div>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {employee && (
           <motion.div
             key={employee.id}
@@ -228,6 +227,7 @@ export default function Payments() {
                 <div className="size-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">
                   {employee.name.charAt(0).toUpperCase()}
                 </div>
+
                 <div>
                   <p className="font-semibold">{employee.name}</p>
                   <p className="text-xs text-base-content/60">
@@ -235,29 +235,34 @@ export default function Payments() {
                   </p>
                 </div>
               </div>
-              <button
+
+              <Button
+                size="sm"
+                variant="error"
+                appearance="outline"
                 onClick={() => {
                   employeeStore.action.delete(employee.id);
                   setEmployee(null);
                   toast.info("Funcionário removido");
                 }}
-                className="p-2 rounded-lg text-base-content/60 hover:text-error hover:bg-error/10 transition-colors"
               >
                 <Trash2 size={16} />
-              </button>
+              </Button>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               {employee.defaultRates
                 .filter((r) => r > 0)
                 .map((rate, i) => (
-                  <button
+                  <Button
                     key={i}
-                    className="daisy-btn daisy-btn-outline h-16 text-lg font-mono font-bold hover:bg-primary/10 hover:border-primary"
+                    size="lg"
+                    variant="secondary"
+                    appearance="outline"
                     onClick={() => handlePayPreset(rate)}
                   >
                     {formatCurrency(rate)}
-                  </button>
+                  </Button>
                 ))}
             </div>
 
@@ -268,12 +273,9 @@ export default function Payments() {
                 placeholder="Valor personalizado"
                 className="flex-1"
               />
-              <button
-                onClick={handlePayCustom}
-                className="daisy-btn daisy-btn-primary gap-2 shrink-0"
-              >
+              <Button onClick={handlePayCustom} variant="primary">
                 <Plus size={16} /> Registrar
-              </button>
+              </Button>
             </div>
           </motion.div>
         )}
@@ -320,15 +322,17 @@ export default function Payments() {
                     <p className="text-sm font-bold font-mono">
                       {formatCurrency(payment.amount)}
                     </p>
-                    <button
+                    <Button
+                      size="sm"
+                      variant="error"
+                      appearance="ghost"
                       onClick={() => {
                         paymentStore.action.delete(payment.id);
                         toast.info("Diária removida");
                       }}
-                      className="p-2 rounded-lg text-base-content/60 hover:text-error hover:bg-error/10 transition-colors"
                     >
                       <Trash2 size={14} />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );

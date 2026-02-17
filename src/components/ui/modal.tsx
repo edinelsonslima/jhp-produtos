@@ -4,6 +4,7 @@ import {
   ComponentProps,
   createContext,
   createElement,
+  ElementType,
   isValidElement,
   PropsWithChildren,
   ReactNode,
@@ -100,7 +101,7 @@ Modal.Actions = function ({
   );
 };
 
-Modal.Trigger = function <TElement extends keyof React.JSX.IntrinsicElements>({
+Modal.Trigger = function <TElement extends (keyof React.JSX.IntrinsicElements | ElementType)>({
   children,
   as,
   onClick,
