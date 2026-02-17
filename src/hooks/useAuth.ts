@@ -1,12 +1,13 @@
 import { logAudit } from "@/lib/audit";
-import { createStore } from "./useStore";
 import { generateUUID } from "@/lib/utils";
+import { createStore } from "./useStore";
 
 export interface AppUser {
   id: string;
   name: string;
   email: string;
   password: string;
+  initials: string;
 }
 
 type State = {
@@ -73,6 +74,14 @@ export const authStore = createStore<State, Actions>({
         password,
         name,
         email,
+        initials: !name
+          ? "?"
+          : name
+              .split(" ")
+              .map((w) => w[0])
+              .join("")
+              .toUpperCase()
+              .slice(0, 2),
       };
 
       set({ users: [...get().users, user], user });

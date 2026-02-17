@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AppLayout from "./components/AppLayout";
+import AppLayout from "./components/Layout";
 import AuditLog from "./pages/AuditLog";
 import EditSale from "./pages/EditSale";
 import Index from "./pages/Index";

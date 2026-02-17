@@ -1,0 +1,7 @@
+export function Brand() {
+  return (
+    <h1 className="text-xl text-slate-900 font-extrabold tracking-tight px-2">
+      <span className="text-primary">JHP</span> Produtos
+    </h1>
+  );
+}

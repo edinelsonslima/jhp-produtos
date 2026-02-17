@@ -1,7 +1,6 @@
 import { SaleItem } from "@/components/SaleItem";
 import StatCard from "@/components/StatCard";
 import { toast } from "@/components/ui/toast";
-import { authStore } from "@/hooks/useAuth";
 import { paymentStore } from "@/hooks/usePayments";
 import { saleStore } from "@/hooks/useSales";
 import { formatCurrency } from "@/lib/utils";
@@ -14,21 +13,12 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Bom dia";
-  if (hour < 18) return "Boa tarde";
-  return "Boa noite";
-}
-
 export default function Dashboard() {
-  const user = authStore.useStore((state) => state.user);
   const todaySales = saleStore.useStore((state) => state.today);
   const monthSales = saleStore.useStore((state) => state.month);
   const todayPayments = paymentStore.useStore((state) => state.today);
 
   const todayNet = todaySales.total - todayPayments.total;
-  const firstName = user?.name?.split(" ")[0] ?? "";
 
   const handleDelete = (id: string) => {
     saleStore.action.delete(id);
@@ -37,15 +27,6 @@ export default function Dashboard() {
 
   return (
     <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h2 className="text-2xl font-extrabold tracking-tight">
-          {getGreeting()}, {firstName}!
-        </h2>
-        <p className="text-base-content/60 text-sm mt-1">
-          Resumo do dia {new Date().toLocaleDateString("pt-BR")}
-        </p>
-      </motion.div>
-
       <div>
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
           Hoje

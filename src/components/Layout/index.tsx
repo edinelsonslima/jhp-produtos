@@ -1,45 +1,51 @@
-import { AppUser, authStore } from "@/hooks/useAuth";
-import { Theme, themeStore } from "@/hooks/useTheme";
-import {
-  Circle,
-  ClipboardList,
-  LayoutDashboard,
-  LogOut,
-  Package,
-  Palette,
-  ShoppingCart,
-  Users,
-  X,
-} from "lucide-react";
-import { PropsWithChildren, ReactNode } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Modal } from "./ui/modal";
+import { authStore } from "@/hooks/useAuth";
+import { themeStore } from "@/hooks/useTheme";
+import { ComponentProps, ReactNode } from "react";
+import { useLocation } from "react-router-dom";
+import { Mobile } from "./mobile";
+import { Title } from "./title";
 
-const dockerItems = [
-  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/404", icon: Circle, label: "not found" },
-  { to: "/vendas", icon: ShoppingCart, label: "Vendas" },
-  { to: "/pagamentos", icon: Users, label: "Diárias" },
-  { to: "/produtos", icon: Package, label: "Produtos" },
-];
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Bom dia";
+  if (hour < 18) return "Boa tarde";
+  return "Boa noite";
+}
 
 export default function AppLayout({ children }: { children: ReactNode }) {
+  const params = useLocation();
+
   const user = authStore.useStore((state) => state.user);
   const theme = themeStore.useStore((state) => state.theme);
 
-  const initials = user?.name
-    ? user.name
-        .split(" ")
-        .map((w) => w[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "?";
+  const titleMap: Record<string, ComponentProps<typeof Title>> = {
+    "/": {
+      title: `${getGreeting()}, ${user?.name?.split(" ")[0] ?? ""}!`,
+      subtitle: `Resumo do dia ${new Date().toLocaleDateString("pt-BR")}`,
+    },
+    "/vendas": {
+      title: "Vendas",
+      subtitle: "Adicione vendas ao caixa de hoje",
+    },
+    "/pagamentos": {
+      title: "Pagamentos",
+      subtitle: "Selecione um funcionário e registre a diária",
+    },
+    "/produtos": {
+      title: "Produtos",
+      subtitle: "Gerencie seu catálogo de produtos",
+    },
+    "/auditoria": {
+      title: "Auditoria",
+      subtitle: "Registro de todas as ações do sistema",
+    },
+  };
 
   return (
-    <AppLayoutMobile user={user} initials={initials} theme={theme}>
+    <Mobile user={user} theme={theme}>
+      <Title {...titleMap[params.pathname]} />
       {children}
-    </AppLayoutMobile>
+    </Mobile>
     // <div className="flex flex-col md:flex-row h-dvh overflow-hidden overflow-y-auto">
     //   {/* Desktop Sidebar */}
     //   <aside className="hidden md:flex flex-col w-64 bg-sidebar text-sidebar-foreground sticky top-0 border-r border-sidebar-border">
@@ -236,135 +242,5 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     //     </nav>
     //   </aside>
     // </div>
-  );
-}
-
-interface AppLayoutMobileProps {
-  initials: string;
-  theme: Theme;
-  user: AppUser | null;
-}
-
-function AppLayoutMobile({
-  children,
-  user,
-  initials,
-}: PropsWithChildren<AppLayoutMobileProps>) {
-  const theme = themeStore.useStore((state) => state.theme);
-
-  return (
-    <>
-      <nav className="daisy-navbar daisy-glass w-full flex justify-between sticky top-0 z-50">
-        <h1 className="text-xl text-slate-900 font-extrabold tracking-tight px-2">
-          <span className="text-primary">JHP</span> Produtos
-        </h1>
-
-        <div className="daisy-dropdown daisy-dropdown-end">
-          <div
-            tabIndex={0}
-            role="button"
-            className="daisy-btn daisy-btn-primary rounded-full size-8 m-1"
-          >
-            {initials}
-          </div>
-
-          <ul
-            tabIndex={-1}
-            className="daisy-dropdown-content daisy-menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-xl"
-          >
-            <li className="daisy-menu-title">
-              <span className="truncate">{user?.name}</span>
-              <span className="text-xs opacity-60 truncate">{user?.email}</span>
-            </li>
-
-            <li>
-              <Link to="/auditoria">
-                <ClipboardList size={14} /> Auditoria
-              </Link>
-            </li>
-
-            <li>
-              <Modal>
-                <Modal.Trigger
-                  as="button"
-                  type="button"
-                  className="flex gap-2 items-center size-full"
-                  title="Calculadora de Troco"
-                >
-                  <Palette size={14} />
-                  Tema
-                </Modal.Trigger>
-
-                <Modal.Title className="flex items-center justify-between sticky daisy-glass -top-6 h-14 px-6 -mx-6 -mt-6 z-10">
-                  <div className="flex items-center gap-3">
-                    <Palette size={20} />
-                    <h3 className="font-bold text-lg">Escolha o tema</h3>
-                  </div>
-
-                  <Modal.Actions className="mt-0">
-                    {({ close }) => (
-                      <X
-                        size={18}
-                        onClick={close}
-                        className="daisy-btn daisy-btn-xs daisy-btn-ghost"
-                      />
-                    )}
-                  </Modal.Actions>
-                </Modal.Title>
-
-                <Modal.Content as="ul" className="mt-4 w-full max-h-1/2">
-                  {themeStore.action.list().map((t) => (
-                    <li key={t} onClick={() => themeStore.action.set(t)}>
-                      <input
-                        type="radio"
-                        aria-label={t}
-                        defaultChecked={theme === t}
-                        name="theme-dropdown"
-                        className={
-                          "daisy-theme-controller daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost w-full justify-start"
-                        }
-                      />
-                    </li>
-                  ))}
-                </Modal.Content>
-              </Modal>
-            </li>
-
-            <li className="border-t border-black/15 pt-1 mt-1">
-              <button
-                onClick={() => authStore.action.logout()}
-                className="text-error"
-              >
-                <LogOut size={14} /> Sair
-              </button>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <div className="min-h-full p-4 pb-20 max-w-2xl mx-auto space-y-8">
-        {children}
-      </div>
-
-      <div className="daisy-dock daisy-dock-md border-t border-base-content/10">
-        {dockerItems.map((item) => (
-          <NavLink
-            to={item.to}
-            key={item.label}
-            className={({ isActive }) => (isActive ? "daisy-dock-active" : "")}
-          >
-            {({ isActive }) => (
-              <>
-                <item.icon
-                  size={20}
-                  className={isActive ? "text-primary" : ""}
-                />
-                <span className="daisy-dock-label">{item.label}</span>
-              </>
-            )}
-          </NavLink>
-        ))}
-      </div>
-    </>
   );
 }

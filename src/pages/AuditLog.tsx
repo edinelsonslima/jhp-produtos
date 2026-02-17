@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { getAuditLog } from "@/lib/audit";
-import { motion } from "framer-motion";
 import { ClipboardList } from "lucide-react";
 
 interface ActionConfig {
@@ -29,13 +28,6 @@ export default function AuditLog() {
 
   return (
     <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h2 className="text-2xl font-extrabold tracking-tight">Auditoria</h2>
-        <p className="text-base-content/60 text-sm mt-1">
-          Registro de todas as ações do sistema
-        </p>
-      </motion.div>
-
       {entries.length === 0 ? (
         <div className="rounded-xl border border-base-300 bg-base-100 p-8 text-center text-base-content/60">
           <ClipboardList size={32} className="mx-auto mb-3 opacity-40" />

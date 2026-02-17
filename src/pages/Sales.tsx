@@ -174,16 +174,6 @@ export default function Sales() {
         {formatCurrency(total)}
       </p>
 
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h2 className="text-2xl font-extrabold tracking-tight">
-          Registrar Venda
-        </h2>
-
-        <p className="text-base-content/60 text-md mt-1">
-          Adicione vendas ao caixa de hoje
-        </p>
-      </motion.div>
-
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

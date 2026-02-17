@@ -89,13 +89,6 @@ export default function Payments() {
 
   return (
     <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h2 className="text-2xl font-extrabold tracking-tight">Diárias</h2>
-        <p className="text-base-content/60 text-sm mt-1">
-          Selecione um funcionário e registre a diária
-        </p>
-      </motion.div>
-
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
