@@ -1,3 +1,4 @@
+import { Title } from "@/components/Layout/title";
 import { Badge } from "@/components/ui/badge";
 import { getAuditLog } from "@/lib/audit";
 import { ClipboardList } from "lucide-react";
@@ -23,11 +24,16 @@ const ACTION_LABELS: Record<string, ActionConfig> = {
   product_deleted: { label: "Produto Excluído", variant: "destructive" },
 };
 
-export default function AuditLog() {
+export default function Audit() {
   const entries = getAuditLog();
 
   return (
     <>
+      <Title
+        title="Auditoria"
+        subtitle="Registro de todas as ações do sistema"
+      />
+
       {entries.length === 0 ? (
         <div className="rounded-xl border border-base-300 bg-base-100 p-8 text-center text-base-content/60">
           <ClipboardList size={32} className="mx-auto mb-3 opacity-40" />

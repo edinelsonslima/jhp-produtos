@@ -1,4 +1,5 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
+import { Title } from "@/components/Layout/title";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
 import { toast } from "@/components/ui/toast";
@@ -89,6 +90,11 @@ export default function Payments() {
 
   return (
     <>
+      <Title
+        title="Pagamentos"
+        subtitle="Selecione um funcionário e registre a diária"
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

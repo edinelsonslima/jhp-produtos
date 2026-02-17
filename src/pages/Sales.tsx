@@ -1,5 +1,6 @@
 import { ChangeCalculatorModal } from "@/components/ChangeCalculatorModal";
 import { CurrencyInput } from "@/components/CurrencyInput";
+import { Title } from "@/components/Layout/title";
 import { ProductCard } from "@/components/ProductCard";
 import { SaleItem } from "@/components/SaleItem";
 import { Label } from "@/components/ui/label";
@@ -165,6 +166,8 @@ export default function Sales() {
 
   return (
     <>
+      <Title title="Vendas" subtitle="Adicione vendas ao caixa de hoje" />
+
       <p
         className={cn(
           "text-3xl font-extrabold font-mono fixed top-20 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",

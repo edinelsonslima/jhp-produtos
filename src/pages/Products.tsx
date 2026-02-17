@@ -1,4 +1,5 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
+import { Title } from "@/components/Layout/title";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
@@ -35,6 +36,11 @@ export default function Products() {
 
   return (
     <>
+      <Title 
+        title="Produtos"
+        subtitle="Gerencie seu catálogo de produtos"
+      />
+
       <motion.form
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}

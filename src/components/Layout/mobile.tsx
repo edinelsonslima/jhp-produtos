@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { PropsWithChildren } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { Button } from "../ui/button";
 import { Modal } from "../ui/modal";
 import { Brand } from "./brand";
 
@@ -111,12 +112,13 @@ export function Mobile({
             </li>
 
             <li className="border-t border-black/15 pt-1 mt-1">
-              <button
+              <Button
+                variant="error"
+                appearance="soft"
                 onClick={() => authStore.action.logout()}
-                className="text-error"
               >
                 <LogOut size={14} /> Sair
-              </button>
+              </Button>
             </li>
           </ul>
         </div>

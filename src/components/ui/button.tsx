@@ -1,29 +1,55 @@
 import { cn } from "@/lib/utils";
+import { ComponentProps } from "react";
 
-const variantClasses = {
-  default: "daisy-btn-primary",
-  destructive: "daisy-btn-error",
-  outline: "daisy-btn-outline",
+const variants = {
+  neutral: "daisy-btn-neutral",
+  primary: "daisy-btn-primary",
   secondary: "daisy-btn-secondary",
+  accent: "daisy-btn-accent",
+  info: "daisy-btn-info",
+  success: "daisy-btn-success",
+  warning: "daisy-btn-warning",
+  error: "daisy-btn-error",
+} as const;
+
+const sizes = {
+  xs: "daisy-btn-xs",
+  sm: "daisy-btn-sm",
+  md: "daisy-btn-md",
+  lg: "daisy-btn-lg",
+  xl: "daisy-btn-xl",
+} as const;
+
+const appearances = {
+  outline: "daisy-btn-outline",
+  dash: "daisy-btn-dash",
+  soft: "daisy-btn-soft",
   ghost: "daisy-btn-ghost",
   link: "daisy-btn-link",
 } as const;
 
-const sizeClasses = {
-  default: "daisy-btn-md",
-  sm: "daisy-btn-sm",
-  lg: "daisy-btn-lg",
-  icon: "daisy-btn-square daisy-btn-sm",
+const modifiers = {
+  wide: "daisy-btn-wide",
+  block: "daisy-btn-block",
+  square: "daisy-btn-square",
+  circle: "daisy-btn-circle",
 } as const;
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: keyof typeof variantClasses;
-  size?: keyof typeof sizeClasses;
+interface StylesProps {
+  disabled?: boolean;
+  variant?: keyof typeof variants;
+  size?: keyof typeof sizes;
+  appearance?: keyof typeof appearances;
+  modifier?: keyof typeof modifiers;
 }
 
-function Button({
-  variant = "default",
-  size = "default",
+interface ButtonProps extends ComponentProps<"button">, StylesProps {}
+
+export function Button({
+  variant,
+  size,
+  appearance,
+  modifier,
   className,
   ...props
 }: ButtonProps) {
@@ -31,8 +57,11 @@ function Button({
     <button
       className={cn(
         "daisy-btn",
-        variantClasses[variant],
-        sizeClasses[size],
+        size && sizes[size],
+        variant && variants[variant],
+        appearance && appearances[appearance],
+        modifier && modifiers[modifier],
+        props.disabled && "daisy-btn-disabled",
         className,
       )}
       {...props}
@@ -40,19 +69,34 @@ function Button({
   );
 }
 
-function buttonVariants({
-  variant = "default",
-  className = "",
-}: {
-  variant?: string;
-  className?: string;
-}) {
+function getButtonStyle(props: StylesProps): string;
+function getButtonStyle(className: string): string;
+function getButtonStyle(className: string, props?: StylesProps): string;
+function getButtonStyle(first?: string | StylesProps, second?: StylesProps) {
+  let className: string = "";
+  let styles: StylesProps = {};
+
+  if (typeof first === "object") {
+    styles = first;
+  }
+
+  if (typeof second === "object") {
+    styles = second;
+  }
+
+  if (typeof first === "string") {
+    className = first;
+  }
+
   return cn(
     "daisy-btn",
-    variantClasses[variant as keyof typeof variantClasses] ??
-      "daisy-btn-primary",
+    styles?.size && sizes[styles.size],
+    styles?.variant && variants[styles.variant],
+    styles?.appearance && appearances[styles.appearance],
+    styles?.modifier && modifiers[styles.modifier],
+    styles?.disabled && "daisy-btn-disabled",
     className,
   );
 }
 
-export { Button, buttonVariants };
+Button.style = getButtonStyle;

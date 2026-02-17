@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 
 interface SaleItemProps {
   saleId: string;
@@ -100,17 +101,24 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
           <div className="flex gap-2 mt-3 pt-3 border-t border-dashed border-base-300">
             <Link
               to={`/vendas/${sale.id}/editar`}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-base-300 px-3 py-2 text-xs font-medium hover:bg-base-200 transition-colors"
+              className={Button.style({
+                appearance: "outline",
+                modifier: "wide",
+                variant: "accent",
+              })}
             >
               <Pencil size={12} /> Editar
             </Link>
+
             {onDelete && (
-              <button
+              <Button
+                variant="error"
+                modifier="wide"
+                appearance="outline"
                 onClick={() => onDelete(sale.id)}
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-error/30 px-3 py-2 text-xs font-medium text-error hover:bg-error/10 transition-colors"
               >
                 <Trash2 size={12} /> Excluir
-              </button>
+              </Button>
             )}
           </div>
         </div>

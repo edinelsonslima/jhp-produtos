@@ -2,6 +2,7 @@ import { CurrencyInput } from "@/components/CurrencyInput";
 import { formatCurrency, vibrate } from "@/lib/utils";
 import { Calculator } from "lucide-react";
 import { useState } from "react";
+import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Modal } from "./ui/modal";
 
@@ -114,13 +115,13 @@ export function ChangeCalculatorModal({ saleTotal }: Props) {
 
       <Modal.Actions>
         {({ close }) => (
-          <button
+          <Button
             type="button"
-            className="daisy-btn daisy-btn-outline"
+            appearance="outline"
             onClick={() => (setAmountPaid(0), close())}
           >
             Fechar
-          </button>
+          </Button>
         )}
       </Modal.Actions>
     </Modal>

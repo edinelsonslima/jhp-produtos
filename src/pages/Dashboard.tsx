@@ -1,6 +1,8 @@
+import { Title } from "@/components/Layout/title";
 import { SaleItem } from "@/components/SaleItem";
 import StatCard from "@/components/StatCard";
 import { toast } from "@/components/ui/toast";
+import { authStore } from "@/hooks/useAuth";
 import { paymentStore } from "@/hooks/usePayments";
 import { saleStore } from "@/hooks/useSales";
 import { formatCurrency } from "@/lib/utils";
@@ -14,11 +16,19 @@ import {
 } from "lucide-react";
 
 export default function Dashboard() {
+  const user = authStore.useStore((state) => state.user);
   const todaySales = saleStore.useStore((state) => state.today);
   const monthSales = saleStore.useStore((state) => state.month);
   const todayPayments = paymentStore.useStore((state) => state.today);
 
   const todayNet = todaySales.total - todayPayments.total;
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Bom dia";
+    if (hour < 18) return "Boa tarde";
+    return "Boa noite";
+  };
 
   const handleDelete = (id: string) => {
     saleStore.action.delete(id);
@@ -27,6 +37,11 @@ export default function Dashboard() {
 
   return (
     <>
+      <Title
+        title={`${getGreeting()}, ${user?.name?.split(" ")[0] ?? ""}!`}
+        subtitle={`Resumo do dia ${new Date().toLocaleDateString("pt-BR")}`}
+      />
+
       <div>
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
           Hoje

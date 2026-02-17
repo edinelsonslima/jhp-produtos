@@ -1,11 +1,12 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
+import { Title } from "@/components/Layout/title";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency } from "@/lib/utils";
 import { PaymentMethod, Sale } from "@/types";
-import { motion } from "framer-motion";
 import {
   ArrowLeft,
   Banknote,
@@ -46,6 +47,7 @@ export default function EditSale() {
   }
 
   const mixedTotal = cashAmount + pixAmount;
+
   const total =
     products.custom.reduce((acc, p) => acc + p.price * p.quantity, 0) +
     products.regular.reduce((acc, p) => {
@@ -135,28 +137,18 @@ export default function EditSale() {
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex items-center gap-3"
-      >
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-lg hover:bg-base-200 transition-colors"
-        >
-          <ArrowLeft size={20} />
-        </button>
-
-        <div>
-          <h2 className="text-2xl font-extrabold tracking-tight">
-            Editar Venda
-          </h2>
-
-          <p className="text-base-content/60 text-sm mt-1">
-            {new Date(sale.date).toLocaleString("pt-BR")}
-          </p>
-        </div>
-      </motion.div>
+      <Title
+        title="Editar Venda"
+        subtitle={new Date(sale.date).toLocaleString("pt-BR")}
+        prefix={
+          <Button
+            modifier="square"
+            appearance="ghost"
+            onClick={() => navigate(-1)}
+            children={<ArrowLeft size={20} />}
+          />
+        }
+      />
 
       <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
@@ -176,23 +168,23 @@ export default function EditSale() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <button
+              <Button
                 type="button"
                 onClick={() => updateQuantity(product.id, -1)}
                 className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-error/20 transition-colors cursor-pointer"
               >
                 <Minus size={14} />
-              </button>
+              </Button>
               <span className="w-8 text-center font-mono font-bold">
                 {product.quantity}
               </span>
-              <button
+              <Button
                 type="button"
                 onClick={() => updateQuantity(product.id, 1)}
                 className="w-8 h-8 rounded-lg bg-base-200 flex items-center justify-center hover:bg-primary/20 transition-colors cursor-pointer"
               >
                 <Plus size={14} />
-              </button>
+              </Button>
             </div>
           </div>
         ))}
@@ -209,7 +201,7 @@ export default function EditSale() {
           Forma de Pagamento
         </h3>
         <div className="flex gap-2">
-          <button
+          <Button
             type="button"
             onClick={() => setPaymentMethod("dinheiro")}
             className={cn(
@@ -220,8 +212,8 @@ export default function EditSale() {
             )}
           >
             <Banknote size={16} /> Dinheiro
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => setPaymentMethod("pix")}
             className={cn(
@@ -232,8 +224,8 @@ export default function EditSale() {
             )}
           >
             <Smartphone size={16} /> Pix
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => setPaymentMethod("combinado")}
             className={cn(
@@ -244,7 +236,7 @@ export default function EditSale() {
             )}
           >
             <Plus size={16} /> Combinado
-          </button>
+          </Button>
         </div>
 
         {paymentMethod === "combinado" && (
@@ -293,19 +285,19 @@ export default function EditSale() {
       </div>
 
       <div className="flex gap-3">
-        <button
+        <Button
           onClick={handleSave}
           className="daisy-btn daisy-btn-primary daisy-btn-lg flex-1 gap-2"
         >
           <Save size={18} /> Salvar Alterações
-        </button>
+        </Button>
 
-        <button
+        <Button
           onClick={handleDelete}
           className="daisy-btn daisy-btn-error daisy-btn-lg gap-2"
         >
           <Trash2 size={18} /> Excluir
-        </button>
+        </Button>
       </div>
     </>
   );
