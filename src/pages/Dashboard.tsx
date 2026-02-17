@@ -1,6 +1,6 @@
 import { SaleItem } from "@/components/SaleItem";
 import StatCard from "@/components/StatCard";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
 import { paymentStore } from "@/hooks/usePayments";
 import { saleStore } from "@/hooks/useSales";

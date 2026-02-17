@@ -3,7 +3,7 @@ import { CurrencyInput } from "@/components/CurrencyInput";
 import { ProductCard } from "@/components/ProductCard";
 import { SaleItem } from "@/components/SaleItem";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency, generateUUID, vibrate } from "@/lib/utils";
@@ -121,14 +121,14 @@ export default function Sales() {
     const quantity = formData.get("quantity")?.toString().trim() || "1";
 
     if (price <= 0) {
-      toast.error("Informe um preço válido para o item personalizado");
+      toast.warn("Informe um preço válido para o item personalizado");
       return;
     }
 
     const qty = parseInt(quantity) || 1;
 
     if (qty <= 0) {
-      toast.error("Quantidade deve ser maior que zero");
+      toast.warn("Quantidade deve ser maior que zero");
       return;
     }
 
@@ -285,7 +285,10 @@ export default function Sales() {
               }))
               .concat(selected.custom.map((c) => ({ ...c, type: "custom" })))
               .map((product) => (
-                <div key={product.id} className="flex items-end justify-between gap-2">
+                <div
+                  key={product.id}
+                  className="flex items-end justify-between gap-2"
+                >
                   <div className="w-full">
                     <div className="flex justify-between items-end">
                       <p className="font-semibold">{product?.name}</p>

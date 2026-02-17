@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
 import { FormEvent, useState } from "react";

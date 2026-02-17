@@ -1,7 +1,7 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/toast";
 import { employeeStore } from "@/hooks/useEmployees";
 import { paymentStore } from "@/hooks/usePayments";
 import { cn, formatCurrency } from "@/lib/utils";

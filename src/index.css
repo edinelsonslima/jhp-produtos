@@ -17,3 +17,16 @@
     font-family: "JetBrains Mono", monospace;
   }
 }
+
+@theme {
+  --animate-fade-out: fadeOut 0.5s ease-in forwards;
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}

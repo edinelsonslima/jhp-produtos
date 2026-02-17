@@ -1,4 +1,4 @@
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/AppLayout";
@@ -35,7 +35,7 @@ function AuthGate() {
 
 const App = () => (
   <>
-    <Sonner />
+    <Toaster />
     <BrowserRouter>
       <AuthGate />
     </BrowserRouter>

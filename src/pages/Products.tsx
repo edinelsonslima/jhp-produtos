@@ -1,6 +1,6 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -80,7 +80,10 @@ export default function Products() {
             />
           </div>
         </div>
-        <button type="submit" className="daisy-btn daisy-btn-primary w-full gap-2">
+        <button
+          type="submit"
+          className="daisy-btn daisy-btn-primary w-full gap-2"
+        >
           <Plus size={18} /> Adicionar Produto
         </button>
       </motion.form>
