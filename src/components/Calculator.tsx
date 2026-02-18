@@ -1,6 +1,6 @@
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { formatCurrency, vibrate } from "@/lib/utils";
-import { Calculator } from "lucide-react";
+import { Calculator as CalculatorIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
@@ -48,11 +48,11 @@ export function Calculator({ saleTotal }: Props) {
         title="Calculadora de Troco"
         onClick={() => vibrate(10)}
       >
-        <Calculator size={18} />
+        <CalculatorIcon size={18} />
       </Modal.Trigger>
 
       <Modal.Title>
-        <Calculator size={20} className="text-primary" />
+        <CalculatorIcon size={20} className="text-primary" />
         <h3 className="text-lg font-bold">Calculadora de Troco</h3>
       </Modal.Title>
 
