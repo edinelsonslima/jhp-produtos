@@ -1,4 +1,4 @@
-import { AnimatedCurrency } from "@/components/AnimatedCurrency";
+import { Currency } from "@/components/Currency";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Title } from "@/components/Layout/title";
 import { Button } from "@/components/ui/button";
@@ -143,7 +143,8 @@ export default function EditSale() {
         <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
           Total
         </p>
-        <AnimatedCurrency
+
+        <Currency
           value={total}
           className={cn(
             "text-3xl font-extrabold font-mono mt-1",

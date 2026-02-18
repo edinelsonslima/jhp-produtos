@@ -1,5 +1,5 @@
 import { Title } from "@/components/Layout/title";
-import { SaleItem } from "@/components/SaleItem";
+import { SaleItem } from "@/components/Sales/item";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
@@ -73,10 +73,7 @@ export default function Search() {
         }
       />
 
-      <m.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <m.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <label className="daisy-input daisy-input-bordered w-full flex items-center gap-2">
           <SearchIcon size={18} className="text-base-content/40" />
           <input
@@ -103,10 +100,7 @@ export default function Search() {
           </h3>
           <Card className="divide-y divide-base-300 p-0 overflow-hidden">
             {filteredEmployees.map((emp) => (
-              <div
-                key={emp.id}
-                className="flex items-center gap-3 px-4 py-3"
-              >
+              <div key={emp.id} className="flex items-center gap-3 px-4 py-3">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                   <User size={18} className="text-primary" />
                 </div>

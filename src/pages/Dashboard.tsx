@@ -1,5 +1,5 @@
 import { Title } from "@/components/Layout/title";
-import { SaleItem } from "@/components/SaleItem";
+import { SaleItem } from "@/components/Sales/item";
 import StatCard from "@/components/StatCard";
 import { toast } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
@@ -139,7 +139,7 @@ export default function Dashboard() {
           <div className="rounded-xl border border-base-300 bg-base-100 p-8 text-center text-base-content/60 text-sm">
             Nenhuma venda registrada hoje
           </div>
-          ) : (
+        ) : (
           <div className="space-y-2">
             {todaySales.saleId.slice(0, 10).map((saleId) => (
               <SaleItem key={saleId} saleId={saleId} onDelete={handleDelete} />

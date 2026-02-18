@@ -3,8 +3,8 @@ import { saleStore } from "@/hooks/useSales";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Banknote, Pencil, Smartphone, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
-import { Collapse } from "./ui/collapse";
+import { Button } from "../ui/button";
+import { Collapse } from "../ui/collapse";
 
 interface SaleItemProps {
   saleId: string;
@@ -38,9 +38,7 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
         </p>
 
         <div className="flex items-center gap-3 text-xs text-base-content/60 mt-1">
-          <p>
-            {formatDateTime(sale.date)}
-          </p>
+          <p>{formatDateTime(sale.date)}</p>
 
           {sale.price?.cash > 0 && (
             <span className="flex items-center gap-1">

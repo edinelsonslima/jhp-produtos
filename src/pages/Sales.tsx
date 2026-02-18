@@ -1,10 +1,10 @@
-import { AnimatedCurrency } from "@/components/AnimatedCurrency";
-import { ChangeCalculatorModal } from "@/components/ChangeCalculatorModal";
+import { Calculator } from "@/components/Calculator";
+import { Currency } from "@/components/Currency";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Title } from "@/components/Layout/title";
 import { ProductCard } from "@/components/ProductCard";
-import { SaleCelebration, useSaleCelebration } from "@/components/SaleCelebration";
-import { SaleItem } from "@/components/SaleItem";
+import { SaleCelebration } from "@/components/Sales/celebration";
+import { SaleItem } from "@/components/Sales/item";
 import { Button } from "@/components/ui/button";
 import { Collapse } from "@/components/ui/collapse";
 import { Label } from "@/components/ui/label";
@@ -15,12 +15,12 @@ import { cn, formatCurrency, generateUUID, vibrate } from "@/lib/utils";
 import { PaymentMethod, Product, SaleProducts } from "@/types";
 import { AnimatePresence, m } from "framer-motion";
 import { Banknote, Plus, Smartphone, Trash2 } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 
 export default function Sales() {
   const sales = saleStore.useStore((state) => state.sales);
   const products = productStore.useStore((state) => state.products);
-  const celebration = useSaleCelebration();
+  const celebration = useRef<{ celebrate: () => void }>(null);
 
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("dinheiro");
   const [selected, setSelected] = useState<SaleProducts>({
@@ -113,7 +113,7 @@ export default function Sales() {
     setPaymentMethod("dinheiro");
     setSelected({ custom: [], regular: [] });
     toast.success("Venda registrada!");
-    celebration.celebrate();
+    celebration.current?.celebrate();
   };
 
   const handleAddCustomItem = (e: FormEvent<HTMLFormElement>) => {
@@ -172,22 +172,18 @@ export default function Sales() {
 
   return (
     <>
-      <SaleCelebration show={celebration.show} onComplete={celebration.onComplete} />
       <Title title="Vendas" subtitle="Adicione vendas ao caixa de hoje" />
 
-      <div
+      <SaleCelebration ref={celebration} />
+
+      <Currency
+        value={total}
         className={cn(
           "fixed top-20 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
+          "text-3xl font-extrabold font-mono",
+          total > 0 ? "text-success" : "text-error",
         )}
-      >
-        <AnimatedCurrency
-          value={total}
-          className={cn(
-            "text-3xl font-extrabold font-mono",
-            total > 0 ? "text-success" : "text-error",
-          )}
-        />
-      </div>
+      />
 
       <m.div
         initial={{ opacity: 0, y: 12 }}
@@ -473,7 +469,7 @@ export default function Sales() {
             <Plus size={18} /> Registrar Venda
           </Button>
 
-          <ChangeCalculatorModal saleTotal={total} />
+          <Calculator saleTotal={total} />
         </div>
       </m.form>
     </>

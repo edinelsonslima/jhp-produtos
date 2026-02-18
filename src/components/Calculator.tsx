@@ -10,7 +10,7 @@ interface Props {
   saleTotal: number;
 }
 
-export function ChangeCalculatorModal({ saleTotal }: Props) {
+export function Calculator({ saleTotal }: Props) {
   const [amountPaid, setAmountPaid] = useState(0);
 
   const getBreakdown = (value: number) => {

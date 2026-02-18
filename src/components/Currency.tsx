@@ -1,16 +1,17 @@
 import { cn, formatCurrency } from "@/lib/utils";
 import { AnimatePresence, m } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { ComponentProps, useEffect, useRef, useState } from "react";
 
-interface AnimatedCurrencyProps {
+interface Props extends ComponentProps<"span"> {
   value: number;
   className?: string;
 }
 
-export function AnimatedCurrency({ value, className }: AnimatedCurrencyProps) {
+export function Currency({ value, className, ...props }: Props) {
   const formatted = formatCurrency(value);
-  const prevFormatted = useRef(formatted);
+
   const [key, setKey] = useState(0);
+  const prevFormatted = useRef(formatted);
 
   useEffect(() => {
     if (prevFormatted.current !== formatted) {
@@ -21,8 +22,11 @@ export function AnimatedCurrency({ value, className }: AnimatedCurrencyProps) {
 
   return (
     <span
-      className={cn("inline-flex overflow-hidden", className)}
-      style={{ perspective: "400px" }}
+      className={cn(
+        "inline-flex overflow-hidden perspective-[400px]",
+        className,
+      )}
+      {...props}
     >
       <AnimatePresence mode="popLayout" initial={false}>
         <m.span

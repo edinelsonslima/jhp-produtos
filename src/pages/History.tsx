@@ -1,6 +1,7 @@
 import { Title } from "@/components/Layout/title";
-import { SaleItem } from "@/components/SaleItem";
+import { SaleItem } from "@/components/Sales/item";
 import StatCard from "@/components/StatCard";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/toast";
 import { employeeStore } from "@/hooks/useEmployees";
@@ -19,7 +20,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 
 export default function History() {
   const sales = saleStore.useStore((s) => s.sales);
@@ -54,11 +54,7 @@ export default function History() {
     viewMonth.month + 1,
     0,
   ).getDate();
-  const firstDayOfWeek = new Date(
-    viewMonth.year,
-    viewMonth.month,
-    1,
-  ).getDay();
+  const firstDayOfWeek = new Date(viewMonth.year, viewMonth.month, 1).getDay();
 
   const monthNames = [
     "Janeiro",
@@ -118,7 +114,10 @@ export default function History() {
 
   return (
     <>
-      <Title title="Histórico" subtitle="Visualize vendas e pagamentos por dia" />
+      <Title
+        title="Histórico"
+        subtitle="Visualize vendas e pagamentos por dia"
+      />
 
       <Card>
         <div className="flex items-center justify-between mb-4">
@@ -148,10 +147,7 @@ export default function History() {
 
         <div className="grid grid-cols-7 gap-1 text-center text-xs">
           {["D", "S", "T", "Q", "Q", "S", "S"].map((d, i) => (
-            <span
-              key={i}
-              className="font-semibold text-base-content/40 py-1"
-            >
+            <span key={i} className="font-semibold text-base-content/40 py-1">
               {d}
             </span>
           ))}
@@ -292,7 +288,11 @@ export default function History() {
         ) : (
           <div className="space-y-2">
             {daySales.map((sale) => (
-              <SaleItem key={sale.id} saleId={sale.id} onDelete={handleDelete} />
+              <SaleItem
+                key={sale.id}
+                saleId={sale.id}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         )}
