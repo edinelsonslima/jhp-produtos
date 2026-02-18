@@ -287,7 +287,7 @@ export default function Sales() {
                 >
                   <div className="w-full">
                     <div className="flex justify-between items-end">
-                      <p className="font-semibold">{product?.name}</p>
+                      <p className="text-sm">{product?.name}</p>
                     </div>
 
                     <div className="flex items-center">
@@ -296,7 +296,7 @@ export default function Sales() {
                         {product?.quantity}
                       </p>
                       <span className="flex-1 mx-2 border-b border-dotted border-base-content/20 translate-y-1" />
-                      <span className="font-mono font-bold">
+                      <span className="font-mono text-sm">
                         {formatCurrency(
                           (product?.price ?? 0) * (product?.quantity ?? 0),
                         )}
@@ -304,16 +304,19 @@ export default function Sales() {
                     </div>
                   </div>
 
-                  <Trash2
-                    size={22}
-                    className="text-error cursor-pointer daisy-btn daisy-btn-xs p-1"
+                  <Button
+                    size="xs"
+                    variant="error"
+                    appearance="soft"
                     onClick={() => (
                       vibrate(10),
                       product.type === "regular"
                         ? handleAddProduct(product, 0)
                         : handleDeleteCustomItem(product.id)
                     )}
-                  />
+                  >
+                    <Trash2 size={15} />
+                  </Button>
                 </div>
               ))}
           </div>

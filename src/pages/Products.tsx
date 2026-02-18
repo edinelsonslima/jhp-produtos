@@ -106,9 +106,9 @@ export default function Products() {
                   {formatCurrency(p.price)}
                 </p>
                 <Button
-                  size="sm"
+                  size="xs"
                   variant="error"
-                  appearance="ghost"
+                  appearance="soft"
                   onClick={() => {
                     productStore.action.delete(p.id);
                     toast.info("Produto removido");

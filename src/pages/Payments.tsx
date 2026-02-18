@@ -323,9 +323,9 @@ export default function Payments() {
                       {formatCurrency(payment.amount)}
                     </p>
                     <Button
-                      size="sm"
+                      size="xs"
                       variant="error"
-                      appearance="ghost"
+                      appearance="soft"
                       onClick={() => {
                         paymentStore.action.delete(payment.id);
                         toast.info("Diária removida");

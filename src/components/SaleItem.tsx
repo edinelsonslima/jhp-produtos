@@ -81,8 +81,8 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
       </Button>
 
       {open && (
-        <div className="px-5 pb-4 space-y-2">
-          <div className="space-y-1 pt-3 border-t border-dashed border-base-300">
+        <div className="px-5 pb-2 space-y-3">
+          <div className="space-y-1 py-3 border-t border-b border-dashed border-base-300">
             {getProducts()?.map((product) => (
               <div
                 key={product.id}
@@ -99,26 +99,25 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
             ))}
           </div>
 
-          <div className="flex gap-2 mt-3 pt-3 border-t border-dashed border-base-300">
+          <div className="flex justify-end gap-2">
             <Link
               to={`/vendas/${sale.id}/editar`}
-              className={Button.style("flex-1", {
-                appearance: "outline",
-                modifier: "wide",
+              className={Button.style({
+                appearance: "soft",
+                size: "sm",
               })}
             >
-              <Pencil size={12} /> Editar
+              <Pencil size={15} /> Editar
             </Link>
 
             {onDelete && (
               <Button
+                size="sm"
                 variant="error"
-                modifier="wide"
-                className="flex-1"
-                appearance="outline"
+                appearance="soft"
                 onClick={() => onDelete(sale.id)}
               >
-                <Trash2 size={12} /> Excluir
+                <Trash2 size={15} />
               </Button>
             )}
           </div>
