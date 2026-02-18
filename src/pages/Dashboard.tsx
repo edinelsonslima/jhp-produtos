@@ -134,11 +134,12 @@ export default function Dashboard() {
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
           Vendas de Hoje ({todaySales.saleId.length})
         </h3>
+
         {todaySales.saleId.length === 0 ? (
           <div className="rounded-xl border border-base-300 bg-base-100 p-8 text-center text-base-content/60 text-sm">
             Nenhuma venda registrada hoje
           </div>
-        ) : (
+          ) : (
           <div className="space-y-2">
             {todaySales.saleId.slice(0, 10).map((saleId) => (
               <SaleItem key={saleId} saleId={saleId} onDelete={handleDelete} />
