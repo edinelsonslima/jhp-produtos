@@ -1,7 +1,7 @@
 import { authStore } from "@/hooks/useAuth";
 import { generateUUID, storage } from "./utils";
 
-export interface AuditEntry {
+interface AuditEntry {
   id: string;
   action: string;
   details: string;
@@ -10,7 +10,7 @@ export interface AuditEntry {
   timestamp: number;
 }
 
-export const auditStorage = storage(["audit-log"]);
+const auditStorage = storage(["audit-log"]);
 
 function getCurrentUser() {
   const user = authStore.action.getCurrentUser();
