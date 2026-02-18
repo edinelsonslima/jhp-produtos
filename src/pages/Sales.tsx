@@ -357,6 +357,7 @@ export default function Sales() {
         <div className="flex gap-2">
           <Button
             type="button"
+            className="flex-1"
             appearance="outline"
             active={paymentMethod === "dinheiro"}
             variant={paymentMethod === "dinheiro" ? "warning" : undefined}
@@ -367,6 +368,7 @@ export default function Sales() {
 
           <Button
             type="button"
+            className="flex-1"
             appearance="outline"
             active={paymentMethod === "pix"}
             variant={paymentMethod === "pix" ? "success" : undefined}
@@ -377,6 +379,7 @@ export default function Sales() {
 
           <Button
             type="button"
+            className="flex-1"
             appearance="outline"
             active={paymentMethod === "combinado"}
             variant={paymentMethod === "combinado" ? "primary" : undefined}

@@ -102,10 +102,9 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
           <div className="flex gap-2 mt-3 pt-3 border-t border-dashed border-base-300">
             <Link
               to={`/vendas/${sale.id}/editar`}
-              className={Button.style({
+              className={Button.style("flex-1", {
                 appearance: "outline",
                 modifier: "wide",
-                variant: "accent",
               })}
             >
               <Pencil size={12} /> Editar
@@ -115,6 +114,7 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
               <Button
                 variant="error"
                 modifier="wide"
+                className="flex-1"
                 appearance="outline"
                 onClick={() => onDelete(sale.id)}
               >
