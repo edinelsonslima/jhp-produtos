@@ -1,16 +1,10 @@
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
-import { cn, formatCurrency, formatDateTime } from "@/lib/utils";
-import {
-  Banknote,
-  ChevronDown,
-  Pencil,
-  Smartphone,
-  Trash2,
-} from "lucide-react";
-import { useState } from "react";
+import { formatCurrency, formatDateTime } from "@/lib/utils";
+import { Banknote, Pencil, Smartphone, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
+import { Collapse } from "./ui/collapse";
 
 interface SaleItemProps {
   saleId: string;
@@ -18,8 +12,6 @@ interface SaleItemProps {
 }
 
 export function SaleItem({ saleId, onDelete }: SaleItemProps) {
-  const [open, setOpen] = useState(false);
-
   const sale = saleStore.useStore((state) => {
     return state.sales.find((s) => s.id === saleId);
   });
@@ -39,90 +31,72 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
   };
 
   return (
-    <div className="border-b border-base-300 last:border-b-0">
-      <Button
-        disableDefaultStyles
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-4 md:hover:bg-base-200/50 transition-colors"
-      >
-        <div className="flex flex-col items-start gap-1">
-          <p className="text-sm font-semibold">
-            Venda • {getProducts()?.length ?? 0} itens
-          </p>
-          <p className="text-xs text-base-content/60">
+    <Collapse icon="arrow">
+      <Collapse.Summary>
+        <p className="text-sm font-semibold">
+          Venda • {getProducts()?.length ?? 0} itens
+        </p>
+
+        <div className="flex items-center gap-3 text-xs text-base-content/60 mt-1">
+          <p>
             {formatDateTime(sale.date)}
           </p>
-          <div className="flex items-center gap-3 text-xs text-base-content/60 mt-1">
-            {sale.price?.cash > 0 && (
-              <span className="flex items-center gap-1">
-                <Banknote size={12} className="text-warning" />
-                {formatCurrency(sale.price.cash)}
-              </span>
-            )}
-            {sale.price?.pix > 0 && (
-              <span className="flex items-center gap-1">
-                <Smartphone size={12} className="text-success" />
-                {formatCurrency(sale.price.pix)}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="font-mono font-bold">
-            {formatCurrency(sale.price?.total ?? 0)}
-          </span>
-          <ChevronDown
-            className={cn(
-              "h-4 w-4 opacity-50 transition-transform",
-              open && "rotate-180",
-            )}
-          />
-        </div>
-      </Button>
 
-      {open && (
-        <div className="px-5 pb-2 space-y-3">
-          <div className="space-y-1 py-3 border-t border-b border-dashed border-base-300">
-            {getProducts()?.map((product) => (
-              <div
-                key={product.id}
-                className="flex items-center justify-between text-sm"
-              >
-                <span className="truncate">
-                  {product.name} ({product.unit === "litro" ? "L" : "un."})
-                </span>
-                <span className="flex-1 mx-2 border-b border-dotted border-base-content/20 translate-y-1" />
-                <span className="text-base-content/60">
-                  {product.quantity}x
-                </span>
-              </div>
-            ))}
-          </div>
+          {sale.price?.cash > 0 && (
+            <span className="flex items-center gap-1">
+              <Banknote size={12} className="text-warning" />
+              {formatCurrency(sale.price.cash)}
+            </span>
+          )}
 
-          <div className="flex justify-end gap-2">
-            <Link
-              to={`/vendas/${sale.id}/editar`}
-              className={Button.style({
-                appearance: "soft",
-                size: "sm",
-              })}
+          {sale.price?.pix > 0 && (
+            <span className="flex items-center gap-1">
+              <Smartphone size={12} className="text-success" />
+              {formatCurrency(sale.price.pix)}
+            </span>
+          )}
+        </div>
+      </Collapse.Summary>
+
+      <Collapse.Content className="space-y-4">
+        <div className="space-y-1 py-3 border-t border-b border-dashed border-base-300">
+          {getProducts()?.map((product) => (
+            <div
+              key={product.id}
+              className="flex items-center justify-between text-sm"
             >
-              <Pencil size={15} /> Editar
-            </Link>
-
-            {onDelete && (
-              <Button
-                size="sm"
-                variant="error"
-                appearance="soft"
-                onClick={() => onDelete(sale.id)}
-              >
-                <Trash2 size={15} />
-              </Button>
-            )}
-          </div>
+              <span className="truncate">
+                {product.name} ({product.unit === "litro" ? "L" : "un."})
+              </span>
+              <span className="flex-1 mx-2 border-b border-dotted border-base-content/20 translate-y-1" />
+              <span className="text-base-content/60">{product.quantity}x</span>
+            </div>
+          ))}
         </div>
-      )}
-    </div>
+
+        <div className="flex justify-end gap-2">
+          <Link
+            to={`/vendas/${sale.id}/editar`}
+            className={Button.style({
+              appearance: "soft",
+              size: "sm",
+            })}
+          >
+            <Pencil size={15} /> Editar
+          </Link>
+
+          {onDelete && (
+            <Button
+              size="sm"
+              variant="error"
+              appearance="soft"
+              onClick={() => onDelete(sale.id)}
+            >
+              <Trash2 size={15} />
+            </Button>
+          )}
+        </div>
+      </Collapse.Content>
+    </Collapse>
   );
 }

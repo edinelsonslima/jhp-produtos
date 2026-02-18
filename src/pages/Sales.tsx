@@ -332,23 +332,21 @@ export default function Sales() {
           Últimas Vendas
         </h3>
 
-        <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden">
-          {sales.length === 0 ? (
-            <div className="p-8 text-center text-base-content/60 text-sm">
-              Nenhuma venda registrada
-            </div>
-          ) : (
-            <div>
-              {sales.slice(0, 20).map((sale) => (
-                <SaleItem
-                  key={sale.id}
-                  saleId={sale.id}
-                  onDelete={handleDeleteSale}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        {sales.length === 0 ? (
+          <div className="p-8 text-center text-base-content/60 text-sm">
+            Nenhuma venda registrada
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {sales.slice(0, 20).map((sale) => (
+              <SaleItem
+                key={sale.id}
+                saleId={sale.id}
+                onDelete={handleDeleteSale}
+              />
+            ))}
+          </div>
+        )}
       </m.div>
 
       <m.form

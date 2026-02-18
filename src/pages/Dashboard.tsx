@@ -139,7 +139,7 @@ export default function Dashboard() {
             Nenhuma venda registrada hoje
           </div>
         ) : (
-          <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden">
+          <div className="space-y-2">
             {todaySales.saleId.slice(0, 10).map((saleId) => (
               <SaleItem key={saleId} saleId={saleId} onDelete={handleDelete} />
             ))}
