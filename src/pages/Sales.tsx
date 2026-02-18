@@ -357,39 +357,30 @@ export default function Sales() {
         <div className="flex gap-2">
           <Button
             type="button"
+            appearance="outline"
+            active={paymentMethod === "dinheiro"}
+            variant={paymentMethod === "dinheiro" ? "warning" : undefined}
             onClick={() => setPaymentMethod("dinheiro")}
-            className={cn(
-              "daisy-btn flex-1 gap-2",
-              paymentMethod === "dinheiro"
-                ? "daisy-btn-warning"
-                : "daisy-btn-outline",
-            )}
           >
             <Banknote size={16} /> Dinheiro
           </Button>
 
           <Button
             type="button"
+            appearance="outline"
+            active={paymentMethod === "pix"}
+            variant={paymentMethod === "pix" ? "success" : undefined}
             onClick={() => setPaymentMethod("pix")}
-            className={cn(
-              "daisy-btn flex-1 gap-2",
-              paymentMethod === "pix"
-                ? "daisy-btn-success"
-                : "daisy-btn-outline",
-            )}
           >
             <Smartphone size={16} /> Pix
           </Button>
 
           <Button
             type="button"
+            appearance="outline"
+            active={paymentMethod === "combinado"}
+            variant={paymentMethod === "combinado" ? "primary" : undefined}
             onClick={() => setPaymentMethod("combinado")}
-            className={cn(
-              "daisy-btn flex-1 gap-2",
-              paymentMethod === "combinado"
-                ? "daisy-btn-primary"
-                : "daisy-btn-outline",
-            )}
           >
             <Plus size={16} /> Combinado
           </Button>
@@ -458,8 +449,10 @@ export default function Sales() {
         <div className="flex gap-2">
           <Button
             type="submit"
+            size="lg"
+            variant="primary"
+            className="flex-1"
             disabled={total <= 0}
-            className="daisy-btn daisy-btn-primary daisy-btn-lg flex-1 min-w-0 gap-2"
           >
             <Plus size={18} /> Registrar Venda
           </Button>

@@ -45,6 +45,7 @@ interface StylesProps {
 
 interface ButtonProps extends ComponentProps<"button">, StylesProps {
   disableDefaultStyles?: boolean;
+  active?: boolean;
 }
 
 export function Button({
@@ -53,6 +54,7 @@ export function Button({
   appearance,
   modifier,
   className,
+  active = false,
   disableDefaultStyles = false,
   ...props
 }: ButtonProps) {
@@ -65,6 +67,7 @@ export function Button({
         !disableDefaultStyles && appearance && appearances[appearance],
         !disableDefaultStyles && modifier && modifiers[modifier],
         !disableDefaultStyles && props.disabled && "daisy-btn-disabled",
+        active && "daisy-btn-active",
         className,
       )}
       {...props}
