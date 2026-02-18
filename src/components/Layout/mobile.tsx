@@ -42,9 +42,9 @@ export function Mobile({
 
         <div className="daisy-dropdown daisy-dropdown-end">
           <div
-            tabIndex={0}
             role="button"
-            className="daisy-btn daisy-btn-primary rounded-full size-8 m-1"
+            tabIndex={0}
+            className={Button.style({ modifier: "circle", variant: "primary" })}
           >
             {user?.initials}
           </div>
@@ -69,8 +69,7 @@ export function Mobile({
                 <Modal.Trigger
                   as="button"
                   type="button"
-                  className="flex gap-2 items-center size-full"
-                  title="Calculadora de Troco"
+                  title="Selecionar o tema do sistema"
                 >
                   <Palette size={14} />
                   Tema
@@ -113,8 +112,10 @@ export function Mobile({
 
             <li className="border-t border-black/15 pt-1 mt-1">
               <Button
+                size="sm"
                 variant="error"
-                appearance="soft"
+                appearance="link"
+                className="justify-start"
                 onClick={() => authStore.action.logout()}
               >
                 <LogOut size={14} /> Sair
