@@ -10,7 +10,6 @@ import {
   ReactNode,
   RefObject,
   useContext,
-  useEffect,
   useRef,
 } from "react";
 import { createPortal } from "react-dom";
@@ -25,22 +24,18 @@ const ModalContext = createContext<ModalContextValue>({
 
 export function Modal({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDialogElement>(null);
+  const childrenArray = Children.toArray(children);
 
-  let trigger: ReactNode;
-  const childrenWithoutTrigger = Children.map(children, (child) => {
-    if (isValidElement(child) && Modal.Trigger === child.type) {
-      trigger = child;
-      return null;
-    }
+  const isElement = (child: ReactNode, Component: unknown) =>
+    isValidElement(child) && child.type === Component;
 
-    return child;
-  });
+  const trigger = childrenArray.find((child) =>
+    isElement(child, Modal.Trigger),
+  );
 
-  useEffect(() => {
-    return () => {
-      ref.current?.remove();
-    };
-  }, []);
+  const childrenWithoutTrigger = childrenArray.filter(
+    (child) => !isElement(child, Modal.Trigger),
+  );
 
   return (
     <ModalContext value={{ ref }}>
@@ -65,15 +60,13 @@ export function Modal({ children }: PropsWithChildren) {
   );
 }
 
-Modal.Content = function <TElement extends keyof React.JSX.IntrinsicElements>({
-  as,
-  children,
-  ...props
-}: ComponentProps<TElement> & { as?: TElement }) {
+Modal.Content = function Content<
+  TElement extends keyof React.JSX.IntrinsicElements,
+>({ as, children, ...props }: ComponentProps<TElement> & { as?: TElement }) {
   return as ? createElement(as, props, children) : children;
 };
 
-Modal.Title = function ({
+Modal.Title = function Title({
   children,
   className,
   ...props
@@ -85,7 +78,7 @@ Modal.Title = function ({
   );
 };
 
-Modal.Actions = function ({
+Modal.Actions = function Actions({
   className,
   children,
   ...props
@@ -101,7 +94,9 @@ Modal.Actions = function ({
   );
 };
 
-Modal.Trigger = function <TElement extends (keyof React.JSX.IntrinsicElements | ElementType)>({
+Modal.Trigger = function Trigger<
+  TElement extends keyof React.JSX.IntrinsicElements | ElementType,
+>({
   children,
   as,
   onClick,
@@ -109,6 +104,6 @@ Modal.Trigger = function <TElement extends (keyof React.JSX.IntrinsicElements | 
 }: ComponentProps<TElement> & { as: TElement }) {
   const { ref } = useContext(ModalContext);
 
-  const handleClick = (e: any) => (ref.current?.showModal(), onClick?.(e));
+  const handleClick = (e: unknown) => (ref.current?.showModal(), onClick?.(e));
   return createElement(as, { ...props, onClick: handleClick }, children);
 };
