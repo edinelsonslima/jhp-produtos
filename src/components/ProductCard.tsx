@@ -26,7 +26,7 @@ export function ProductCard({
   const updateProductByQuantity = (qty: number = 0) => {
     const newQuantity = Math.max(qty, 0);
     onSelect(product, newQuantity);
-    vibrate(30);
+    vibrate(10);
   };
 
   const handlePointerDown = () => {

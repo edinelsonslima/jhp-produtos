@@ -37,7 +37,7 @@ export function storage<T extends Lowercase<`${string}-${string}`>>(keys: T[]) {
 
   type Key = (typeof keys)[number];
 
-  const save = (key: Key, value: any, expiresIn: number = Infinity) => {
+  const save = (key: Key, value: unknown, expiresIn: number = Infinity) => {
     const toSave = JSON.stringify({
       data: value,
       createdAt: Date.now(),
@@ -48,7 +48,7 @@ export function storage<T extends Lowercase<`${string}-${string}`>>(keys: T[]) {
     localStorage.setItem(prefix + key, toSave);
   };
 
-  const load = <T>(key: Key, defaultValue: any = null): T => {
+  const load = <T>(key: Key, defaultValue: T): T => {
     const item = localStorage.getItem(prefix + key);
 
     if (!item) {
@@ -70,13 +70,13 @@ export function storage<T extends Lowercase<`${string}-${string}`>>(keys: T[]) {
   };
 
   const update = <T>(key: Key, value: T) => {
-    const existing = load<any>(key, {});
+    const existing = load<Record<string, unknown>>(key, {});
 
     const toSave = JSON.stringify({
       data: { ...existing, ...value },
-      createdAt: existing.createdAt || Date.now(),
+      createdAt: existing?.createdAt || Date.now(),
       updatedAt: Date.now(),
-      expiresAt: existing.expiresAt || null,
+      expiresAt: existing?.expiresAt || null,
     });
 
     localStorage.setItem(prefix + key, toSave);

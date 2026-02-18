@@ -34,6 +34,8 @@ export function logAudit(action: string, details: string) {
   };
 
   const log = getAuditLog();
+  
+
   log.unshift(entry);
 
   if (log.length > 500) {

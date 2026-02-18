@@ -50,7 +50,11 @@ export function createStore<
     return state;
   };
 
-  const loaded = persistStorage?.load<TState>(persistStorageKey, undefined);
+  const loaded = persistStorage?.load<TState | undefined>(
+    persistStorageKey,
+    undefined,
+  );
+
   state = loaded ?? createState(setState, getState);
 
   /**
