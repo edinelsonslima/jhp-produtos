@@ -1,4 +1,4 @@
-import { AnimationEvent, useEffect, useState } from "react";
+import { AnimationEvent, useCallback, useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { IToastMessageProps } from "../@types";
@@ -22,9 +22,9 @@ export function ToastMessage({
     onRemoveMessage(id);
   };
 
-  const handleActiveAnimationUnmount = () => {
+  const handleActiveAnimationUnmount = useCallback(() => {
     setAnimationUnmount(animationUnmountProp || "animate-pulse");
-  };
+  }, [animationUnmountProp]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -32,7 +32,7 @@ export function ToastMessage({
     }, duration);
 
     return () => window.clearTimeout(timeoutId);
-  }, [duration]);
+  }, [duration, handleActiveAnimationUnmount]);
 
   return (
     <span

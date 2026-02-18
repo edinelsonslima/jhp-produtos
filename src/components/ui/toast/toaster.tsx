@@ -1,7 +1,7 @@
-import { toast, ToastContainer, ToastMessage } from "@/lib/toast";
+import { ToastContainer, ToastMessage } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
-const Toaster = () => {
+export function Toaster() {
   return (
     <ToastContainer
       defaultDuration={3000}
@@ -28,6 +28,4 @@ const Toaster = () => {
       )}
     </ToastContainer>
   );
-};
-
-export { toast, Toaster };
+}
