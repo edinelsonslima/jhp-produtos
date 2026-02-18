@@ -4,6 +4,7 @@ import { Title } from "@/components/Layout/title";
 import { ProductCard } from "@/components/ProductCard";
 import { SaleItem } from "@/components/SaleItem";
 import { Button } from "@/components/ui/button";
+import { Collapse } from "@/components/ui/collapse";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
@@ -209,51 +210,52 @@ export default function Sales() {
         )}
       </m.div>
 
-      <m.form
-        className="rounded-xl border border-base-300 bg-base-100 p-3"
-        onSubmit={handleAddCustomItem}
-      >
-        <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
+      <Collapse icon="plus">
+        <Collapse.Summary className="text-sm font-semibold text-base-content/80 uppercase tracking-wider">
           Item Personalizado
-        </h3>
+        </Collapse.Summary>
 
-        <CurrencyInput name="price" label="Preço" />
+        <Collapse.Content>
+          <m.form onSubmit={handleAddCustomItem}>
+            <CurrencyInput name="price" label="Preço" />
 
-        <div className="flex gap-4 items-end">
-          <div className="flex-2">
-            <Label className="daisy-label">Produto</Label>
-            <input
-              name="name"
-              type="text"
-              placeholder="Descrição do item personalizado"
-              maxLength={100}
-              className="daisy-input w-full font-mono"
-            />
-          </div>
+            <div className="flex gap-4 items-end">
+              <div className="flex-2">
+                <Label className="daisy-label">Produto</Label>
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="Descrição do item personalizado"
+                  maxLength={100}
+                  className="daisy-input w-full font-mono"
+                />
+              </div>
 
-          <div className="flex-1">
-            <Label className="daisy-label mt-4 mb-1">Quantidade</Label>
-            <input
-              name="quantity"
-              type="number"
-              step="1"
-              min="1"
-              placeholder="1"
-              className="daisy-input w-full font-mono"
-            />
-          </div>
-        </div>
+              <div className="flex-1">
+                <Label className="daisy-label mt-4 mb-1">Quantidade</Label>
+                <input
+                  name="quantity"
+                  type="number"
+                  step="1"
+                  min="1"
+                  placeholder="1"
+                  className="daisy-input w-full font-mono"
+                />
+              </div>
+            </div>
 
-        <Button
-          appearance="soft"
-          modifier="block"
-          className="mt-4"
-          type="submit"
-          onClick={() => vibrate(10)}
-        >
-          <Plus size={16} /> Adicionar Item Personalizado
-        </Button>
-      </m.form>
+            <Button
+              appearance="soft"
+              modifier="block"
+              className="mt-4"
+              type="submit"
+              onClick={() => vibrate(10)}
+            >
+              <Plus size={16} /> Adicionar Item Personalizado
+            </Button>
+          </m.form>
+        </Collapse.Content>
+      </Collapse>
 
       <AnimatePresence>
         <m.div
