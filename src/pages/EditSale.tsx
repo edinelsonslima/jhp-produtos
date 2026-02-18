@@ -1,3 +1,4 @@
+import { AnimatedCurrency } from "@/components/AnimatedCurrency";
 import { CurrencyInput } from "@/components/CurrencyInput";
 import { Title } from "@/components/Layout/title";
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, vibrate } from "@/lib/utils";
 import { PaymentMethod, Sale } from "@/types";
 import {
   ArrowLeft,
@@ -55,6 +56,7 @@ export default function EditSale() {
     }, 0);
 
   const updateQuantity = (productId: string, delta: number) => {
+    vibrate(10);
     setProducts((prev) => {
       const isCustom = prev.custom.some((p) => p.id === productId);
 
@@ -137,6 +139,19 @@ export default function EditSale() {
 
   return (
     <>
+      <div className="rounded-xl border border-base-300 bg-base-100 p-5 sticky top-16 z-10">
+        <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
+          Total
+        </p>
+        <AnimatedCurrency
+          value={total}
+          className={cn(
+            "text-3xl font-extrabold font-mono mt-1",
+            total > 0 ? "text-success" : "text-error",
+          )}
+        />
+      </div>
+
       <Title
         title="Editar Venda"
         subtitle={new Date(sale.date).toLocaleString("pt-BR")}
@@ -279,15 +294,6 @@ export default function EditSale() {
             )}
           </div>
         )}
-      </div>
-
-      <div className="rounded-xl border border-base-300 bg-base-100 p-5">
-        <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
-          Total
-        </p>
-        <p className="text-3xl font-extrabold font-mono text-success mt-1">
-          {formatCurrency(total)}
-        </p>
       </div>
 
       <div className="flex gap-3">

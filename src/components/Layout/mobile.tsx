@@ -1,12 +1,13 @@
 import { AppUser, authStore } from "@/hooks/useAuth";
 import { Theme, themeStore } from "@/hooks/useTheme";
 import {
-  Circle,
+  CalendarDays,
   ClipboardList,
   LayoutDashboard,
   LogOut,
   Package,
   Palette,
+  Search,
   ShoppingCart,
   Users,
   X,
@@ -24,7 +25,7 @@ interface MobileProps {
 
 const dockerItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/404", icon: Circle, label: "not found" },
+  { to: "/historico", icon: CalendarDays, label: "Histórico" },
   { to: "/vendas", icon: ShoppingCart, label: "Vendas" },
   { to: "/pagamentos", icon: Users, label: "Diárias" },
   { to: "/produtos", icon: Package, label: "Produtos" },
@@ -40,8 +41,16 @@ export function Mobile({
       <nav className="daisy-navbar daisy-glass w-full flex justify-between sticky top-0 z-50">
         <Brand />
 
-        <div className="daisy-dropdown daisy-dropdown-end">
-          <div
+        <div className="flex items-center gap-2">
+          <Link
+            to="/buscar"
+            className={Button.style({ modifier: "circle", appearance: "ghost" })}
+          >
+            <Search size={18} />
+          </Link>
+
+          <div className="daisy-dropdown daisy-dropdown-end">
+            <div
             role="button"
             tabIndex={0}
             className={Button.style({ modifier: "circle", variant: "primary" })}
@@ -122,7 +131,8 @@ export function Mobile({
                 <LogOut size={14} /> Sair
               </Button>
             </li>
-          </ul>
+            </ul>
+          </div>
         </div>
       </nav>
 

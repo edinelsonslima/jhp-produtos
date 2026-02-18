@@ -56,8 +56,8 @@ export default function Audit() {
                   {config.label}
                 </Badge>
 
-                <div className="min-w-0">
-                  <p className="text-sm truncate">{entry.details}</p>
+                <div className="min-w-0 max-w-full overflow-x-auto">
+                  <p className="text-sm whitespace-nowrap">{entry.details}</p>
                   <p className="text-xs text-base-content/60 mt-0.5">
                     {entry.userName} •{" "}
                     {new Date(entry.timestamp).toLocaleString("pt-BR")}
