@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
+import { domMax, LazyMotion } from "framer-motion";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/Layout";
 import Audit from "./pages/Audit";
@@ -34,12 +35,12 @@ function AuthGate() {
 }
 
 const App = () => (
-  <>
+  <LazyMotion features={domMax}>
     <Toaster />
     <BrowserRouter>
       <AuthGate />
     </BrowserRouter>
-  </>
+  </LazyMotion>
 );
 
 export default App;

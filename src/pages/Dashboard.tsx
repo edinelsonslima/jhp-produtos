@@ -6,7 +6,7 @@ import { authStore } from "@/hooks/useAuth";
 import { paymentStore } from "@/hooks/usePayments";
 import { saleStore } from "@/hooks/useSales";
 import { formatCurrency } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import {
   Banknote,
   DollarSign,
@@ -78,7 +78,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -100,7 +100,7 @@ export default function Dashboard() {
           </div>
           <TrendingUp size={28} className="text-base-content/20" />
         </div>
-      </motion.div>
+      </m.div>
 
       <div>
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">

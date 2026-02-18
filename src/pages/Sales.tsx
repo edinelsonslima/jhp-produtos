@@ -10,7 +10,7 @@ import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency, generateUUID, vibrate } from "@/lib/utils";
 import { PaymentMethod, Product, SaleProducts } from "@/types";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Banknote, Plus, Smartphone, Trash2 } from "lucide-react";
 import { FormEvent, useState } from "react";
 
@@ -178,7 +178,7 @@ export default function Sales() {
         {formatCurrency(total)}
       </p>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         className="rounded-xl border border-base-300 bg-base-100 p-3"
@@ -207,9 +207,9 @@ export default function Sales() {
             Nenhum produto cadastrado
           </div>
         )}
-      </motion.div>
+      </m.div>
 
-      <motion.form
+      <m.form
         className="rounded-xl border border-base-300 bg-base-100 p-3"
         onSubmit={handleAddCustomItem}
       >
@@ -253,10 +253,10 @@ export default function Sales() {
         >
           <Plus size={16} /> Adicionar Item Personalizado
         </Button>
-      </motion.form>
+      </m.form>
 
       <AnimatePresence>
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
@@ -320,10 +320,10 @@ export default function Sales() {
                 </div>
               ))}
           </div>
-        </motion.div>
+        </m.div>
       </AnimatePresence>
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         className="mb-36"
@@ -349,9 +349,9 @@ export default function Sales() {
             </div>
           )}
         </div>
-      </motion.div>
+      </m.div>
 
-      <motion.form
+      <m.form
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
@@ -394,7 +394,7 @@ export default function Sales() {
 
         <AnimatePresence>
           {paymentMethod === "combinado" && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
@@ -448,7 +448,7 @@ export default function Sales() {
                     )}
                 </div>
               )}
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
 
@@ -465,7 +465,7 @@ export default function Sales() {
 
           <ChangeCalculatorModal saleTotal={total} />
         </div>
-      </motion.form>
+      </m.form>
     </>
   );
 }

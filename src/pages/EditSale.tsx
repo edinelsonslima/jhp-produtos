@@ -145,8 +145,9 @@ export default function EditSale() {
             modifier="square"
             appearance="ghost"
             onClick={() => navigate(-1)}
-            children={<ArrowLeft size={20} />}
-          />
+          >
+            <ArrowLeft size={20} />
+          </Button>
         }
       />
 

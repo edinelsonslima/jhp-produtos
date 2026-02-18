@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { IToastMessageProps } from "../@types";
 
 export function ToastMessage({
-  duration = 1000 * 7,
+  duration = 7000,
   id,
   children,
   className,
@@ -36,9 +36,13 @@ export function ToastMessage({
 
   return (
     <span
+      role="button"
       tabIndex={0}
       onAnimationEnd={handleRemoveMessage}
       onClick={handleActiveAnimationUnmount}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") handleActiveAnimationUnmount();
+      }}
       className={cn(className, animationUnmount)}
       {...props}
     >

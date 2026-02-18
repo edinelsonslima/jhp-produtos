@@ -50,8 +50,14 @@ export function Modal({ children }: PropsWithChildren) {
           </div>
 
           <div
+            role="button"
+            tabIndex={-1}
+            aria-label="Fechar"
             className="daisy-modal-backdrop"
             onClick={() => ref?.current?.close()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") ref?.current?.close();
+            }}
           />
         </dialog>,
         document.body,

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { FormEvent, useState } from "react";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -55,7 +55,7 @@ export default function Login() {
 
   return (
     <div className="min-h-dvh flex items-center justify-center bg-base-100 px-4">
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-sm space-y-6"
@@ -76,7 +76,7 @@ export default function Login() {
           {isRegister && (
             <div className="space-y-2">
               <Label>Nome</Label>
-              <label className="daisy-input daisy-validator">
+              <label aria-label="Nome" className="daisy-input daisy-validator">
                 <svg
                   className="h-[1em] opacity-50"
                   xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +108,7 @@ export default function Login() {
 
           <div className="space-y-2">
             <Label>E-mail</Label>
-            <label className="daisy-input daisy-validator">
+            <label aria-label="E-mail" className="daisy-input daisy-validator">
               <svg
                 className="h-[1em] opacity-50"
                 xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +138,7 @@ export default function Login() {
 
           <div className="space-y-2">
             <Label>Senha</Label>
-            <label className="daisy-input daisy-validator">
+            <label aria-label="Senha" className="daisy-input daisy-validator">
               <svg
                 className="h-[1em] opacity-50"
                 xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +189,7 @@ export default function Login() {
             {isRegister ? "Entrar" : "Criar conta"}
           </Button>
         </p>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

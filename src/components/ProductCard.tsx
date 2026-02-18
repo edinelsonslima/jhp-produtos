@@ -1,8 +1,9 @@
 import { cn, formatCurrency, vibrate } from "@/lib/utils";
 import { Product } from "@/types";
-import { motion, useDragControls } from "framer-motion";
+import { m } from "framer-motion";
 import { Package, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
+import { Button } from "./ui/button";
 
 interface Props {
   product: Product;
@@ -17,7 +18,6 @@ export function ProductCard({
   quantity = 0,
   onSelect,
 }: Props) {
-  const dragControls = useDragControls();
   const [longPressActive, setLongPressActive] = useState(false);
   const longPressTimer = useRef<number | null>(null);
   const isDragging = useRef(false);
@@ -59,10 +59,9 @@ export function ProductCard({
   };
 
   return (
-    <motion.button
+    <m.button
       type="button"
       drag={!longPressActive ? "x" : false}
-      dragControls={dragControls}
       dragTransition={{ bounceStiffness: 100, bounceDamping: 9999 }}
       dragElastic={1}
       dragConstraints={{ left: 0, right: 0 }}
@@ -83,48 +82,52 @@ export function ProductCard({
     >
       <div className="flex items-center gap-2 mb-2 w-full">
         <Package size={16} className="text-primary" />
+
         <span className="font-semibold text-sm truncate w-full">
           {product.name}
         </span>
+        {longPressActive && (
+          <span
+            role="button"
+            aria-label="Remover produto"
+            className={Button.style("-m-1", {
+              variant: "error",
+              modifier: "square",
+              appearance: "soft",
+              size: "xs",
+            })}
+            onClick={(e) => {
+              if (longPressTimer.current) {
+                return;
+              }
+
+              e.stopPropagation();
+              updateProductByQuantity(0);
+              setLongPressActive(false);
+            }}
+          >
+            <Trash2 size={14} />
+          </span>
+        )}
       </div>
 
-      {longPressActive && (
-        <span
-          className="daisy-btn daisy-btn-error w-full"
-          onClick={(e) => {
-            if (longPressTimer.current) {
-              return;
-            }
-
-            e.stopPropagation();
-            updateProductByQuantity(0);
-            setLongPressActive(false);
-          }}
-        >
-          <Trash2 size={14} />
-          Limpar
+      <div className="flex items-center justify-between w-full">
+        <span className="font-mono font-bold text-sm text-primary">
+          {formatCurrency(product.price)}
         </span>
-      )}
-
-      {!longPressActive && (
-        <div className="flex items-center justify-between w-full">
-          <span className="font-mono font-bold text-sm text-primary">
-            {formatCurrency(product.price)}
-          </span>
-          <span
-            className={cn(
-              "text-xs text-base-content/60",
-              quantity && "font-bold text-primary",
-            )}
-          >
-            {!quantity
-              ? product.unit === "litro"
-                ? "litro"
-                : "uni"
-              : `${quantity}x`}
-          </span>
-        </div>
-      )}
-    </motion.button>
+        <span
+          className={cn(
+            "text-xs text-base-content/60",
+            quantity && "font-bold text-primary",
+          )}
+        >
+          {!quantity
+            ? product.unit === "litro"
+              ? "litro"
+              : "uni"
+            : `${quantity}x`}
+        </span>
+      </div>
+    </m.button>
   );
 }

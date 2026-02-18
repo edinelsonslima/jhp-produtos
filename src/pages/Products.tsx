@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toast";
 import { productStore } from "@/hooks/useProducts";
 import { formatCurrency } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Package, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -39,7 +39,7 @@ export default function Products() {
     <>
       <Title title="Produtos" subtitle="Gerencie seu catálogo de produtos" />
 
-      <motion.form
+      <m.form
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
@@ -80,7 +80,7 @@ export default function Products() {
         <Button type="submit" variant="primary" modifier="block">
           <Plus size={18} /> Adicionar Produto
         </Button>
-      </motion.form>
+      </m.form>
 
       <div>
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">

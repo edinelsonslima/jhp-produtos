@@ -8,7 +8,7 @@ import { employeeStore } from "@/hooks/useEmployees";
 import { paymentStore } from "@/hooks/usePayments";
 import { cn, formatCurrency } from "@/lib/utils";
 import { Employee } from "@/types";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -96,7 +96,7 @@ export default function Payments() {
         subtitle="Selecione um funcionário e registre a diária"
       />
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex gap-4 w-full overflow-x-auto p-4 rounded-xl border border-base-300 bg-base-100"
@@ -211,11 +211,11 @@ export default function Payments() {
             </span>
           </Button>
         ))}
-      </motion.div>
+      </m.div>
 
       <AnimatePresence mode="wait">
         {employee && (
-          <motion.div
+          <m.div
             key={employee.id}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -253,9 +253,9 @@ export default function Payments() {
             <div className="grid grid-cols-2 gap-3">
               {employee.defaultRates
                 .filter((r) => r > 0)
-                .map((rate, i) => (
+                .map((rate) => (
                   <Button
-                    key={i}
+                    key={rate}
                     size="lg"
                     variant="secondary"
                     appearance="outline"
@@ -277,7 +277,7 @@ export default function Payments() {
                 <Plus size={16} /> Registrar
               </Button>
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 

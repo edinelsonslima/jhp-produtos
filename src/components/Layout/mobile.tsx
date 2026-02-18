@@ -94,12 +94,13 @@ export function Mobile({
 
                 <Modal.Content as="ul" className="mt-4 w-full max-h-1/2">
                   {themeStore.action.list().map((t) => (
-                    <li key={t} onClick={() => themeStore.action.set(t)}>
+                    <li key={t}>
                       <input
                         type="radio"
                         aria-label={t}
                         defaultChecked={theme === t}
                         name="theme-dropdown"
+                        onChange={() => themeStore.action.set(t)}
                         className={
                           "daisy-theme-controller daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost w-full justify-start"
                         }
