@@ -41,10 +41,11 @@ export function ChangeCalculatorModal({ saleTotal }: Props) {
   return (
     <Modal>
       <Modal.Trigger
-        as="button"
+        as={Button}
+        size="lg"
+        appearance="outline"
         type="button"
         title="Calculadora de Troco"
-        className="daisy-btn daisy-btn-outline daisy-btn-lg"
         onClick={() => vibrate(10)}
       >
         <Calculator size={18} />
