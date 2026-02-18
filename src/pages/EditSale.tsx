@@ -139,20 +139,6 @@ export default function EditSale() {
 
   return (
     <>
-      <div className="rounded-xl border border-base-300 bg-base-100 p-5 sticky top-16 z-10">
-        <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
-          Total
-        </p>
-
-        <Currency
-          value={total}
-          className={cn(
-            "text-3xl font-extrabold font-mono mt-1",
-            total > 0 ? "text-success" : "text-error",
-          )}
-        />
-      </div>
-
       <Title
         title="Editar Venda"
         subtitle={new Date(sale.date).toLocaleString("pt-BR")}
@@ -166,6 +152,20 @@ export default function EditSale() {
           </Button>
         }
       />
+  
+      <div className="rounded-xl border border-base-300 bg-base-100 p-5">
+        <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
+          Total
+        </p>
+
+        <Currency
+          value={total}
+          className={cn(
+            "text-3xl font-extrabold font-mono mt-1",
+            total > 0 ? "text-success" : "text-error",
+          )}
+        />
+      </div>
 
       <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
