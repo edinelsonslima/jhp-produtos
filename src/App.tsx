@@ -5,12 +5,13 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/Layout";
 import Audit from "./pages/Audit";
 import EditSale from "./pages/EditSale";
+import History from "./pages/History";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
 import Payments from "./pages/Payments";
 import Products from "./pages/Products";
 import Sales from "./pages/Sales";
+import Search from "./pages/Search";
 
 function AuthGate() {
   const user = authStore.useStore((state) => state.user);
@@ -28,7 +29,8 @@ function AuthGate() {
         <Route path="/pagamentos" element={<Payments />} />
         <Route path="/produtos" element={<Products />} />
         <Route path="/auditoria" element={<Audit />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/historico" element={<History />} />
+        <Route path="/buscar" element={<Search />} />
       </Routes>
     </AppLayout>
   );

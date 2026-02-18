@@ -11,8 +11,67 @@ import {
   RefObject,
   useContext,
   useRef,
+  useState,
 } from "react";
 import { createPortal } from "react-dom";
+
+function ModalDraggableBox({
+  children,
+  dialogRef,
+}: PropsWithChildren<{ dialogRef: RefObject<HTMLDialogElement | null> }>) {
+  const [dragY, setDragY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const startY = useRef(0);
+  const currentY = useRef(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const target = e.target as HTMLElement;
+    const isScrollable = target.closest("[data-modal-scroll]");
+    if (isScrollable) return;
+
+    startY.current = e.touches[0].clientY;
+    currentY.current = 0;
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const delta = e.touches[0].clientY - startY.current;
+    if (delta > 0) {
+      currentY.current = delta;
+      setDragY(delta);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+
+    if (currentY.current > 100) {
+      dialogRef.current?.close();
+    }
+
+    setDragY(0);
+    currentY.current = 0;
+  };
+
+  return (
+    <div
+      className="daisy-modal-box max-h-dvh"
+      style={{
+        transform: `translateY(${dragY}px)`,
+        transition: isDragging ? "none" : "transform 0.2s ease-out",
+        opacity: isDragging ? Math.max(0.5, 1 - dragY / 300) : 1,
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div className="w-10 h-1 rounded-full bg-base-content/20 mx-auto mb-3 sm:hidden" />
+      {children}
+    </div>
+  );
+}
 
 interface ModalContextValue {
   ref: RefObject<HTMLDialogElement | null>;
@@ -45,9 +104,9 @@ export function Modal({ children }: PropsWithChildren) {
           ref={ref}
           className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
         >
-          <div className="daisy-modal-box max-h-dvh">
+          <ModalDraggableBox dialogRef={ref}>
             {childrenWithoutTrigger}
-          </div>
+          </ModalDraggableBox>
 
           <div
             role="button"
