@@ -9,69 +9,12 @@ import {
   PropsWithChildren,
   ReactNode,
   RefObject,
+  TouchEvent,
   useContext,
   useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
-
-function ModalDraggableBox({
-  children,
-  dialogRef,
-}: PropsWithChildren<{ dialogRef: RefObject<HTMLDialogElement | null> }>) {
-  const [dragY, setDragY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const startY = useRef(0);
-  const currentY = useRef(0);
-
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const target = e.target as HTMLElement;
-    const isScrollable = target.closest("[data-modal-scroll]");
-    if (isScrollable) return;
-
-    startY.current = e.touches[0].clientY;
-    currentY.current = 0;
-    setIsDragging(true);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    const delta = e.touches[0].clientY - startY.current;
-    if (delta > 0) {
-      currentY.current = delta;
-      setDragY(delta);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (!isDragging) return;
-    setIsDragging(false);
-
-    if (currentY.current > 100) {
-      dialogRef.current?.close();
-    }
-
-    setDragY(0);
-    currentY.current = 0;
-  };
-
-  return (
-    <div
-      className="daisy-modal-box max-h-dvh"
-      style={{
-        transform: `translateY(${dragY}px)`,
-        transition: isDragging ? "none" : "transform 0.2s ease-out",
-        opacity: isDragging ? Math.max(0.5, 1 - dragY / 300) : 1,
-      }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
-      <div className="w-10 h-1 rounded-full bg-base-content/20 mx-auto mb-3 sm:hidden" />
-      {children}
-    </div>
-  );
-}
 
 interface ModalContextValue {
   ref: RefObject<HTMLDialogElement | null>;
@@ -83,17 +26,83 @@ const ModalContext = createContext<ModalContextValue>({
 
 export function Modal({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDialogElement>(null);
-  const childrenArray = Children.toArray(children);
+  const startY = useRef(0);
+  const currentY = useRef(0);
 
-  const isElement = (child: ReactNode, Component: unknown) =>
+  const [dragY, setDragY] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleTouchStart = (e: TouchEvent) => {
+    const target = e.target as HTMLElement;
+    const isScrollable = target.closest("[data-modal-scroll]");
+
+    if (isScrollable) {
+      return;
+    }
+
+    startY.current = e.touches[0].clientY;
+    currentY.current = 0;
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!isDragging) {
+      return;
+    }
+
+    const delta = e.touches[0].clientY - startY.current;
+
+    if (delta > 0) {
+      currentY.current = delta;
+      setDragY(delta);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+
+    if (currentY.current > 100) {
+      ref.current?.close();
+    }
+
+    setDragY(0);
+    currentY.current = 0;
+  };
+
+  const handleSetRef = (dialogRef: HTMLDialogElement | null) => {
+    if (!dialogRef) {
+      return;
+    }
+
+    const handleClose = () => setOpen(false);
+    dialogRef?.addEventListener("close", handleClose);
+
+    const originalShowModal = dialogRef.showModal;
+    dialogRef.showModal = function () {
+      originalShowModal?.call(this);
+      setOpen(true);
+    };
+
+    ref.current = dialogRef;
+
+    return () => {
+      dialogRef?.removeEventListener("close", handleClose);
+    };
+  };
+
+  const equalsElements = (child: ReactNode, Component: unknown) =>
     isValidElement(child) && child.type === Component;
 
+  const childrenArray = Children.toArray(children);
+
   const trigger = childrenArray.find((child) =>
-    isElement(child, Modal.Trigger),
+    equalsElements(child, Modal.Trigger),
   );
 
   const childrenWithoutTrigger = childrenArray.filter(
-    (child) => !isElement(child, Modal.Trigger),
+    (child) => !equalsElements(child, Modal.Trigger),
   );
 
   return (
@@ -101,12 +110,25 @@ export function Modal({ children }: PropsWithChildren) {
       {trigger}
       {createPortal(
         <dialog
-          ref={ref}
           className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
+          ref={handleSetRef}
         >
-          <ModalDraggableBox dialogRef={ref}>
-            {childrenWithoutTrigger}
-          </ModalDraggableBox>
+          {open && (
+            <div
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              className="daisy-modal-box max-h-dvh animate-fade-in-bottom-to-top"
+              style={{
+                transform: `translateY(${dragY}px)`,
+                transition: isDragging ? "none" : "transform 0.2s ease-out",
+                opacity: isDragging ? Math.max(0.5, 1 - dragY / 300) : 1,
+              }}
+            >
+              <div className="w-10 h-1 rounded-full bg-base-content/20 mx-auto -mt-2 mb-3 sm:hidden" />
+              {childrenWithoutTrigger}
+            </div>
+          )}
 
           <div
             role="button"

@@ -28,6 +28,7 @@
   --font-mono: "JetBrains Mono", monospace;
 
   --animate-fade-out: fadeOut 0.5s ease-in forwards;
+  --animate-fade-in-bottom-to-top: fadeInBottomToTop 0.3s ease-in-out;
 
   @keyframes fadeOut {
     from {
@@ -35,6 +36,17 @@
     }
     to {
       opacity: 0;
+    }
+  }
+
+  @keyframes fadeInBottomToTop {
+    from {
+      opacity: 0;
+      transform: translateY(100vh);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 }
