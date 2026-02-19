@@ -8,6 +8,7 @@ interface CurrencyInputProps {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  autoFocus?: boolean;
   label?: string;
   onValueChange?: (value: number) => void;
 }
@@ -19,6 +20,7 @@ export function CurrencyInput({
   label,
   className,
   disabled,
+  autoFocus,
   placeholder = "0,00",
   onValueChange,
 }: CurrencyInputProps) {
@@ -53,6 +55,7 @@ export function CurrencyInput({
         <input
           name={name}
           type="text"
+          autoFocus={autoFocus}
           className="grow font-mono w-full"
           placeholder={placeholder}
           inputMode="numeric"

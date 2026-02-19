@@ -64,14 +64,12 @@ export function Calculator({ saleTotal }: Props) {
           </p>
         </div>
 
-        <div className="">
-          <CurrencyInput
-            className="text-lg"
-            label="Valor Recebido (R$)"
-            value={amountPaid}
-            onValueChange={setAmountPaid}
-          />
-        </div>
+        <CurrencyInput
+          className="text-lg"
+          label="Valor Recebido (R$)"
+          value={amountPaid}
+          onValueChange={setAmountPaid}
+        />
 
         {amountPaid > 0 && (
           <div className="pt-4 border-t border-base-300">
