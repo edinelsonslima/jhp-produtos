@@ -77,7 +77,7 @@ export function Modal({ children }: PropsWithChildren) {
     }
 
     const handleClose = () => setOpen(false);
-    dialogRef?.addEventListener("close", handleClose);
+    dialogRef.addEventListener("close", handleClose);
 
     const originalShowModal = dialogRef.showModal;
     dialogRef.showModal = function () {
@@ -88,7 +88,7 @@ export function Modal({ children }: PropsWithChildren) {
     ref.current = dialogRef;
 
     return () => {
-      dialogRef?.removeEventListener("close", handleClose);
+      dialogRef.removeEventListener("close", handleClose);
     };
   };
 
