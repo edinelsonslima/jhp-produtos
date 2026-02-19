@@ -110,8 +110,8 @@ export function Modal({ children }: PropsWithChildren) {
       {trigger}
       {createPortal(
         <dialog
-          className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
           ref={handleSetRef}
+          className="daisy-modal daisy-modal-bottom sm:daisy-modal-middle"
         >
           {open && (
             <div
@@ -136,9 +136,6 @@ export function Modal({ children }: PropsWithChildren) {
             aria-label="Fechar"
             className="daisy-modal-backdrop"
             onClick={() => ref?.current?.close()}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") ref?.current?.close();
-            }}
           />
         </dialog>,
         document.body,
