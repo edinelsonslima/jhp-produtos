@@ -81,7 +81,7 @@ export function ProductCard({
       )}
     >
       <div className="flex items-center gap-2 mb-2 w-full">
-        <Package size={16} className="text-primary" />
+        <Package size={16} className="text-primary min-w-4" />
 
         <span className="font-semibold text-sm truncate w-full">
           {product.name}
