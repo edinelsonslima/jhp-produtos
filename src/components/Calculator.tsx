@@ -1,10 +1,10 @@
-import { CurrencyInput } from "@/components/CurrencyInput";
+import { CurrencyInput } from "@/components/currency/Input";
 import { formatCurrency, vibrate } from "@/lib/utils";
 import { Calculator as CalculatorIcon } from "lucide-react";
 import { useState } from "react";
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { Modal } from "./ui/modal";
+import { Button } from "./_ui/button";
+import { Label } from "./_ui/label";
+import { Modal } from "./_ui/modal";
 
 interface Props {
   saleTotal: number;

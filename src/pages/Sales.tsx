@@ -1,14 +1,15 @@
+import { Title } from "@/components/_layout/title";
+import { Button } from "@/components/_ui/button";
+import { Card } from "@/components/_ui/card";
+import { Collapse } from "@/components/_ui/collapse";
+import { Label } from "@/components/_ui/label";
+import { toast } from "@/components/_ui/toast";
 import { Calculator } from "@/components/Calculator";
-import { Currency } from "@/components/Currency";
-import { CurrencyInput } from "@/components/CurrencyInput";
-import { Title } from "@/components/Layout/title";
-import { ProductCard } from "@/components/ProductCard";
-import { SaleCelebration } from "@/components/Sales/celebration";
-import { SaleItem } from "@/components/Sales/item";
-import { Button } from "@/components/ui/button";
-import { Collapse } from "@/components/ui/collapse";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/toast";
+import { CurrencyInput } from "@/components/currency/Input";
+import { CurrencyMonitor } from "@/components/currency/monitor";
+import { ProductItem } from "@/components/product/item";
+import { SaleCelebration } from "@/components/sales/celebration";
+import { SaleItem } from "@/components/sales/item";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency, generateUUID, vibrate } from "@/lib/utils";
@@ -176,50 +177,42 @@ export default function Sales() {
 
       <SaleCelebration ref={celebration} />
 
-      <Currency
+      <CurrencyMonitor
         className={cn(
-          "fixed top-20 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
+          "fixed top-20 right-4 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
           "text-3xl font-extrabold font-mono",
           total > 0 ? "text-success" : "text-error",
         )}
       >
         {total}
-      </Currency>
+      </CurrencyMonitor>
 
-      <m.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-base-300 bg-base-100 p-3"
-      >
-        {products.length ? (
-          <>
-            <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
-              Selecione um Produto
-            </h3>
+      <Card>
+        <Card.Title>SELECIONE UM PRODUTO</Card.Title>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
-              {products.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  onSelect={handleAddProduct}
-                  quantity={
-                    selected.regular.find((s) => s.id === p.id)?.quantity
-                  }
-                />
-              ))}
-            </div>
-          </>
-        ) : (
+        {!!products.length && (
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
+            {products.map((p) => (
+              <ProductItem
+                key={p.id}
+                product={p}
+                onSelect={handleAddProduct}
+                quantity={selected.regular.find((s) => s.id === p.id)?.quantity}
+              />
+            ))}
+          </div>
+        )}
+
+        {!products.length && (
           <div className="p-8 text-center text-base-content/60 text-sm">
             Nenhum produto cadastrado
           </div>
         )}
-      </m.div>
+      </Card>
 
       <Collapse icon="plus">
-        <Collapse.Summary className="text-sm font-semibold text-base-content/80 uppercase tracking-wider">
-          Item Personalizado
+        <Collapse.Summary className="text-sm font-semibold text-base-content/80 tracking-wider">
+          ITEM PERSONALIZADO
         </Collapse.Summary>
 
         <Collapse.Content>
@@ -295,8 +288,8 @@ export default function Sales() {
                   className="flex items-end justify-between gap-2"
                 >
                   <div className="w-full">
-                    <div className="flex justify-between items-end">
-                      <p className="text-sm">{product?.name}</p>
+                    <div className="flex justify-between items-end w-full">
+                      <p className="text-sm truncate">{product?.name}</p>
                     </div>
 
                     <div className="flex items-center">

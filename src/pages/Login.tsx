@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/toast";
+import { Button } from "@/components/_ui/button";
+import { Label } from "@/components/_ui/label";
+import { toast } from "@/components/_ui/toast";
 import { authStore } from "@/hooks/useAuth";
 import { m } from "framer-motion";
 import { FormEvent, useState } from "react";

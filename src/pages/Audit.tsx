@@ -1,5 +1,5 @@
-import { Title } from "@/components/Layout/title";
-import { Badge } from "@/components/ui/badge";
+import { Title } from "@/components/_layout/title";
+import { Badge } from "@/components/_ui/badge";
 import { getAuditLog } from "@/lib/audit";
 import { ClipboardList } from "lucide-react";
 

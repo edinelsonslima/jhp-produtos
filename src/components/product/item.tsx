@@ -2,21 +2,21 @@ import { cn, formatCurrency, vibrate } from "@/lib/utils";
 import { Product } from "@/types";
 import { m } from "framer-motion";
 import { Package, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
-import { Button } from "./ui/button";
+import { ComponentProps, useRef, useState } from "react";
+import { Button } from "../_ui/button";
 
-interface Props {
+interface Props extends Omit<ComponentProps<typeof m.button>, "onSelect"> {
   product: Product;
   quantity?: number;
   onSelect: (product: Product, quantity: number) => void;
-  className?: string;
 }
 
-export function ProductCard({
+export function ProductItem({
   product,
   className,
   quantity = 0,
   onSelect,
+  ...props
 }: Props) {
   const [longPressActive, setLongPressActive] = useState(false);
   const longPressTimer = useRef<number | null>(null);
@@ -30,15 +30,21 @@ export function ProductCard({
   };
 
   const handlePointerDown = () => {
-    if (!selected || longPressActive) return;
+    if (!selected) {
+      return;
+    }
+
     longPressTimer.current = window.setTimeout(() => {
-      setLongPressActive(true);
+      setLongPressActive((prev) => !prev);
       vibrate(10);
     }, 500);
   };
 
   const handlePointerUp = () => {
-    if (!longPressTimer.current) return;
+    if (!longPressTimer.current) {
+      return;
+    }
+
     window.clearTimeout(longPressTimer.current);
     longPressTimer.current = null;
   };
@@ -58,39 +64,41 @@ export function ProductCard({
     updateProductByQuantity(quantity + 1);
   };
 
+  if (quantity === 0 && longPressActive) {
+    setLongPressActive(false);
+  }
+
   return (
     <m.button
-      type="button"
       drag={!longPressActive ? "x" : false}
       dragTransition={{ bounceStiffness: 100, bounceDamping: 9999 }}
       dragElastic={1}
       dragConstraints={{ left: 0, right: 0 }}
-      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onDragStart={handleDragStart}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onClick={handleClick}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className={cn(
-        "flex flex-col items-start p-4 rounded-xl border transition-all text-left select-none touch-pan-y",
-        className,
-        selected
-          ? "border-primary bg-primary/10 ring-2 ring-primary/20"
-          : "bg-base-200 border-primary/20 hover:bg-base-200/50",
-      )}
+      className={Button.style(cn("flex-col items-start px-2 h-18", className), {
+        variant: selected ? "primary" : undefined,
+        appearance: selected ? undefined : "soft",
+        size: "xl",
+      })}
+      {...props}
     >
-      <div className="flex items-center gap-2 mb-2 w-full">
-        <Package size={16} className="text-primary min-w-4" />
-
-        <span className="font-semibold text-sm truncate w-full">
+      <h3 className="flex items-center justify-between w-full">
+        <span className="mb-2 text-sm truncate">
+          <Package size={16} className="min-w-4 mr-1 inline" />
           {product.name}
         </span>
+
         {longPressActive && (
           <span
             role="button"
             aria-label="Remover produto"
-            className={Button.style("-m-1", {
+            className={Button.style("-mr-1 -mt-3", {
               variant: "error",
               modifier: "square",
               appearance: "soft",
@@ -109,18 +117,14 @@ export function ProductCard({
             <Trash2 size={14} />
           </span>
         )}
-      </div>
+      </h3>
 
       <div className="flex items-center justify-between w-full">
-        <span className="font-mono font-bold text-sm text-primary">
+        <span className="font-mono font-bold text-sm truncate">
           {formatCurrency(product.price)}
         </span>
-        <span
-          className={cn(
-            "text-xs text-base-content/60",
-            quantity && "font-bold text-primary",
-          )}
-        >
+
+        <span className={cn("text-xs", quantity && "font-bold")}>
           {!quantity
             ? product.unit === "litro"
               ? "litro"

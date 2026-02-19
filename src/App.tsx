@@ -1,8 +1,8 @@
-import { Toaster } from "@/components/ui/toast";
+import { Toaster } from "@/components/_ui/toast";
 import { authStore } from "@/hooks/useAuth";
 import { domMax, LazyMotion } from "framer-motion";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import AppLayout from "./components/Layout";
+import AppLayout from "./components/_layout";
 import Audit from "./pages/Audit";
 import EditSale from "./pages/EditSale";
 import History from "./pages/History";

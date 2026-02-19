@@ -1,8 +1,8 @@
-import { CurrencyInput } from "@/components/CurrencyInput";
-import { Title } from "@/components/Layout/title";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/toast";
+import { Title } from "@/components/_layout/title";
+import { Button } from "@/components/_ui/button";
+import { Label } from "@/components/_ui/label";
+import { toast } from "@/components/_ui/toast";
+import { CurrencyInput } from "@/components/currency/Input";
 import { productStore } from "@/hooks/useProducts";
 import { formatCurrency } from "@/lib/utils";
 import { m } from "framer-motion";

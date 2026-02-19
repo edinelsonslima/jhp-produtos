@@ -75,8 +75,8 @@ export function Button({
   );
 }
 
-function getButtonStyle(props: StylesProps): string;
-function getButtonStyle(className: string): string;
+function getButtonStyle(props?: StylesProps): string;
+function getButtonStyle(className?: string): string;
 function getButtonStyle(className: string, props?: StylesProps): string;
 function getButtonStyle(first?: string | StylesProps, second?: StylesProps) {
   let className: string = "";

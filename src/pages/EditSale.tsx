@@ -1,9 +1,9 @@
-import { Currency } from "@/components/Currency";
-import { CurrencyInput } from "@/components/CurrencyInput";
-import { Title } from "@/components/Layout/title";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/components/ui/toast";
+import { Title } from "@/components/_layout/title";
+import { Button } from "@/components/_ui/button";
+import { Label } from "@/components/_ui/label";
+import { toast } from "@/components/_ui/toast";
+import { CurrencyInput } from "@/components/currency/Input";
+import { CurrencyMonitor } from "@/components/currency/monitor";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency, vibrate } from "@/lib/utils";
@@ -158,14 +158,14 @@ export default function EditSale() {
           Total
         </p>
 
-        <Currency
+        <CurrencyMonitor
           className={cn(
             "text-3xl font-extrabold font-mono mt-1",
             total > 0 ? "text-success" : "text-error",
           )}
         >
           {total}
-        </Currency>
+        </CurrencyMonitor>
       </div>
 
       <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">

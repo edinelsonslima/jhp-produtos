@@ -3,8 +3,8 @@ import { saleStore } from "@/hooks/useSales";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Banknote, Pencil, Smartphone, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
-import { Collapse } from "../ui/collapse";
+import { Button } from "../_ui/button";
+import { Collapse } from "../_ui/collapse";
 
 interface SaleItemProps {
   saleId: string;

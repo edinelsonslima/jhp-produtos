@@ -1,7 +1,7 @@
-import { Title } from "@/components/Layout/title";
-import { SaleItem } from "@/components/Sales/item";
+import { Title } from "@/components/_layout/title";
+import { toast } from "@/components/_ui/toast";
+import { SaleItem } from "@/components/sales/item";
 import StatCard from "@/components/StatCard";
-import { toast } from "@/components/ui/toast";
 import { authStore } from "@/hooks/useAuth";
 import { paymentStore } from "@/hooks/usePayments";
 import { saleStore } from "@/hooks/useSales";

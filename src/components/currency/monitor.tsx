@@ -9,7 +9,12 @@ interface Props extends ComponentProps<typeof motion.div> {
   duration?: number;
 }
 
-export function Currency({ children, className, duration = 0.6, ...props }: Props) {
+export function CurrencyMonitor({
+  children,
+  className,
+  duration = 0.6,
+  ...props
+}: Props) {
   const prevValue = useRef<number | null>(null);
   const motionValue = useMotionValue(children);
 

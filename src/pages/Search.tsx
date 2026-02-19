@@ -1,8 +1,8 @@
-import { Title } from "@/components/Layout/title";
-import { SaleItem } from "@/components/Sales/item";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { toast } from "@/components/ui/toast";
+import { Title } from "@/components/_layout/title";
+import { Button } from "@/components/_ui/button";
+import { Card } from "@/components/_ui/card";
+import { toast } from "@/components/_ui/toast";
+import { SaleItem } from "@/components/sales/item";
 import { employeeStore } from "@/hooks/useEmployees";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
