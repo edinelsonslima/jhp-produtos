@@ -1,73 +1,63 @@
 import { cn, formatCurrency } from "@/lib/utils";
-import { AnimatePresence, m } from "framer-motion";
-import { ComponentProps, useRef } from "react";
+import { animate, motion, useMotionValue } from "framer-motion";
+import { ComponentProps, useEffect, useRef, useState } from "react";
 
-interface Props extends ComponentProps<"span"> {
-  value: number;
+type Status = "up" | "down" | "idle";
+
+interface Props extends ComponentProps<typeof motion.div> {
+  children: number;
+  duration?: number;
 }
 
-export function Currency({ value, className, ...props }: Props) {
-  const formatted = formatCurrency(value);
-  const previousValue = useRef(value);
+export function Currency({ children, className, duration = 0.6, ...props }: Props) {
+  const prevValue = useRef<number | null>(null);
+  const motionValue = useMotionValue(children);
 
-  const isDecreasing = value < previousValue.current;
-  const isIncreasing = value > previousValue.current;
+  const [display, setDisplay] = useState(children);
+  const [color, setColor] = useState<Status>("idle");
 
-  previousValue.current = value;
+  useEffect(() => {
+    if (prevValue.current === null) {
+      prevValue.current = children;
+      motionValue.set(children);
+      return;
+    }
 
-  // Direção do flip 3D
-  const initial = isDecreasing
-    ? { rotateX: 90, y: "40%", opacity: 0, scale: 0.96, filter: "blur(2px)" } // baixo → cima
-    : { rotateX: -90, y: "-40%", opacity: 0, scale: 0.96, filter: "blur(2px)" }; // cima → baixo
+    const from = prevValue.current;
+    const to = children;
 
-  const exit = isDecreasing
-    ? { rotateX: -90, y: "-40%", opacity: 0, scale: 0.96, filter: "blur(2px)" }
-    : { rotateX: 90, y: "40%", opacity: 0, scale: 0.96, filter: "blur(2px)" };
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setColor(to > from ? "up" : to < from ? "down" : "idle");
 
-  const animate = {
-    rotateX: 0,
-    y: 0,
-    opacity: 1,
-    scale: 1,
-    filter: "blur(0px)",
-    color: isDecreasing
-      ? ["inherit", "#ef4444", "#ef4444", "inherit"] // vermelho
-      : isIncreasing
-      ? ["inherit", "#22c55e", "#22c55e", "inherit"] // verde
-      : "inherit",
-  };
+    const controls = animate(motionValue, to, {
+      duration,
+      ease: "easeOut",
+      onUpdate: (latest) => setDisplay(latest),
+      onComplete: () => setColor("idle"),
+    });
 
-  const transition = {
-    rotateX: { type: "spring", stiffness: 140, damping: 18, mass: 0.6 },
-    y: { type: "spring", stiffness: 140, damping: 18, mass: 0.6 },
-    scale: { duration: 0.35, ease: "easeOut" },
-    opacity: { duration: 0.25 },
-    filter: { duration: 0.25 },
-    color: { duration: 0.9, times: [0, 0.2, 0.7, 1], ease: "easeInOut" },
-  };
+    prevValue.current = to;
+
+    return () => {
+      controls.stop();
+    };
+  }, [children, duration, motionValue]);
 
   return (
-    <span
-      className={cn(
-        "inline-flex overflow-hidden [perspective:600px]",
-        className
-      )}
-      style={{ transformStyle: "preserve-3d" }}
+    <motion.div
+      className={cn("inline-block transition-colors", className)}
+      transition={{ duration: 0.4 }}
+      animate={{
+        scale: color === "idle" ? 1 : [1.05, 1],
+        color: (() => {
+          if (color === "up") return "var(--color-success)";
+          if (color === "down") return "var(--color-error)";
+          return "var(--color-success)";
+        })(),
+      }}
       {...props}
     >
-      <AnimatePresence mode="popLayout" initial={false}>
-        <m.span
-          key={formatted}
-          initial={initial}
-          animate={animate}
-          exit={exit}
-          transition={transition}
-          className="inline-block will-change-transform"
-          style={{ transformOrigin: "50% 50%" }}
-        >
-          {formatted}
-        </m.span>
-      </AnimatePresence>
-    </span>
+      {formatCurrency(display)}
+    </motion.div>
   );
 }

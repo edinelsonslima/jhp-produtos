@@ -177,13 +177,14 @@ export default function Sales() {
       <SaleCelebration ref={celebration} />
 
       <Currency
-        value={total}
         className={cn(
           "fixed top-20 right-2 bg-base-100 shadow-sm p-2 pr-4 rounded-lg z-10",
           "text-3xl font-extrabold font-mono",
           total > 0 ? "text-success" : "text-error",
         )}
-      />
+      >
+        {total}
+      </Currency>
 
       <m.div
         initial={{ opacity: 0, y: 12 }}

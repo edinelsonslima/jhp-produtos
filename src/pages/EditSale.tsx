@@ -152,19 +152,20 @@ export default function EditSale() {
           </Button>
         }
       />
-  
+
       <div className="rounded-xl border border-base-300 bg-base-100 p-5">
         <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
           Total
         </p>
 
         <Currency
-          value={total}
           className={cn(
             "text-3xl font-extrabold font-mono mt-1",
             total > 0 ? "text-success" : "text-error",
           )}
-        />
+        >
+          {total}
+        </Currency>
       </div>
 
       <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">
