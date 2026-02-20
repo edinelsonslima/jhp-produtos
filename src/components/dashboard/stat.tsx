@@ -64,10 +64,7 @@ export function Stat({
 
       <icon.element
         className={Card.getStyle(
-          cn(
-            `text-${icon.variant} w-full size-7 p-1`,
-            classNames?.icon,
-          ),
+          cn(`text-${icon.variant} w-full size-7 p-1`, classNames?.icon),
           {
             variant: icon.variant,
             modifier: icon.modifier ?? "square",

@@ -83,12 +83,6 @@ export function Mobile({
               </li>
 
               <li>
-                <Link to="/sobre">
-                  <Info size={14} /> Sobre
-                </Link>
-              </li>
-
-              <li>
                 <Modal>
                   <Modal.Trigger
                     as="button"
@@ -133,6 +127,12 @@ export function Mobile({
                     ))}
                   </Modal.Content>
                 </Modal>
+              </li>
+
+              <li>
+                <Link to="/sobre">
+                  <Info size={14} /> Sobre
+                </Link>
               </li>
 
               <li className="border-t border-black/15 pt-1 mt-1">

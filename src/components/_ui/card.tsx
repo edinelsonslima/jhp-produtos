@@ -28,7 +28,7 @@ const styled = createStyle({
     figureFull: "daisy-image-full",
   },
   appearance: {
-    ghost: "border-0",
+    ghost: "border-0 bg-transparent",
     border: "daisy-card-border",
     dash: "daisy-card-dash",
   },
