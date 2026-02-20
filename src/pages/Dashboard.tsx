@@ -1,7 +1,7 @@
 import { Title } from "@/components/_layout/title";
+import { SaleItem } from "@/components/_Sales/item";
 import { Card } from "@/components/_ui/card";
 import { toast } from "@/components/_ui/toast";
-import { SaleItem } from "@/components/Sales/item";
 import StatCard from "@/components/StatCard";
 import { authStore } from "@/hooks/useAuth";
 import { paymentStore } from "@/hooks/usePayments";

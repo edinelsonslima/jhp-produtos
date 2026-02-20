@@ -1,4 +1,6 @@
 import { Title } from "@/components/_layout/title";
+import { SaleCelebration } from "@/components/_Sales/celebration";
+import { SaleItem } from "@/components/_Sales/item";
 import { Button } from "@/components/_ui/button";
 import { Card } from "@/components/_ui/card";
 import { Collapse } from "@/components/_ui/collapse";
@@ -8,8 +10,6 @@ import { Calculator } from "@/components/Calculator";
 import { CurrencyInput } from "@/components/currency/Input";
 import { CurrencyMonitor } from "@/components/currency/monitor";
 import { ProductItem } from "@/components/product/item";
-import { SaleCelebration } from "@/components/Sales/celebration";
-import { SaleItem } from "@/components/Sales/item";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency, generateUUID, vibrate } from "@/lib/utils";
