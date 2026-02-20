@@ -3,6 +3,7 @@ import { authStore } from "@/hooks/useAuth";
 import { domMax, LazyMotion } from "framer-motion";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/_layout";
+import About from "./pages/About";
 import Audit from "./pages/Audit";
 import EditSale from "./pages/EditSale";
 import History from "./pages/History";
@@ -29,6 +30,7 @@ function AuthGate() {
         <Route path="/pagamentos" element={<Payments />} />
         <Route path="/produtos" element={<Products />} />
         <Route path="/auditoria" element={<Audit />} />
+        <Route path="/sobre" element={<About />} />
         <Route path="/historico" element={<History />} />
         <Route path="/buscar" element={<Search />} />
       </Routes>

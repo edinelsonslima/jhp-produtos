@@ -59,6 +59,8 @@ export function SaleCelebration({ ref }: Props) {
 }
 
 function playCashSound() {
+  vibrate(200);
+
   try {
     const ctx = new AudioContext();
     const osc = ctx.createOscillator();
@@ -91,6 +93,6 @@ function playCashSound() {
     osc2.start(ctx.currentTime + 0.2);
     osc2.stop(ctx.currentTime + 0.6);
   } catch {
-    vibrate(200);
+    // Audio failed (silent mode, no interaction, etc.) — vibration already triggered
   }
 }

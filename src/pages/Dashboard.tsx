@@ -1,6 +1,7 @@
 import { Title } from "@/components/_layout/title";
+import { Card } from "@/components/_ui/card";
 import { toast } from "@/components/_ui/toast";
-import { SaleItem } from "@/components/sales/item";
+import { SaleItem } from "@/components/Sales/item";
 import StatCard from "@/components/StatCard";
 import { authStore } from "@/hooks/useAuth";
 import { paymentStore } from "@/hooks/usePayments";
@@ -47,34 +48,10 @@ export default function Dashboard() {
           Hoje
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            label="Total Vendido"
-            value={formatCurrency(todaySales.total)}
-            icon={DollarSign}
-            delay={0}
-          />
-
-          <StatCard
-            label="Pix"
-            value={formatCurrency(todaySales.pix)}
-            icon={Smartphone}
-            variant="success"
-            delay={0.05}
-          />
-          <StatCard
-            label="Dinheiro"
-            value={formatCurrency(todaySales.cash)}
-            icon={Banknote}
-            variant="warning"
-            delay={0.1}
-          />
-          <StatCard
-            label="Diárias Pagas"
-            value={formatCurrency(todayPayments.total)}
-            icon={Minus}
-            variant="error"
-            delay={0.15}
-          />
+          <StatCard label="Total Vendido" value={formatCurrency(todaySales.total)} icon={DollarSign} delay={0} />
+          <StatCard label="Pix" value={formatCurrency(todaySales.pix)} icon={Smartphone} variant="success" delay={0.05} />
+          <StatCard label="Dinheiro" value={formatCurrency(todaySales.cash)} icon={Banknote} variant="warning" delay={0.1} />
+          <StatCard label="Diárias Pagas" value={formatCurrency(todayPayments.total)} icon={Minus} variant="error" delay={0.15} />
         </div>
       </div>
 
@@ -82,7 +59,7 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="rounded-xl border border-base-300 bg-base-100 p-6"
+        className={Card.getStyle("p-6")}
       >
         <div className="flex items-center justify-between">
           <div>
@@ -107,26 +84,9 @@ export default function Dashboard() {
           Este Mês
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <StatCard
-            label="Total Mês"
-            value={formatCurrency(monthSales.total)}
-            icon={DollarSign}
-            delay={0.25}
-          />
-          <StatCard
-            label="Pix no Mês"
-            value={formatCurrency(monthSales.pix)}
-            icon={Smartphone}
-            variant="success"
-            delay={0.3}
-          />
-          <StatCard
-            label="Dinheiro no Mês"
-            value={formatCurrency(monthSales.cash)}
-            icon={Banknote}
-            variant="warning"
-            delay={0.35}
-          />
+          <StatCard label="Total Mês" value={formatCurrency(monthSales.total)} icon={DollarSign} delay={0.25} />
+          <StatCard label="Pix no Mês" value={formatCurrency(monthSales.pix)} icon={Smartphone} variant="success" delay={0.3} />
+          <StatCard label="Dinheiro no Mês" value={formatCurrency(monthSales.cash)} icon={Banknote} variant="warning" delay={0.35} />
         </div>
       </div>
 
@@ -136,9 +96,9 @@ export default function Dashboard() {
         </h3>
 
         {todaySales.saleId.length === 0 ? (
-          <div className="rounded-xl border border-base-300 bg-base-100 p-8 text-center text-base-content/60 text-sm">
+          <Card className="p-8 text-center text-base-content/60 text-sm">
             Nenhuma venda registrada hoje
-          </div>
+          </Card>
         ) : (
           <div className="space-y-2">
             {todaySales.saleId.slice(0, 10).map((saleId) => (

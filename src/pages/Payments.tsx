@@ -1,5 +1,7 @@
 import { Title } from "@/components/_layout/title";
 import { Button } from "@/components/_ui/button";
+import { Card } from "@/components/_ui/card";
+import { ConfirmButton } from "@/components/_ui/confirm-button";
 import { Label } from "@/components/_ui/label";
 import { Modal } from "@/components/_ui/modal";
 import { toast } from "@/components/_ui/toast";
@@ -30,9 +32,7 @@ export default function Payments() {
   };
 
   const handlePayPreset = (amount: number) => {
-    if (!employee) {
-      return;
-    }
+    if (!employee) return;
 
     paymentStore.action.add({
       date: new Date().toISOString(),
@@ -46,9 +46,7 @@ export default function Payments() {
   };
 
   const handlePayCustom = () => {
-    if (!employee) {
-      return;
-    }
+    if (!employee) return;
 
     if (customAmount <= 0) {
       toast.error("Informe um valor válido");
@@ -99,7 +97,7 @@ export default function Payments() {
       <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex gap-4 w-full overflow-x-auto p-4 rounded-xl border border-base-300 bg-base-100"
+        className={Card.getStyle("flex gap-4 w-full overflow-x-auto p-4")}
       >
         <Modal>
           <Modal.Trigger
@@ -145,7 +143,6 @@ export default function Payments() {
                   onValueChange={setNewRate1}
                 />
               </div>
-
               <div className="space-y-2">
                 <CurrencyInput
                   value={newRate2}
@@ -167,7 +164,6 @@ export default function Payments() {
               >
                 <Plus size={16} /> Cadastrar
               </Button>,
-
               <Button key="button" type="button" onClick={close}>
                 Cancelar
               </Button>,
@@ -220,14 +216,13 @@ export default function Payments() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
-            className="rounded-xl border border-base-300 bg-base-100 p-5 space-y-4"
+            className={Card.getStyle("p-5 space-y-4")}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="size-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold">
                   {employee.name.charAt(0).toUpperCase()}
                 </div>
-
                 <div>
                   <p className="font-semibold">{employee.name}</p>
                   <p className="text-xs text-base-content/60">
@@ -236,18 +231,18 @@ export default function Payments() {
                 </div>
               </div>
 
-              <Button
+              <ConfirmButton
                 size="sm"
                 variant="error"
                 appearance="outline"
-                onClick={() => {
+                onConfirm={() => {
                   employeeStore.action.delete(employee.id);
                   setEmployee(null);
                   toast.info("Funcionário removido");
                 }}
               >
                 <Trash2 size={16} />
-              </Button>
+              </ConfirmButton>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -281,31 +276,27 @@ export default function Payments() {
         )}
       </AnimatePresence>
 
-      <div className="rounded-xl border border-error/30 bg-error/10 p-5">
+      <Card variant="error">
         <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
           Total Diárias Hoje
         </p>
         <p className="text-2xl font-extrabold font-mono text-error mt-1">
           {formatCurrency(todayPayments.total)}
         </p>
-      </div>
+      </Card>
 
       {todayPayments.paymentId.length > 0 && (
         <div>
           <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
             Hoje
           </h3>
-          <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden divide-y divide-base-300">
+          <Card className="overflow-hidden divide-y divide-base-300 p-0">
             {todayPayments.paymentId.map((paymentId) => {
               const payment = paymentStore.action.get(paymentId);
-              if (!payment?.receiver?.id) {
-                return null;
-              }
+              if (!payment?.receiver?.id) return null;
 
               const emp = employeeStore.action.get(payment.receiver.id);
-              if (!emp) {
-                return null;
-              }
+              if (!emp) return null;
 
               return (
                 <div
@@ -322,22 +313,22 @@ export default function Payments() {
                     <p className="text-sm font-bold font-mono">
                       {formatCurrency(payment.amount)}
                     </p>
-                    <Button
+                    <ConfirmButton
                       size="xs"
                       variant="error"
                       appearance="soft"
-                      onClick={() => {
+                      onConfirm={() => {
                         paymentStore.action.delete(payment.id);
                         toast.info("Diária removida");
                       }}
                     >
                       <Trash2 size={14} />
-                    </Button>
+                    </ConfirmButton>
                   </div>
                 </div>
               );
             })}
-          </div>
+          </Card>
         </div>
       )}
 
@@ -346,7 +337,7 @@ export default function Payments() {
           <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
             Anteriores
           </h3>
-          <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden divide-y divide-base-300">
+          <Card className="overflow-hidden divide-y divide-base-300 p-0">
             {otherPayments.slice(0, 20).map((payment) => {
               if (!payment.receiver?.id) return null;
               const emp = employeeStore.action.get(payment.receiver.id);
@@ -374,7 +365,7 @@ export default function Payments() {
                 </div>
               );
             })}
-          </div>
+          </Card>
         </div>
       )}
     </>
