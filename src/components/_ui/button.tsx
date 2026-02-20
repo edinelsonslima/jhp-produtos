@@ -1,52 +1,53 @@
-import { cn } from "@/lib/utils";
+import { cn, createStyle, GetStyleConfig } from "@/lib/utils";
 import { ComponentProps } from "react";
 
-const variants = {
-  neutral: "daisy-btn-neutral",
-  primary: "daisy-btn-primary",
-  secondary: "daisy-btn-secondary",
-  accent: "daisy-btn-accent",
-  info: "daisy-btn-info",
-  success: "daisy-btn-success",
-  warning: "daisy-btn-warning",
-  error: "daisy-btn-error",
-} as const;
+const styled = createStyle({
+  variant: {
+    neutral: "daisy-btn-neutral",
+    primary: "daisy-btn-primary",
+    secondary: "daisy-btn-secondary",
+    accent: "daisy-btn-accent",
+    info: "daisy-btn-info",
+    success: "daisy-btn-success",
+    warning: "daisy-btn-warning",
+    error: "daisy-btn-error",
+  },
+  size: {
+    xs: "daisy-btn-xs",
+    sm: "daisy-btn-sm",
+    md: "daisy-btn-md",
+    lg: "daisy-btn-lg",
+    xl: "daisy-btn-xl",
+  },
+  appearance: {
+    outline: "daisy-btn-outline",
+    dash: "daisy-btn-dash",
+    soft: "daisy-btn-soft",
+    ghost: "daisy-btn-ghost",
+    link: "daisy-btn-link",
+  },
+  modifier: {
+    wide: "daisy-btn-wide",
+    block: "daisy-btn-block",
+    square: "daisy-btn-square",
+    circle: "daisy-btn-circle",
+  },
+});
 
-const sizes = {
-  xs: "daisy-btn-xs",
-  sm: "daisy-btn-sm",
-  md: "daisy-btn-md",
-  lg: "daisy-btn-lg",
-  xl: "daisy-btn-xl",
-} as const;
-
-const appearances = {
-  outline: "daisy-btn-outline",
-  dash: "daisy-btn-dash",
-  soft: "daisy-btn-soft",
-  ghost: "daisy-btn-ghost",
-  link: "daisy-btn-link",
-} as const;
-
-const modifiers = {
-  wide: "daisy-btn-wide",
-  block: "daisy-btn-block",
-  square: "daisy-btn-square",
-  circle: "daisy-btn-circle",
-} as const;
+interface StylesExtra {
+  active?: boolean;
+  disabled?: boolean;
+}
 
 interface StylesProps {
-  disabled?: boolean;
-  variant?: keyof typeof variants;
-  size?: keyof typeof sizes;
-  appearance?: keyof typeof appearances;
-  modifier?: keyof typeof modifiers;
+  variant?: GetStyleConfig<typeof styled, "variant">;
+  size?: GetStyleConfig<typeof styled, "size">;
+  appearance?: GetStyleConfig<typeof styled, "appearance">;
+  modifier?: GetStyleConfig<typeof styled, "modifier">;
 }
 
-interface ButtonProps extends ComponentProps<"button">, StylesProps {
-  disableDefaultStyles?: boolean;
-  active?: boolean;
-}
+interface ButtonProps
+  extends ComponentProps<"button">, StylesProps, StylesExtra {}
 
 export function Button({
   variant,
@@ -55,54 +56,34 @@ export function Button({
   modifier,
   className,
   active = false,
-  disableDefaultStyles = false,
   ...props
 }: ButtonProps) {
   return (
     <button
-      className={cn(
-        !disableDefaultStyles && "daisy-btn",
-        !disableDefaultStyles && size && sizes[size],
-        !disableDefaultStyles && variant && variants[variant],
-        !disableDefaultStyles && appearance && appearances[appearance],
-        !disableDefaultStyles && modifier && modifiers[modifier],
-        !disableDefaultStyles && props.disabled && "daisy-btn-disabled",
-        active && "daisy-btn-active",
+      className={Button.getStyle(
         className,
+        { variant, size, appearance, modifier },
+        { active, disabled: props.disabled },
       )}
       {...props}
     />
   );
 }
 
-function getButtonStyle(props?: StylesProps): string;
-function getButtonStyle(className?: string): string;
-function getButtonStyle(className: string, props?: StylesProps): string;
-function getButtonStyle(first?: string | StylesProps, second?: StylesProps) {
-  let className: string = "";
-  let styles: StylesProps = {};
+Button.getStyle = styled<StylesExtra>((className, props, styles, extra) => {
+  const { active, disabled } = extra || {};
+  const { appearance, modifier, size, variant } = props || {};
 
-  if (typeof first === "object") {
-    styles = first;
-  }
-
-  if (typeof second === "object") {
-    styles = second;
-  }
-
-  if (typeof first === "string") {
-    className = first;
-  }
+  console.log(extra);
 
   return cn(
     "daisy-btn",
-    styles?.size && sizes[styles.size],
-    styles?.variant && variants[styles.variant],
-    styles?.appearance && appearances[styles.appearance],
-    styles?.modifier && modifiers[styles.modifier],
-    styles?.disabled && "daisy-btn-disabled",
+    size && styles.size[size],
+    variant && styles.variant[variant],
+    appearance && styles.appearance[appearance],
+    modifier && styles.modifier[modifier],
+    disabled && "daisy-btn-disabled",
+    active && "daisy-btn-active",
     className,
   );
-}
-
-Button.style = getButtonStyle;
+});

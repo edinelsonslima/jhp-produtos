@@ -81,11 +81,14 @@ export function ProductItem({
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onClick={handleClick}
-      className={Button.style(cn("flex-col items-start px-2 h-18", className), {
-        variant: selected ? "primary" : undefined,
-        appearance: selected ? undefined : "soft",
-        size: "xl",
-      })}
+      className={Button.getStyle(
+        cn("flex-col items-start px-2 h-18", className),
+        {
+          variant: selected ? "primary" : undefined,
+          appearance: selected ? undefined : "soft",
+          size: "xl",
+        },
+      )}
       {...props}
     >
       <h3 className="flex items-center justify-between w-full">
@@ -98,7 +101,7 @@ export function ProductItem({
           <span
             role="button"
             aria-label="Remover produto"
-            className={Button.style("-mr-1 -mt-3", {
+            className={Button.getStyle("-mr-1 -mt-3", {
               variant: "error",
               modifier: "square",
               appearance: "soft",

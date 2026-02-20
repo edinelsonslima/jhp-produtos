@@ -103,8 +103,7 @@ export default function Payments() {
       >
         <Modal>
           <Modal.Trigger
-            as={Button}
-            disableDefaultStyles
+            as="button"
             type="button"
             className="flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-base-200 transition-colors cursor-pointer"
           >
@@ -177,9 +176,10 @@ export default function Payments() {
         </Modal>
 
         {employees.map((emp) => (
-          <Button
+          <div
             key={emp.id}
-            disableDefaultStyles
+            role="button"
+            aria-label={`Registrar diária para ${emp.name}`}
             onClick={() => handleSelectEmployee(emp)}
             className={cn(
               "flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-200 cursor-pointer",
@@ -209,7 +209,7 @@ export default function Payments() {
             <span className="text-xs font-semibold text-center truncate w-full">
               {emp.name}
             </span>
-          </Button>
+          </div>
         ))}
       </m.div>
 
