@@ -29,14 +29,12 @@ const styled = createStyle({
   },
 });
 
-interface StylesProps {
+interface Props extends ComponentProps<"div"> {
   variant?: GetStyleConfig<typeof styled, "variant">;
   size?: GetStyleConfig<typeof styled, "size">;
   modifier?: GetStyleConfig<typeof styled, "modifier">;
   appearance?: GetStyleConfig<typeof styled, "appearance">;
 }
-
-interface Props extends ComponentProps<"div">, StylesProps {}
 
 export function Card({
   children,

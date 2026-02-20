@@ -39,15 +39,12 @@ interface StylesExtra {
   disabled?: boolean;
 }
 
-interface StylesProps {
+interface ButtonProps extends ComponentProps<"button">, StylesExtra {
   variant?: GetStyleConfig<typeof styled, "variant">;
   size?: GetStyleConfig<typeof styled, "size">;
   appearance?: GetStyleConfig<typeof styled, "appearance">;
   modifier?: GetStyleConfig<typeof styled, "modifier">;
 }
-
-interface ButtonProps
-  extends ComponentProps<"button">, StylesProps, StylesExtra {}
 
 export function Button({
   variant,

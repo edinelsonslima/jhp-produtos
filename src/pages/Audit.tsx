@@ -2,26 +2,26 @@ import { Title } from "@/components/_layout/title";
 import { Badge } from "@/components/_ui/badge";
 import { getAuditLog } from "@/lib/audit";
 import { ClipboardList } from "lucide-react";
+import { ComponentProps } from "react";
 
-interface ActionConfig {
+interface ActionConfig extends ComponentProps<typeof Badge> {
   label: string;
-  variant: "default" | "secondary" | "destructive" | "outline";
 }
 
 const ACTION_LABELS: Record<string, ActionConfig> = {
-  login: { label: "Login", variant: "default" },
+  login: { label: "Login", variant: "accent" },
   logout: { label: "Logout", variant: "secondary" },
-  user_registered: { label: "Cadastro", variant: "default" },
-  sale_created: { label: "Venda", variant: "default" },
-  sale_edited: { label: "Edição Venda", variant: "secondary" },
-  sale_deleted: { label: "Exclusão Venda", variant: "destructive" },
-  sale_updated: { label: "Atualização Venda", variant: "outline" },
-  payment_created: { label: "Diária", variant: "default" },
-  payment_deleted: { label: "Exclusão Diária", variant: "destructive" },
-  employee_created: { label: "Func. Cadastrado", variant: "default" },
-  employee_deleted: { label: "Func. Excluído", variant: "destructive" },
-  product_created: { label: "Produto Criado", variant: "default" },
-  product_deleted: { label: "Produto Excluído", variant: "destructive" },
+  user_registered: { label: "Cadastro", variant: "accent" },
+  sale_created: { label: "Venda", variant: "success" },
+  sale_edited: { label: "Edição Venda", variant: "warning" },
+  sale_deleted: { label: "Exclusão Venda", variant: "error" },
+  sale_updated: { label: "Atualização Venda", variant: "warning" },
+  payment_created: { label: "Diária", variant: "accent" },
+  payment_deleted: { label: "Exclusão Diária", variant: "error" },
+  employee_created: { label: "Func. Cadastrado", variant: "accent" },
+  employee_deleted: { label: "Func. Excluído", variant: "error" },
+  product_created: { label: "Produto Criado", variant: "accent" },
+  custom_product_created: { label: "Produto Criado", variant: "accent" },
 };
 
 export default function Audit() {
