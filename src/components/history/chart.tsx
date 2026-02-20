@@ -1,14 +1,15 @@
 import { saleStore } from "@/hooks/useSales";
-import { formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { m } from "framer-motion";
 import { Card } from "../_ui/card";
 
 interface Props {
+  day: number;
   year: number;
   month: number;
 }
 
-export function SalesChart({ year, month }: Props) {
+export function SalesChart({ day, year, month }: Props) {
   const sales = saleStore.useStore((s) => s.sales);
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -27,30 +28,39 @@ export function SalesChart({ year, month }: Props) {
   const max = Math.max(...dailyTotals, 1);
   const monthTotal = dailyTotals.reduce((a, b) => a + b, 0);
 
-  if (monthTotal === 0) return null;
+  if (monthTotal === 0) {
+    return null;
+  }
 
   return (
     <Card>
       <Card.Title>VENDAS POR DIA</Card.Title>
 
-      <div className="flex items-end gap-[2px] h-28 mt-3">
+      <div className="flex items-end gap-0.5 h-28 mt-3">
         {dailyTotals.map((total, i) => {
+          const currentDay = i + 1;
           const height = (total / max) * 100;
 
           return (
             <m.div
               key={i}
-              className="flex-1 bg-primary/50 rounded-t-sm relative group cursor-pointer hover:bg-primary transition-colors"
-              style={{ minHeight: total > 0 ? 4 : 2 }}
+              className={cn(
+                "flex-1 bg-primary/50 rounded-t-sm relative group cursor-pointer hover:bg-primary/70 transition-colors",
+                currentDay === day && "bg-primary!",
+              )}
               initial={{ height: 0 }}
               animate={{ height: `${Math.max(height, 2)}%` }}
+              style={{ minHeight: total > 0 ? 4 : 2 }}
               transition={{ delay: i * 0.02, duration: 0.4, ease: "easeOut" }}
             >
-              {total > 0 && (
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-base-300 text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
-                  {i + 1}: {formatCurrency(total)}
-                </div>
-              )}
+              <div
+                className="
+                  absolute -top-8 left-1/2 -translate-x-1/2 px-1.5 py-0.5 z-10 opacity-0 pointer-events-none
+                  bg-base-300 text-xs rounded group-hover:opacity-100 transition-opacity whitespace-nowrap
+                "
+              >
+                {currentDay}: {formatCurrency(total)}
+              </div>
             </m.div>
           );
         })}
@@ -63,7 +73,8 @@ export function SalesChart({ year, month }: Props) {
       </div>
 
       <p className="text-xs text-base-content/60 mt-2">
-        Total do mês: <strong className="font-mono">{formatCurrency(monthTotal)}</strong>
+        Total do mês:{" "}
+        <strong className="font-mono">{formatCurrency(monthTotal)}</strong>
       </p>
     </Card>
   );
