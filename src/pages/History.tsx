@@ -2,9 +2,9 @@ import { Title } from "@/components/_layout/title";
 import { Button } from "@/components/_ui/button";
 import { Card } from "@/components/_ui/card";
 import { toast } from "@/components/_ui/toast";
+import { Stat } from "@/components/dashboard/stat";
 import { SalesChart } from "@/components/history/chart";
 import { SaleItem } from "@/components/sales/item";
-import StatCard from "@/components/StatCard";
 import { employeeStore } from "@/hooks/useEmployees";
 import { paymentStore } from "@/hooks/usePayments";
 import { saleStore } from "@/hooks/useSales";
@@ -196,33 +196,29 @@ export default function History() {
         {formattedDate}
       </m.p>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard
-          label="Vendas"
-          value={formatCurrency(totalSales)}
-          icon={DollarSign}
-          delay={0}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Stat
+          title="Vendas"
+          value={totalSales}
+          icon={{ element: DollarSign, variant: "primary" }}
         />
-        <StatCard
-          label="Pix"
-          value={formatCurrency(totalPix)}
-          icon={Smartphone}
+        <Stat
+          title="Pix"
+          value={totalPix}
+          icon={{ element: Smartphone, variant: "success" }}
           variant="success"
-          delay={0.05}
         />
-        <StatCard
-          label="Dinheiro"
-          value={formatCurrency(totalCash)}
-          icon={Banknote}
+        <Stat
+          title="Dinheiro"
+          value={totalCash}
+          icon={{ element: Banknote, variant: "warning" }}
           variant="warning"
-          delay={0.1}
         />
-        <StatCard
-          label="Diárias"
-          value={formatCurrency(totalPayments)}
-          icon={Minus}
+        <Stat
+          title="Diárias"
+          value={totalPayments}
+          icon={{ element: Minus, variant: "error" }}
           variant="error"
-          delay={0.15}
         />
       </div>
 

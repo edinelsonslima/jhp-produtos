@@ -38,8 +38,8 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
           Venda • {getProducts()?.length ?? 0} itens
         </p>
 
-        <div className="flex items-center gap-3 text-xs text-base-content/60 mt-1">
-          <p>{formatDateTime(sale.date)}</p>
+        <div className="flex items-center justify-start gap-3 text-xs text-base-content/60 mt-1">
+          <span>{formatDateTime(sale.date)}</span>
 
           {sale.price?.cash > 0 && (
             <span className="flex items-center gap-1">

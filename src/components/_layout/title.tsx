@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
-import { m } from "framer-motion";
 import { ComponentProps, ReactNode } from "react";
 
-type MotionDivProps = ComponentProps<typeof m.div>;
+type MotionDivProps = ComponentProps<"div">;
 
 interface Props extends Omit<MotionDivProps, "prefix"> {
   suffix?: ReactNode;
@@ -24,12 +23,7 @@ export function Title({
   }
 
   return (
-    <m.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className={cn("flex gap-3 items-center", className)}
-      {...props}
-    >
+    <div className={cn("flex gap-3 items-center", className)} {...props}>
       {prefix}
 
       <div>
@@ -38,6 +32,6 @@ export function Title({
       </div>
 
       {suffix}
-    </m.div>
+    </div>
   );
 }
