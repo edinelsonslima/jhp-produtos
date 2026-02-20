@@ -8,7 +8,7 @@ import { Calculator } from "@/components/Calculator";
 import { CurrencyInput } from "@/components/currency/Input";
 import { CurrencyMonitor } from "@/components/currency/monitor";
 import { ProductItem } from "@/components/product/item";
-import { SaleCelebration } from "@/components/sales/celebration";
+import { SaleCelebration } from "@/components/Sales/celebration";
 import { SaleItem } from "@/components/Sales/item";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";

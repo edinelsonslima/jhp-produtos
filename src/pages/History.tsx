@@ -3,7 +3,7 @@ import { Button } from "@/components/_ui/button";
 import { Card } from "@/components/_ui/card";
 import { toast } from "@/components/_ui/toast";
 import { SalesChart } from "@/components/history/chart";
-import { SaleItem } from "@/components/sales/item";
+import { SaleItem } from "@/components/Sales/item";
 import StatCard from "@/components/StatCard";
 import { employeeStore } from "@/hooks/useEmployees";
 import { paymentStore } from "@/hooks/usePayments";
@@ -58,8 +58,18 @@ export default function History() {
   const firstDayOfWeek = new Date(viewMonth.year, viewMonth.month, 1).getDay();
 
   const monthNames = [
-    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
 
   const prevMonth = () =>
@@ -107,7 +117,12 @@ export default function History() {
 
       <Card>
         <div className="flex items-center justify-between mb-4">
-          <Button size="sm" appearance="ghost" modifier="square" onClick={prevMonth}>
+          <Button
+            size="sm"
+            appearance="ghost"
+            modifier="square"
+            onClick={prevMonth}
+          >
             <ChevronLeft size={18} />
           </Button>
           <div className="flex items-center gap-2">
@@ -116,7 +131,12 @@ export default function History() {
               {monthNames[viewMonth.month]} {viewMonth.year}
             </span>
           </div>
-          <Button size="sm" appearance="ghost" modifier="square" onClick={nextMonth}>
+          <Button
+            size="sm"
+            appearance="ghost"
+            modifier="square"
+            onClick={nextMonth}
+          >
             <ChevronRight size={18} />
           </Button>
         </div>
@@ -177,10 +197,33 @@ export default function History() {
       </m.p>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard label="Vendas" value={formatCurrency(totalSales)} icon={DollarSign} delay={0} />
-        <StatCard label="Pix" value={formatCurrency(totalPix)} icon={Smartphone} variant="success" delay={0.05} />
-        <StatCard label="Dinheiro" value={formatCurrency(totalCash)} icon={Banknote} variant="warning" delay={0.1} />
-        <StatCard label="Diárias" value={formatCurrency(totalPayments)} icon={Minus} variant="error" delay={0.15} />
+        <StatCard
+          label="Vendas"
+          value={formatCurrency(totalSales)}
+          icon={DollarSign}
+          delay={0}
+        />
+        <StatCard
+          label="Pix"
+          value={formatCurrency(totalPix)}
+          icon={Smartphone}
+          variant="success"
+          delay={0.05}
+        />
+        <StatCard
+          label="Dinheiro"
+          value={formatCurrency(totalCash)}
+          icon={Banknote}
+          variant="warning"
+          delay={0.1}
+        />
+        <StatCard
+          label="Diárias"
+          value={formatCurrency(totalPayments)}
+          icon={Minus}
+          variant="error"
+          delay={0.15}
+        />
       </div>
 
       <Card variant={net >= 0 ? "success" : "error"}>
