@@ -1,6 +1,5 @@
 import { Title } from "@/components/_layout/title";
 import { Card } from "@/components/_ui/card";
-import { toast } from "@/components/_ui/toast";
 import { Calendar } from "@/components/calendar";
 import { Stat } from "@/components/dashboard/stat";
 import { SalesChart } from "@/components/history/chart";
@@ -8,12 +7,14 @@ import { SaleItem } from "@/components/sales/item";
 import { employeeStore } from "@/hooks/useEmployees";
 import { paymentStore } from "@/hooks/usePayments";
 import { saleStore } from "@/hooks/useSales";
-import { formatCurrency } from "@/lib/utils";
+import { toast } from "@/lib/toast";
+import { cn, formatCurrency } from "@/lib/utils";
 import {
   Banknote,
   DollarSign,
   Minus,
   Smartphone,
+  TrendingDown,
   TrendingUp,
 } from "lucide-react";
 import { ComponentProps, useState } from "react";
@@ -39,6 +40,37 @@ export default function History() {
   const totalPix = daySales.reduce((a, s) => a + (s.price?.pix ?? 0), 0);
   const totalCash = daySales.reduce((a, s) => a + (s.price?.cash ?? 0), 0);
   const totalPayments = dayPayments.reduce((a, p) => a + (p.amount ?? 0), 0);
+  const totalPaymentsByEmployee = dayPayments.reduce<
+    { id: string; name: string; amount: number; count: number }[]
+  >((acc, payment) => {
+    if (payment.receiver?.type !== "employee" || !payment.receiver.id) {
+      return acc;
+    }
+
+    const employee = employeeStore.action.get(payment.receiver.id);
+
+    if (!employee) {
+      return acc;
+    }
+
+    const existing = acc.find((e) => e.id === employee.id);
+
+    if (!existing) {
+      acc.push({
+        id: employee.id,
+        name: employee.name,
+        amount: payment.amount ?? 0,
+        count: 1,
+      });
+    }
+
+    if (existing) {
+      existing.amount += payment.amount ?? 0;
+      existing.count += 1;
+    }
+
+    return acc;
+  }, []);
   const net = totalSales - totalPayments;
 
   const currentDateSelected = {
@@ -75,20 +107,22 @@ export default function History() {
 
       <Calendar onSelect={handleSelectDate} highlight={hasSalesOnDay} />
 
-      <p className="text-sm text-base-content/60 capitalize">
+      <Card.Title className="text-md text-base-content/60 capitalize mb-1 py-2 sticky top-16 z-10 bg-base-100">
         {new Date(date + "T12:00:00").toLocaleDateString("pt-BR", {
           weekday: "long",
           day: "numeric",
           month: "long",
           year: "numeric",
         })}
-      </p>
+      </Card.Title>
 
-      <SalesChart
-        day={currentDateSelected.day}
-        year={currentDateSelected.year}
-        month={currentDateSelected.month}
-      />
+      <Card appearance="ghost">
+        <SalesChart
+          day={currentDateSelected.day}
+          year={currentDateSelected.year}
+          month={currentDateSelected.month}
+        />
+      </Card>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Stat
@@ -116,75 +150,60 @@ export default function History() {
         />
       </div>
 
-      <Card variant={net >= 0 ? "success" : "error"}>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-medium text-base-content/60 uppercase tracking-wide">
-              Líquido do Dia
-            </p>
-            <p className="text-2xl font-extrabold font-mono mt-1">
-              {formatCurrency(net)}
-            </p>
-          </div>
-          <TrendingUp size={24} className="text-base-content/20" />
-        </div>
-      </Card>
+      <Stat
+        title="Líquido do Dia"
+        subtitle="Total vendido − diárias pagas"
+        value={net}
+        icon={{
+          element: net >= 0 ? TrendingUp : TrendingDown,
+          appearance: "ghost",
+        }}
+        classNames={{
+          icon: "text-base-content/20 size-10",
+          value: cn(
+            "text-2xl sm:text-3xl font-extrabold mt-1 font-mono",
+            net >= 0 ? "text-success" : "text-error",
+          ),
+        }}
+      />
 
-      {dayPayments.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
-            Pagamentos ({dayPayments.length})
-          </h3>
-          <Card className="divide-y divide-base-300 p-0 overflow-hidden">
-            {dayPayments.map((payment) => {
-              const emp = payment.receiver?.id
-                ? employeeStore.action.get(payment.receiver.id)
-                : null;
+      {totalPaymentsByEmployee.length > 0 && (
+        <Card>
+          <Card.Title>Pagamentos ({totalPaymentsByEmployee.length})</Card.Title>
 
-              return (
-                <div
-                  key={payment.id}
-                  className="flex items-center justify-between px-4 py-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-base-200 flex items-center justify-center text-xs font-bold text-base-content/60">
-                      {emp?.name?.charAt(0).toUpperCase() ?? "?"}
-                    </div>
-                    <p className="text-sm font-semibold">
-                      {emp?.name ?? "Externo"}
-                    </p>
-                  </div>
-                  <p className="text-sm font-bold font-mono">
-                    {formatCurrency(payment.amount)}
-                  </p>
-                </div>
-              );
-            })}
-          </Card>
-        </div>
+          {totalPaymentsByEmployee.map((emp) => (
+            <div key={emp.id} className="flex items-center">
+              <span className="text-sm whitespace-nowrap">
+                {emp?.name ?? "Externo"}
+              </span>
+
+              <span className="flex-1 mx-2 border-b border-dotted border-base-content/20 translate-y-1" />
+
+              <span className="font-bold font-mono">
+                {formatCurrency(emp.amount)}
+              </span>
+
+              <small className="ml-2 text-xs text-neutral/50">
+                {emp.count}x
+              </small>
+            </div>
+          ))}
+        </Card>
       )}
 
-      <div>
-        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
-          Vendas do Dia ({daySales.length})
-        </h3>
+      <Card appearance="ghost">
+        <Card.Title>Vendas do Dia ({daySales.length})</Card.Title>
 
         {daySales.length === 0 ? (
-          <Card className="text-center text-base-content/60 text-sm py-8">
+          <p className="text-center text-base-content/60 my-5">
             Nenhuma venda neste dia
-          </Card>
+          </p>
         ) : (
-          <div className="space-y-2">
-            {daySales.map((sale) => (
-              <SaleItem
-                key={sale.id}
-                saleId={sale.id}
-                onDelete={handleDelete}
-              />
-            ))}
-          </div>
+          daySales.map((sale) => (
+            <SaleItem key={sale.id} saleId={sale.id} onDelete={handleDelete} />
+          ))
         )}
-      </div>
+      </Card>
     </>
   );
 }
