@@ -74,8 +74,6 @@ Button.getStyle = styled<StylesExtra>((className, props, styles, extra) => {
   const { active, disabled } = extra || {};
   const { appearance, modifier, size, variant } = props || {};
 
-  console.log(extra);
-
   return cn(
     "daisy-btn",
     size && styles.size[size],
