@@ -1,7 +1,7 @@
 import { Title } from "@/components/_layout/title";
 import { Card } from "@/components/_ui/card";
 import { toast } from "@/components/_ui/toast";
-import { SaleItem } from "@/components/Sales/item";
+import { SaleItem } from "@/components/sales/item";
 import StatCard from "@/components/StatCard";
 import { authStore } from "@/hooks/useAuth";
 import { paymentStore } from "@/hooks/usePayments";
@@ -43,17 +43,59 @@ export default function Dashboard() {
         subtitle={`Resumo do dia ${new Date().toLocaleDateString("pt-BR")}`}
       />
 
-      <div>
-        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
-          Hoje
-        </h3>
+      <Card appearance="ghost">
+        <Card.Title>HOJE</Card.Title>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard label="Total Vendido" value={formatCurrency(todaySales.total)} icon={DollarSign} delay={0} />
-          <StatCard label="Pix" value={formatCurrency(todaySales.pix)} icon={Smartphone} variant="success" delay={0.05} />
-          <StatCard label="Dinheiro" value={formatCurrency(todaySales.cash)} icon={Banknote} variant="warning" delay={0.1} />
-          <StatCard label="Diárias Pagas" value={formatCurrency(todayPayments.total)} icon={Minus} variant="error" delay={0.15} />
+          {[
+            {
+              title: "Total Vendido",
+              value: todaySales.total,
+              icon: DollarSign,
+              variant: undefined,
+            },
+            {
+              title: "Pix",
+              value: todaySales.pix,
+              icon: Smartphone,
+              variant: "success",
+            },
+            {
+              title: "Dinheiro",
+              value: todaySales.cash,
+              icon: Banknote,
+              variant: "warning",
+            },
+            {
+              title: "Diárias Pagas",
+              value: todayPayments.total,
+              icon: Minus,
+              variant: "error",
+            },
+          ].map((item) => (
+            <Card key={item.title} variant={item.variant}>
+              <Card.Title className="text-xs uppercase">
+                {item.title}
+              </Card.Title>
+
+              <div className="flex items-center justify-between">
+                <p className="text-xl sm:text-2xl font-extrabold mt-1 font-mono truncate">
+                  {formatCurrency(item.value)}
+                </p>
+
+                <item.icon
+                  size={18}
+                  className={Card.getStyle(`text-${item.variant} p-2`, {
+                    variant: item.variant,
+                    modifier: "square",
+                    size: "lg",
+                  })}
+                />
+              </div>
+            </Card>
+          ))}
         </div>
-      </div>
+      </Card>
 
       <m.div
         initial={{ opacity: 0, y: 12 }}
@@ -84,9 +126,26 @@ export default function Dashboard() {
           Este Mês
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <StatCard label="Total Mês" value={formatCurrency(monthSales.total)} icon={DollarSign} delay={0.25} />
-          <StatCard label="Pix no Mês" value={formatCurrency(monthSales.pix)} icon={Smartphone} variant="success" delay={0.3} />
-          <StatCard label="Dinheiro no Mês" value={formatCurrency(monthSales.cash)} icon={Banknote} variant="warning" delay={0.35} />
+          <StatCard
+            label="Total Mês"
+            value={formatCurrency(monthSales.total)}
+            icon={DollarSign}
+            delay={0.25}
+          />
+          <StatCard
+            label="Pix no Mês"
+            value={formatCurrency(monthSales.pix)}
+            icon={Smartphone}
+            variant="success"
+            delay={0.3}
+          />
+          <StatCard
+            label="Dinheiro no Mês"
+            value={formatCurrency(monthSales.cash)}
+            icon={Banknote}
+            variant="warning"
+            delay={0.35}
+          />
         </div>
       </div>
 
