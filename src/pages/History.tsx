@@ -1,9 +1,9 @@
 import { Title } from "@/components/_layout/title";
-import { SaleItem } from "@/components/_Sales/item";
 import { Button } from "@/components/_ui/button";
 import { Card } from "@/components/_ui/card";
 import { toast } from "@/components/_ui/toast";
 import { SalesChart } from "@/components/history/chart";
+import { SaleItem } from "@/components/sales/item";
 import StatCard from "@/components/StatCard";
 import { employeeStore } from "@/hooks/useEmployees";
 import { paymentStore } from "@/hooks/usePayments";
