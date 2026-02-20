@@ -20,10 +20,15 @@ const styled = createStyle({
     xl: "daisy-card-xl",
   },
   modifier: {
-    side: "daisy-card-side",
-    imageFull: "daisy-image-full",
+    wide: "daisy-btn-wide",
+    block: "daisy-btn-block",
+    square: "daisy-btn-square",
+    circle: "daisy-btn-circle",
+    figureSide: "daisy-card-side",
+    figureFull: "daisy-image-full",
   },
   appearance: {
+    ghost: "border-0",
     border: "daisy-card-border",
     dash: "daisy-card-dash",
   },
@@ -55,7 +60,9 @@ export function Card({
       })}
       {...props}
     >
-      <div className="daisy-card-body">{children}</div>
+      <div className={cn("daisy-card-body", appearance === "ghost" && "p-0")}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -81,7 +88,7 @@ function Title({ children, className, ...props }: ComponentProps<"h3">) {
 
 Title.getStyle = styled((className) => {
   return cn(
-    "daisy-card-title text-sm font-semibold text-base-content/80 tracking-wider",
+    "daisy-card-title text-sm text-base-content/60 tracking-wider",
     className,
   );
 });

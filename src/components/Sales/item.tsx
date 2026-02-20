@@ -76,7 +76,7 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
         <div className="flex justify-end gap-2">
           <Link
             to={`/vendas/${sale.id}/editar`}
-            className={Button.getStyle({
+            className={Button.getStyle(undefined, {
               appearance: "soft",
               size: "sm",
             })}

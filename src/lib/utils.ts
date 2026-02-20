@@ -104,44 +104,11 @@ type VariantConfig = Record<string, Record<string, string>>;
 type VariantProps<C extends VariantConfig> = { [K in keyof C]?: keyof C[K] };
 
 export function createStyle<C extends VariantConfig>(config: C) {
-  const configKeys = new Set(Object.keys(config));
-
-  function isVariantProps(value: object): boolean {
-    return Object.keys(value).some((k) => configKeys.has(k));
-  }
-
   function getStyle<S extends object, E extends object>(
     fn: (className: string, styles: S, extra?: E) => string,
   ) {
-    function styleFn(props?: S, extra?: E): string;
-    function styleFn(className?: string, extra?: E): string;
-    function styleFn(className?: string, props?: S, extra?: E): string;
-    function styleFn(first?: string | S, second?: S | E, third?: E) {
-      let className = "";
-      let styles: S = {} as S;
-      let extra: E | undefined;
-
-      if (typeof first === "string") {
-        className = first;
-      }
-
-      if (typeof first === "object" && isVariantProps(first)) {
-        styles = first as S;
-      }
-
-      if (typeof second === "object" && isVariantProps(second)) {
-        styles = second as S;
-      }
-
-      if (typeof second === "object" && !isVariantProps(second)) {
-        extra = second as E;
-      }
-
-      if (third) {
-        extra = third;
-      }
-
-      return fn(className, styles, extra);
+    function styleFn(className?: string, styles?: S, extra?: E) {
+      return fn(className || "", styles || ({} as S), extra);
     }
 
     return styleFn;

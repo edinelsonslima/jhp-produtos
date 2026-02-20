@@ -22,7 +22,7 @@ const ACTION_LABELS: Record<string, ActionConfig> = {
   employee_created: { label: "Func. Cadastrado", variant: "accent" },
   employee_deleted: { label: "Func. Excluído", variant: "error" },
   product_created: { label: "Produto Criado", variant: "accent" },
-  custom_product_created: { label: "Produto Criado", variant: "accent" },
+  custom_product_created: { label: "Produto Custom Criado", variant: "accent" },
 };
 
 export default function Audit() {

@@ -45,7 +45,7 @@ export function Mobile({
         <div className="flex items-center gap-2">
           <Link
             to="/buscar"
-            className={Button.getStyle({
+            className={Button.getStyle(undefined, {
               modifier: "circle",
               appearance: "ghost",
             })}
@@ -57,7 +57,7 @@ export function Mobile({
             <div
               role="button"
               tabIndex={0}
-              className={Button.getStyle({
+              className={Button.getStyle(undefined, {
                 modifier: "circle",
                 variant: "primary",
               })}

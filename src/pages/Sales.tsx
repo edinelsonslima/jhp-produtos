@@ -8,7 +8,7 @@ import { Calculator } from "@/components/Calculator";
 import { CurrencyInput } from "@/components/currency/Input";
 import { CurrencyMonitor } from "@/components/currency/monitor";
 import { ProductItem } from "@/components/product/item";
-import { SaleCelebration } from "@/components/Sales/celebration";
+import { SaleCelebration } from "@/components/sales/celebration";
 import { SaleItem } from "@/components/Sales/item";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
@@ -77,7 +77,9 @@ export default function Sales() {
     }
 
     if (isCombined && Math.abs(totalPaymentCombined - total) > 0.01) {
-      toast.error("Valores em Dinheiro e PIX devem ser igual ao total da venda");
+      toast.error(
+        "Valores em Dinheiro e PIX devem ser igual ao total da venda",
+      );
       return;
     }
 
