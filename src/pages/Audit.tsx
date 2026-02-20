@@ -1,5 +1,6 @@
 import { Title } from "@/components/_layout/title";
 import { Badge } from "@/components/_ui/badge";
+import { Card } from "@/components/_ui/card";
 import { getAuditLog } from "@/lib/audit";
 import { ClipboardList } from "lucide-react";
 import { ComponentProps } from "react";
@@ -35,12 +36,12 @@ export default function Audit() {
       />
 
       {entries.length === 0 ? (
-        <div className="rounded-xl border border-base-300 bg-base-100 p-8 text-center text-base-content/60">
+        <Card className="p-8 text-center text-base-content/60">
           <ClipboardList size={32} className="mx-auto mb-3 opacity-40" />
           <p className="text-sm">Nenhum registro de auditoria</p>
-        </div>
+        </Card>
       ) : (
-        <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden divide-y divide-base-300">
+        <Card className="overflow-hidden divide-y divide-base-300 p-0">
           {entries.map((entry) => {
             const config = ACTION_LABELS[entry.action] ?? {
               label: entry.action,
@@ -66,7 +67,7 @@ export default function Audit() {
               </div>
             );
           })}
-        </div>
+        </Card>
       )}
     </>
   );

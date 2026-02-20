@@ -3,6 +3,7 @@ import { Theme, themeStore } from "@/hooks/useTheme";
 import {
   CalendarDays,
   ClipboardList,
+  Info,
   LayoutDashboard,
   LogOut,
   Package,
@@ -78,6 +79,12 @@ export function Mobile({
               <li>
                 <Link to="/auditoria">
                   <ClipboardList size={14} /> Auditoria
+                </Link>
+              </li>
+
+              <li>
+                <Link to="/sobre">
+                  <Info size={14} /> Sobre
                 </Link>
               </li>
 

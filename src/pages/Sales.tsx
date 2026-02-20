@@ -8,8 +8,8 @@ import { Calculator } from "@/components/Calculator";
 import { CurrencyInput } from "@/components/currency/Input";
 import { CurrencyMonitor } from "@/components/currency/monitor";
 import { ProductItem } from "@/components/product/item";
-import { SaleCelebration } from "@/components/sales/celebration";
-import { SaleItem } from "@/components/sales/item";
+import { SaleCelebration } from "@/components/Sales/celebration";
+import { SaleItem } from "@/components/Sales/item";
 import { productStore } from "@/hooks/useProducts";
 import { saleStore } from "@/hooks/useSales";
 import { cn, formatCurrency, generateUUID, vibrate } from "@/lib/utils";
@@ -35,17 +35,14 @@ export default function Sales() {
   const handleAddProduct = (product: Product, quantity: number) => {
     setSelected((prev) => {
       const list = [...prev.regular];
-
       const idx = list.findIndex((p) => p.id === product.id);
 
       if (idx === -1) {
         const found = products.find((p) => p.id === product.id);
-
         if (!found) {
           toast.error("Produto não encontrado");
           return prev;
         }
-
         return { ...prev, regular: [...list, { id: found.id, quantity: 1 }] };
       }
 
@@ -80,23 +77,15 @@ export default function Sales() {
     }
 
     if (isCombined && Math.abs(totalPaymentCombined - total) > 0.01) {
-      toast.error(
-        "Valores em Dinheiro e PIX devem ser igual ao total da venda",
-      );
+      toast.error("Valores em Dinheiro e PIX devem ser igual ao total da venda");
       return;
     }
 
     let cash = 0;
     let pix = 0;
 
-    if (paymentMethod === "dinheiro") {
-      cash = total;
-    }
-
-    if (paymentMethod === "pix") {
-      pix = total;
-    }
-
+    if (paymentMethod === "dinheiro") cash = total;
+    if (paymentMethod === "pix") pix = total;
     if (paymentMethod === "combinado") {
       cash = cashAmount;
       pix = pixAmount;
@@ -119,12 +108,9 @@ export default function Sales() {
 
   const handleAddCustomItem = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
-
     const brutPrice = formData.get("price")?.toString().replace(/\D/g, "");
     const price = parseInt(brutPrice || "0", 10) / 100;
-
     const name = formData.get("name")?.toString().trim() || "";
     const quantity = formData.get("quantity")?.toString().trim() || "1";
 
@@ -134,7 +120,6 @@ export default function Sales() {
     }
 
     const qty = parseInt(quantity) || 1;
-
     if (qty <= 0) {
       toast.warn("Quantidade deve ser maior que zero");
       return;
@@ -262,7 +247,7 @@ export default function Sales() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 12 }}
-          className="rounded-xl border border-base-300 bg-base-100 p-3"
+          className={Card.getStyle("p-3")}
         >
           <h3 className="text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3">
             Itens
@@ -335,9 +320,9 @@ export default function Sales() {
         </h3>
 
         {sales.length === 0 ? (
-          <div className="p-8 text-center text-base-content/60 text-sm">
+          <Card className="p-8 text-center text-base-content/60 text-sm">
             Nenhuma venda registrada
-          </div>
+          </Card>
         ) : (
           <div className="space-y-2">
             {sales.slice(0, 20).map((sale) => (

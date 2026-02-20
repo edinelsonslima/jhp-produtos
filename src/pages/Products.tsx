@@ -1,5 +1,7 @@
 import { Title } from "@/components/_layout/title";
 import { Button } from "@/components/_ui/button";
+import { Card } from "@/components/_ui/card";
+import { ConfirmButton } from "@/components/_ui/confirm-button";
 import { Label } from "@/components/_ui/label";
 import { toast } from "@/components/_ui/toast";
 import { CurrencyInput } from "@/components/currency/Input";
@@ -43,7 +45,7 @@ export default function Products() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="rounded-xl border border-base-300 bg-base-100 p-3 space-y-4"
+        className={Card.getStyle("p-3 space-y-4")}
       >
         <div className="space-y-2">
           <Label>Nome do Produto</Label>
@@ -86,7 +88,7 @@ export default function Products() {
         <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
           Catálogo ({products.length})
         </h3>
-        <div className="rounded-xl border border-base-300 bg-base-100 overflow-hidden divide-y divide-base-300">
+        <Card className="overflow-hidden divide-y divide-base-300 p-0">
           {products.map((p) => (
             <div
               key={p.id}
@@ -105,21 +107,21 @@ export default function Products() {
                 <p className="text-sm font-bold font-mono">
                   {formatCurrency(p.price)}
                 </p>
-                <Button
+                <ConfirmButton
                   size="xs"
                   variant="error"
                   appearance="soft"
-                  onClick={() => {
+                  onConfirm={() => {
                     productStore.action.delete(p.id);
                     toast.info("Produto removido");
                   }}
                 >
                   <Trash2 size={14} />
-                </Button>
+                </ConfirmButton>
               </div>
             </div>
           ))}
-        </div>
+        </Card>
       </div>
     </>
   );

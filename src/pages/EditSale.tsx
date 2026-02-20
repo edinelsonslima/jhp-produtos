@@ -1,5 +1,7 @@
 import { Title } from "@/components/_layout/title";
 import { Button } from "@/components/_ui/button";
+import { Card } from "@/components/_ui/card";
+import { ConfirmButton } from "@/components/_ui/confirm-button";
 import { Label } from "@/components/_ui/label";
 import { toast } from "@/components/_ui/toast";
 import { CurrencyInput } from "@/components/currency/Input";
@@ -66,11 +68,7 @@ export default function EditSale() {
             ? { ...p, quantity: Math.max(0, p.quantity + delta) }
             : p,
         );
-
-        return {
-          ...prev,
-          custom: updated.filter((p) => p.quantity > 0),
-        };
+        return { ...prev, custom: updated.filter((p) => p.quantity > 0) };
       }
 
       const updated = prev.regular.map((p) =>
@@ -78,11 +76,7 @@ export default function EditSale() {
           ? { ...p, quantity: Math.max(0, p.quantity + delta) }
           : p,
       );
-
-      return {
-        ...prev,
-        regular: updated.filter((p) => p.quantity > 0),
-      };
+      return { ...prev, regular: updated.filter((p) => p.quantity > 0) };
     });
   };
 
@@ -153,7 +147,7 @@ export default function EditSale() {
         }
       />
 
-      <div className="rounded-xl border border-base-300 bg-base-100 p-5">
+      <Card>
         <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
           Total
         </p>
@@ -166,12 +160,12 @@ export default function EditSale() {
         >
           {total}
         </CurrencyMonitor>
-      </div>
+      </Card>
 
-      <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
+      <Card>
+        <Card.Title>
           Produtos ({products.regular.length + products.custom.length})
-        </h3>
+        </Card.Title>
 
         {getProducts().map((product) => (
           <div
@@ -217,13 +211,12 @@ export default function EditSale() {
             Todos os produtos foram removidos
           </p>
         )}
-      </div>
+      </Card>
 
-      <div className="rounded-xl border border-base-300 bg-base-100 p-4 space-y-3">
-        <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider">
-          Forma de Pagamento
-        </h3>
-        <div className="flex gap-2">
+      <Card>
+        <Card.Title>Forma de Pagamento</Card.Title>
+
+        <div className="flex gap-2 mt-2">
           <Button
             type="button"
             className="flex-1"
@@ -264,7 +257,6 @@ export default function EditSale() {
               <Label className="flex items-center gap-2 text-xs">
                 <Banknote size={12} className="text-warning" /> Dinheiro
               </Label>
-
               <CurrencyInput value={cashAmount} onValueChange={setCashAmount} />
             </div>
 
@@ -272,7 +264,6 @@ export default function EditSale() {
               <Label className="flex items-center gap-2 text-xs">
                 <Smartphone size={12} className="text-success" /> PIX
               </Label>
-
               <CurrencyInput value={pixAmount} onValueChange={setPixAmount} />
             </div>
 
@@ -296,7 +287,7 @@ export default function EditSale() {
             )}
           </div>
         )}
-      </div>
+      </Card>
 
       <div className="flex gap-3">
         <Button
@@ -308,14 +299,14 @@ export default function EditSale() {
           <Save size={20} /> Salvar Alterações
         </Button>
 
-        <Button
+        <ConfirmButton
           size="lg"
           variant="error"
           appearance="soft"
-          onClick={handleDelete}
+          onConfirm={handleDelete}
         >
           <Trash2 size={20} />
-        </Button>
+        </ConfirmButton>
       </div>
     </>
   );
