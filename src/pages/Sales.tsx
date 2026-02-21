@@ -4,7 +4,7 @@ import { Card } from "@/components/_ui/card";
 import { Collapse } from "@/components/_ui/collapse";
 import { Label } from "@/components/_ui/label";
 import { toast } from "@/components/_ui/toast";
-import { Calculator } from "@/components/_Calculator";
+import { Calculator } from "@/components/calculator";
 import { CurrencyInput } from "@/components/currency/Input";
 import { CurrencyMonitor } from "@/components/currency/monitor";
 import { ProductItem } from "@/components/product/item";
