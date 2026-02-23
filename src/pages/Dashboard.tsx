@@ -85,7 +85,7 @@ export default function Dashboard() {
         value={todayNet}
         icon={{
           element: todayNet >= 0 ? TrendingUp : TrendingDown,
-          appearance: "ghost",
+          appearance: "no-border",
         }}
         classNames={{
           icon: "text-base-content/20 size-10",
