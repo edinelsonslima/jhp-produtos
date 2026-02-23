@@ -24,13 +24,14 @@ const styled = createStyle({
     block: "daisy-btn-block",
     square: "daisy-btn-square",
     circle: "daisy-btn-circle",
-    figureSide: "daisy-card-side",
-    figureFull: "daisy-image-full",
+    "figure-side": "daisy-card-side",
+    "figure-full": "daisy-image-full",
   },
   appearance: {
     ghost: "border-0 bg-transparent",
-    border: "daisy-card-border",
     dash: "daisy-card-dash",
+    border: "daisy-card-border",
+    "no-border": "border-0",
   },
 });
 
@@ -69,7 +70,7 @@ export function Card({
 
 Card.getStyle = styled((className, props, style) => {
   return cn(
-    "daisy-card daisy-card-border border border-base-300 bg-base-100",
+    "daisy-card daisy-card-border border border-base-300 bg-base-200",
     props?.variant && style.variant[props.variant],
     props?.size && style.size[props.size],
     props?.modifier && style.modifier[props.modifier],
