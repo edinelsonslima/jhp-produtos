@@ -1,5 +1,6 @@
 import { AppUser, authStore } from "@/hooks/useAuth";
 import { Theme, themeStore } from "@/hooks/useTheme";
+import { cn } from "@/lib/utils";
 import {
   CalendarDays,
   ClipboardList,
@@ -160,13 +161,21 @@ export function Mobile({
           <NavLink
             to={item.to}
             key={item.label}
-            className={({ isActive }) => (isActive ? "daisy-dock-active" : "")}
+            className={({ isActive }) =>
+              cn(
+                "after:duration-300 hover:opacity-100",
+                isActive && "daisy-dock-active after:bg-base-content/70",
+              )
+            }
           >
             {({ isActive }) => (
               <>
                 <item.icon
                   size={20}
-                  className={isActive ? "text-primary" : ""}
+                  className={cn(
+                    "transition-all origin-center duration-700",
+                    isActive && "fill-primary animate-scale-up stroke-[1.5]",
+                  )}
                 />
                 <span className="daisy-dock-label">{item.label}</span>
               </>
