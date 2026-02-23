@@ -107,7 +107,7 @@ export default function History() {
 
       <Calendar onSelect={handleSelectDate} highlight={hasSalesOnDay} />
 
-      <Card.Title className="text-md text-base-content/60 capitalize mb-1 py-2 sticky top-16 z-10 bg-base-100">
+      <Card.Title className="text-sm text-base-content/50 font-semibold capitalize mb-0.5 py-2 sticky top-15 z-10 bg-base-100">
         {new Date(date + "T12:00:00").toLocaleDateString("pt-BR", {
           weekday: "long",
           day: "numeric",
@@ -156,7 +156,7 @@ export default function History() {
         value={net}
         icon={{
           element: net >= 0 ? TrendingUp : TrendingDown,
-          appearance: "ghost",
+          appearance: "no-border",
         }}
         classNames={{
           icon: "text-base-content/20 size-10",
