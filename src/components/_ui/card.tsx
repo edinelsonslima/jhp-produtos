@@ -70,7 +70,7 @@ export function Card({
 
 Card.getStyle = styled((className, props, style) => {
   return cn(
-    "daisy-card daisy-card-border border border-base-300 bg-base-200",
+    "daisy-card daisy-card-border border border-base-300 bg-base-100",
     props?.variant && style.variant[props.variant],
     props?.size && style.size[props.size],
     props?.modifier && style.modifier[props.modifier],

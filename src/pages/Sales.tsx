@@ -174,11 +174,11 @@ export default function Sales() {
         {total}
       </CurrencyMonitor>
 
-      <Card>
+      <Card appearance="ghost">
         <Card.Title>SELECIONE UM PRODUTO</Card.Title>
 
         {!!products.length && (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden p-1">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 max-h-80 overflow-y-auto overflow-x-hidden">
             {products.map((p) => (
               <ProductItem
                 key={p.id}
@@ -338,11 +338,10 @@ export default function Sales() {
         )}
       </m.div>
 
-      <m.form
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
+      <form
         onSubmit={handleSubmit}
-        className="daisy-glass fixed bottom-16 space-y-3 p-4 border-t border-base-300 right-0 left-0"
+        hidden={products.length === 0 || total <= 0}
+        className="daisy-glass fixed bottom-16 space-y-3 p-4 border-t border-base-300 right-0 left-0 animate-fade-in-bottom-to-top"
       >
         <div className="flex gap-2">
           <Button
@@ -452,7 +451,7 @@ export default function Sales() {
 
           <Calculator saleTotal={total} />
         </div>
-      </m.form>
+      </form>
     </>
   );
 }
