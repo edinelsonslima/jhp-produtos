@@ -53,7 +53,7 @@ export function ProductItem({
     isDragging.current = true;
   };
 
-  const handleDragEnd = (_: unknown, info: { offset: { x: number } }) => {
+  const handleDragEnd = (_: TouchEvent, info: { offset: { x: number } }) => {
     isDragging.current = false;
     if (info.offset.x < -80) updateProductByQuantity(quantity + 1);
     if (info.offset.x > 80) updateProductByQuantity(quantity - 1);
@@ -70,6 +70,7 @@ export function ProductItem({
 
   return (
     <m.button
+      data-swipe-ignore
       drag={!longPressActive ? "x" : false}
       dragTransition={{ bounceStiffness: 100, bounceDamping: 9999 }}
       dragElastic={1}
