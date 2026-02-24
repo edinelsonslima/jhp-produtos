@@ -55,8 +55,14 @@ export function ProductItem({
 
   const handleDragEnd = (_: TouchEvent, info: { offset: { x: number } }) => {
     isDragging.current = false;
-    if (info.offset.x < -80) updateProductByQuantity(quantity + 1);
-    if (info.offset.x > 80) updateProductByQuantity(quantity - 1);
+
+    if (info.offset.x < -80) {
+      updateProductByQuantity(quantity + 1);
+    }
+
+    if (info.offset.x > 80) {
+      updateProductByQuantity(quantity - 1);
+    }
   };
 
   const handleClick = () => {
