@@ -18,7 +18,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { Banknote, Plus, Smartphone, Trash2 } from "lucide-react";
 import { FormEvent, useRef, useState } from "react";
 
-export default function Sales() {
+export function Component() {
   const sales = saleStore.useStore((state) => state.sales);
   const products = productStore.useStore((state) => state.products);
   const celebration = useRef<{ celebrate: () => void }>(null);

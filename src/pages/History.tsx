@@ -27,7 +27,7 @@ type SelectDateProps = Parameters<
   NonNullable<ComponentProps<typeof Calendar>["onSelect"]>
 >[0];
 
-export default function History() {
+export function Component() {
   const sales = saleStore.useStore((s) => s.sales);
   const payments = paymentStore.useStore((s) => s.payments);
 

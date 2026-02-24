@@ -1,5 +1,4 @@
 import Dashboard from './Dashboard';
 
-const Index = () => <Dashboard />;
+export const Component = () => <Dashboard />;
 
-export default Index;

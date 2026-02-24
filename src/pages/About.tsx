@@ -5,11 +5,9 @@ import { Code, FileText, Heart, Info } from "lucide-react";
 
 const APP_VERSION = "1.0.0";
 
-const team = [
-  { name: "JHP Produtos", role: "Desenvolvimento & Manutenção" },
-];
+const team = [{ name: "JHP Produtos", role: "Desenvolvimento & Manutenção" }];
 
-export default function About() {
+export function Component() {
   return (
     <>
       <Title title="Sobre" subtitle="Informações do sistema" />

@@ -11,7 +11,7 @@ import { m } from "framer-motion";
 import { Package, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-export default function Products() {
+export function Component() {
   const products = productStore.useStore((state) => state.products);
 
   const [name, setName] = useState("");

@@ -25,7 +25,7 @@ const ACTION_LABELS: Record<string, ActionConfig> = {
   custom_product_created: { label: "Produto Custom Criado", variant: "accent" },
 };
 
-export default function Audit() {
+export function Component() {
   const entries = getAuditLog();
 
   return (

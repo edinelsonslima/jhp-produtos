@@ -12,7 +12,7 @@ import { ArrowLeft, Package, Search as SearchIcon, User } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Search() {
+export function Component() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
