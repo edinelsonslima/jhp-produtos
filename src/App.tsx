@@ -11,6 +11,7 @@ import {
 import AppLayout from "./components/_layout";
 import { Authenticated } from "./components/auth/authenticated";
 import { Unauthenticated } from "./components/auth/unauthenticated";
+import { Loading } from "./pages/Loading";
 
 function AuthGate() {
   const user = authStore.useStore((state) => state.user);
@@ -22,7 +23,7 @@ function AuthGate() {
         <Route
           path="*"
           lazy={() => import("@/pages/Login")}
-          hydrateFallbackElement={<div>carregando...</div>}
+          hydrateFallbackElement={<Loading />}
         />
       </Route>
 
@@ -32,47 +33,47 @@ function AuthGate() {
             index
             path="/"
             lazy={() => import("@/pages/Index")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
           <Route
             path="/vendas"
             lazy={() => import("@/pages/Sales")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
           <Route
             path="/vendas/:id/editar"
             lazy={() => import("@/pages/EditSale")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
           <Route
             path="/pagamentos"
             lazy={() => import("@/pages/Payments")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
           <Route
             path="/produtos"
             lazy={() => import("@/pages/Products")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
           <Route
             path="/auditoria"
             lazy={() => import("@/pages/Audit")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
           <Route
             path="/sobre"
             lazy={() => import("@/pages/About")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
           <Route
             path="/historico"
             lazy={() => import("@/pages/History")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
           <Route
             path="/buscar"
             lazy={() => import("@/pages/Search")}
-            hydrateFallbackElement={<div>carregando...</div>}
+            hydrateFallbackElement={<Loading />}
           />
         </Route>
       </Route>
