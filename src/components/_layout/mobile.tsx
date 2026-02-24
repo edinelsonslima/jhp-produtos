@@ -1,4 +1,5 @@
 import { AppUser, authStore } from "@/hooks/useAuth";
+import { useSwipeNavigation } from "@/hooks/useSwipeNavigation";
 import { Theme, themeStore } from "@/hooks/useTheme";
 import { cn } from "@/lib/utils";
 import {
@@ -14,8 +15,8 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { PropsWithChildren } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { PropsWithChildren, useRef } from "react";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { Button } from "../_ui/button";
 import { Modal } from "../_ui/modal";
 import { Brand } from "./brand";
@@ -33,11 +34,14 @@ const dockerItems = [
   { to: "/produtos", icon: Package, label: "Produtos" },
 ];
 
-export function Mobile({
-  children,
-  user,
-  theme,
-}: PropsWithChildren<MobileProps>) {
+export function Mobile({ user, theme }: PropsWithChildren<MobileProps>) {
+  const mainRef = useRef<HTMLElement>(null);
+
+  useSwipeNavigation(
+    mainRef,
+    dockerItems.map((i) => i.to),
+  );
+
   return (
     <>
       <nav className="daisy-navbar daisy-glass px-4 w-full flex justify-between sticky top-0 z-50">
@@ -152,11 +156,14 @@ export function Mobile({
         </div>
       </nav>
 
-      <div className="min-h-full p-4 pb-20 max-w-2xl mx-auto space-y-8">
-        {children}
-      </div>
+      <main
+        ref={mainRef}
+        className="main-content min-h-screen p-4 pb-20 max-w-2xl mx-auto space-y-8"
+      >
+        <Outlet />
+      </main>
 
-      <div className="daisy-dock daisy-dock-md border-t border-base-content/10">
+      <div className="daisy-dock daisy-dock-md border-t border-base-content/10 bg-base-100">
         {dockerItems.map((item) => (
           <NavLink
             to={item.to}
