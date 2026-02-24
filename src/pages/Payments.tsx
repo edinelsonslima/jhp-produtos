@@ -97,7 +97,9 @@ export function Component() {
       <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className={Card.getStyle("flex gap-4 w-full overflow-x-auto p-4")}
+        className={Card.getStyle(
+          "flex flex-row gap-4 w-full overflow-x-auto p-4",
+        )}
       >
         <Modal>
           <Modal.Trigger
@@ -277,26 +279,29 @@ export function Component() {
       </AnimatePresence>
 
       <Card variant="error">
-        <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold">
-          Total Diárias Hoje
-        </p>
+        <Card.Title className="text-xs">TOTAL DIÁRIAS HOJE</Card.Title>
+
         <p className="text-2xl font-extrabold font-mono text-error mt-1">
           {formatCurrency(todayPayments.total)}
         </p>
       </Card>
 
       {todayPayments.paymentId.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
-            Hoje
-          </h3>
+        <>
+          <Card.Title className="mb-3">HOJE</Card.Title>
           <Card className="overflow-hidden divide-y divide-base-300 p-0">
             {todayPayments.paymentId.map((paymentId) => {
               const payment = paymentStore.action.get(paymentId);
-              if (!payment?.receiver?.id) return null;
+
+              if (!payment?.receiver?.id) {
+                return null;
+              }
 
               const emp = employeeStore.action.get(payment.receiver.id);
-              if (!emp) return null;
+
+              if (!emp) {
+                return null;
+              }
 
               return (
                 <div
@@ -307,12 +312,15 @@ export function Component() {
                     <div className="w-8 h-8 rounded-full bg-base-200 flex items-center justify-center text-xs font-bold text-base-content/60">
                       {emp.name.charAt(0).toUpperCase()}
                     </div>
+
                     <p className="text-sm font-semibold">{emp.name}</p>
                   </div>
+
                   <div className="flex items-center gap-3">
                     <p className="text-sm font-bold font-mono">
                       {formatCurrency(payment.amount)}
                     </p>
+
                     <ConfirmButton
                       size="xs"
                       variant="error"
@@ -329,19 +337,23 @@ export function Component() {
               );
             })}
           </Card>
-        </div>
+        </>
       )}
 
       {otherPayments.length > 0 && (
-        <div>
-          <h3 className="text-sm font-semibold text-base-content/60 uppercase tracking-wider mb-3">
-            Anteriores
-          </h3>
+        <>
+          <Card.Title className="mb-3">ANTERIORES</Card.Title>
           <Card className="overflow-hidden divide-y divide-base-300 p-0">
             {otherPayments.slice(0, 20).map((payment) => {
-              if (!payment.receiver?.id) return null;
+              if (!payment.receiver?.id) {
+                return null;
+              }
+
               const emp = employeeStore.action.get(payment.receiver.id);
-              if (!emp) return null;
+
+              if (!emp) {
+                return null;
+              }
 
               return (
                 <div
@@ -352,6 +364,7 @@ export function Component() {
                     <div className="w-8 h-8 rounded-full bg-base-200 flex items-center justify-center text-xs font-bold text-base-content/60">
                       {emp.name.charAt(0).toUpperCase()}
                     </div>
+
                     <div>
                       <p className="text-sm font-semibold">{emp.name}</p>
                       <p className="text-xs text-base-content/60">
@@ -359,14 +372,15 @@ export function Component() {
                       </p>
                     </div>
                   </div>
-                  <p className="text-sm font-bold font-mono">
+
+                  <span className="text-sm font-bold font-mono">
                     {formatCurrency(payment.amount)}
-                  </p>
+                  </span>
                 </div>
               );
             })}
           </Card>
-        </div>
+        </>
       )}
     </>
   );
