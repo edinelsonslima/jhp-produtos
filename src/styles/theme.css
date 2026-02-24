@@ -4,8 +4,7 @@
   --animate-fade-out: fadeOut 0.5s ease-in forwards;
   --animate-fade-in-bottom-to-top: fadeInBottomToTop 0.3s ease-in-out;
   --animate-scale-up: scaleUp 0.5s ease-in-out;
-  --animate-left-in: left-in 0.5s ease-in both;
-  --animate-left-out: leftOut 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  --animate-loading-bar: loading-bar 1.4s ease-in-out infinite;
 
   @keyframes fadeOut {
     from {
@@ -45,30 +44,18 @@
     }
   }
 
-  @keyframes leftIn {
-    from {
-      opacity: 0;
+  @keyframes loading-bar {
+    0% {
       transform: translateX(-100%);
-      backface-visibility: hidden;
+      width: 40%;
     }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-      transform-origin: top left;
+    50% {
+      transform: translateX(100%);
+      width: 60%;
     }
-  }
-
-  @keyframes leftOut {
-    from {
-      opacity: 1;
-      transform: translateX(0);
-      transform-origin: top left;
-    }
-    to {
-      opacity: 0;
-      transform-origin: top left;
-      transform: translateX(-100%);
-      backface-visibility: hidden;
+    100% {
+      transform: translateX(260%);
+      width: 40%;
     }
   }
 }
