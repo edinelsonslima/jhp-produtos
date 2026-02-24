@@ -164,7 +164,7 @@ export function Mobile({
             className={({ isActive }) =>
               cn(
                 "after:duration-300 hover:opacity-100",
-                isActive && "daisy-dock-active after:bg-base-content/70",
+                isActive && "daisy-dock-active after:bg-primary text-primary",
               )
             }
           >
@@ -174,7 +174,7 @@ export function Mobile({
                   size={20}
                   className={cn(
                     "transition-all origin-center duration-700",
-                    isActive && "fill-primary animate-scale-up stroke-[1.5]",
+                    isActive && "fill-primary/20 animate-scale-up",
                   )}
                 />
                 <span className="daisy-dock-label">{item.label}</span>

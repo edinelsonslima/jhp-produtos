@@ -56,13 +56,13 @@
       transform: scale(1) rotate(0deg);
     }
     25% {
-      transform: scale(1.05) rotate(3deg);
+      transform: scale(1.05) rotate(8deg);
     }
     50% {
-      transform: scale(1.1) rotate(-3deg);
+      transform: scale(1.1) rotate(-8deg);
     }
     75% {
-      transform: scale(1.05) rotate(3deg);
+      transform: scale(1.05) rotate(8deg);
     }
     to {
       transform: scale(1) rotate(0deg);
