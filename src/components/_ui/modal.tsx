@@ -24,7 +24,11 @@ const ModalContext = createContext<ModalContextValue>({
   ref: { current: null },
 });
 
-export function Modal({ children }: PropsWithChildren) {
+export function Modal({
+  children,
+  className,
+  ...props
+}: ComponentProps<"div">) {
   const ref = useRef<HTMLDialogElement>(null);
   const startY = useRef(0);
   const currentY = useRef(0);
@@ -121,12 +125,16 @@ export function Modal({ children }: PropsWithChildren) {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="daisy-modal-box max-h-[80vh] animate-fade-in-bottom-to-top"
+              className={cn(
+                "daisy-modal-box max-h-[80vh] animate-fade-in-bottom-to-top",
+                className,
+              )}
               style={{
                 transform: `translateY(${dragY}px)`,
                 transition: isDragging ? "none" : "transform 0.2s ease-out",
                 opacity: isDragging ? Math.max(0.5, 1 - dragY / 300) : 1,
               }}
+              {...props}
             >
               <div className="w-10 h-1 rounded-full bg-base-content/20 mx-auto -mt-2 mb-3 sm:hidden" />
               {childrenWithoutTrigger}
