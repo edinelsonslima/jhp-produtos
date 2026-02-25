@@ -13,7 +13,6 @@ import {
   Search,
   ShoppingCart,
   Users,
-  X,
 } from "lucide-react";
 import { PropsWithChildren, useRef } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
@@ -36,6 +35,29 @@ const dockerItems = [
 
 export function Mobile({ user, theme }: PropsWithChildren<MobileProps>) {
   const mainRef = useRef<HTMLElement>(null);
+
+  const toggleTitleStyles = (titleRef: HTMLElement | null) => {
+    if (!titleRef) return;
+
+    const sentinel = document.createElement("div");
+    sentinel.classList.add("sr-only");
+    titleRef.parentElement?.insertBefore(sentinel, titleRef);
+
+    const observer = new IntersectionObserver(
+      ([{ isIntersecting }]) =>
+        isIntersecting
+          ? titleRef.classList.remove("daisy-glass")
+          : titleRef.classList.add("daisy-glass"),
+      { threshold: [0, 1] },
+    );
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+      sentinel.remove();
+    };
+  };
 
   useSwipeNavigation(
     mainRef,
@@ -88,34 +110,24 @@ export function Mobile({ user, theme }: PropsWithChildren<MobileProps>) {
               </li>
 
               <li>
-                <Modal>
+                <Modal className="pb-0">
                   <Modal.Trigger
                     as="button"
                     type="button"
                     title="Selecionar o tema do sistema"
                   >
-                    <Palette size={14} />
-                    Tema
+                    <Palette size={14} /> Tema
                   </Modal.Trigger>
 
-                  <Modal.Title className="flex items-center justify-between sticky daisy-glass -top-6 h-14 px-6 -mx-6 -mt-6 z-10">
-                    <div className="flex items-center gap-3">
-                      <Palette size={20} />
-                      <h3 className="font-bold text-lg">Escolha o tema</h3>
-                    </div>
-
-                    <Modal.Actions className="mt-0">
-                      {({ close }) => (
-                        <X
-                          size={18}
-                          onClick={close}
-                          className="daisy-btn daisy-btn-xs daisy-btn-ghost"
-                        />
-                      )}
-                    </Modal.Actions>
+                  <Modal.Title
+                    ref={toggleTitleStyles}
+                    className="flex items-center justify-start sticky daisy-glass -top-6 h-14 px-6 m-0 -mx-6 z-10"
+                  >
+                    <Palette size={20} />
+                    <h3 className="font-bold text-lg">Escolha o tema</h3>
                   </Modal.Title>
 
-                  <Modal.Content as="ul" className="mt-4 w-full max-h-1/2">
+                  <Modal.Content as="ul" className="w-full max-h-1/2">
                     {themeStore.action.list().map((t) => (
                       <li key={t}>
                         <input
@@ -124,13 +136,19 @@ export function Mobile({ user, theme }: PropsWithChildren<MobileProps>) {
                           defaultChecked={theme === t}
                           name="theme-dropdown"
                           onChange={() => themeStore.action.set(t)}
-                          className={
-                            "daisy-theme-controller daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost w-full justify-start"
-                          }
+                          className="daisy-theme-controller daisy-btn daisy-btn-md daisy-btn-block daisy-btn-ghost w-full justify-start"
                         />
                       </li>
                     ))}
                   </Modal.Content>
+
+                  <Modal.Actions className="m-0 sticky bottom-0 py-2 pb-4 bg-base-100 border-t border-base-content/10">
+                    {({ close }) => (
+                      <Button onClick={close} appearance="outline">
+                        Fechar
+                      </Button>
+                    )}
+                  </Modal.Actions>
                 </Modal>
               </li>
 
