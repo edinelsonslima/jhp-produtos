@@ -1,6 +1,7 @@
 import { cn, formatCurrency } from "@/lib/utils";
 import { animate, motion, useMotionValue } from "framer-motion";
 import { ComponentProps, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Status = "up" | "down" | "idle";
 
@@ -48,9 +49,9 @@ export function CurrencyMonitor({
     };
   }, [children, duration, motionValue]);
 
-  return (
+  const content = (
     <motion.div
-      className={cn("inline-block transition-colors", className)}
+      className={cn("inline-block transition-colors text-success", className)}
       transition={{ duration: 0.4 }}
       animate={{
         scale: color === "idle" ? 1 : [1.05, 1],
@@ -65,4 +66,8 @@ export function CurrencyMonitor({
       {formatCurrency(display)}
     </motion.div>
   );
+
+  return className?.includes("fixed")
+    ? createPortal(content, document.body)
+    : content;
 }
