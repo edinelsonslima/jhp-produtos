@@ -34,10 +34,10 @@ export function Modal({ children }: PropsWithChildren) {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleTouchStart = (e: TouchEvent) => {
-    const target = e.target as HTMLElement;
-    const isScrollable = target.closest("[data-modal-scroll]");
+    const current = e.currentTarget;
+    const { overflowY } = window.getComputedStyle(current);
 
-    if (isScrollable) {
+    if (["auto", "scroll"].includes(overflowY) && current.scrollTop > 0) {
       return;
     }
 
@@ -60,7 +60,10 @@ export function Modal({ children }: PropsWithChildren) {
   };
 
   const handleTouchEnd = () => {
-    if (!isDragging) return;
+    if (!isDragging) {
+      return;
+    }
+
     setIsDragging(false);
 
     if (currentY.current > 100) {
@@ -118,7 +121,7 @@ export function Modal({ children }: PropsWithChildren) {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
-              className="daisy-modal-box max-h-dvh animate-fade-in-bottom-to-top"
+              className="daisy-modal-box max-h-[80vh] animate-fade-in-bottom-to-top"
               style={{
                 transform: `translateY(${dragY}px)`,
                 transition: isDragging ? "none" : "transform 0.2s ease-out",
