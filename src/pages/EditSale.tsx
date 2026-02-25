@@ -152,12 +152,7 @@ export function Component() {
           Total
         </p>
 
-        <CurrencyMonitor
-          className={cn(
-            "text-3xl font-extrabold font-mono mt-1",
-            total > 0 ? "text-success" : "text-error",
-          )}
-        >
+        <CurrencyMonitor className="text-3xl font-extrabold font-mono mt-1">
           {total}
         </CurrencyMonitor>
       </Card>

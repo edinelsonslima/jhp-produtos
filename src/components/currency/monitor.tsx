@@ -51,16 +51,16 @@ export function CurrencyMonitor({
 
   const content = (
     <motion.div
-      className={cn("inline-block transition-colors text-success", className)}
+      className={cn(
+        "inline-block transition-colors",
+        color === "up" && "text-success",
+        color === "down" && "text-error",
+        color === "idle" && "text-base-content/75",
+        display === 0 && "text-base-content/20",
+        className,
+      )}
       transition={{ duration: 0.4 }}
-      animate={{
-        scale: color === "idle" ? 1 : [1.05, 1],
-        color: (() => {
-          if (color === "up") return "var(--color-success)";
-          if (color === "down") return "var(--color-error)";
-          return "var(--color-success)";
-        })(),
-      }}
+      animate={{ scale: color === "idle" ? 1 : [1.05, 1] }}
       {...props}
     >
       {formatCurrency(display)}
