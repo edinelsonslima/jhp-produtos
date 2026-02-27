@@ -1,15 +1,15 @@
-import { authStore } from "@/hooks/useAuth";
-import { useMatchMedia } from "@/hooks/useMatchMedia";
-import { themeStore } from "@/hooks/useTheme";
-import { PropsWithChildren } from "react";
-import { Desktop } from "./desktop";
-import { Mobile } from "./mobile";
+import { authStore } from '@/hooks/useAuth'
+import { useMatchMedia } from '@/hooks/useMatchMedia'
+import { themeStore } from '@/hooks/useTheme'
+import type { PropsWithChildren } from 'react'
+import { Desktop } from './desktop'
+import { Mobile } from './mobile'
 
 export default function AppLayout({ children }: PropsWithChildren) {
-  const isNotMobile = useMatchMedia("md");
+  const isNotMobile = useMatchMedia('md')
 
-  const user = authStore.useStore((state) => state.user);
-  const theme = themeStore.useStore((state) => state.theme);
+  const user = authStore.useStore((state) => state.user)
+  const theme = themeStore.useStore((state) => state.theme)
 
   return (
     <>
@@ -21,5 +21,5 @@ export default function AppLayout({ children }: PropsWithChildren) {
 
       {isNotMobile && <Desktop>{children}</Desktop>}
     </>
-  );
+  )
 }

@@ -1,53 +1,51 @@
-import { vibrate } from "@/lib/utils";
-import { Check } from "lucide-react";
-import { ComponentProps, useEffect, useRef, useState } from "react";
-import { Button } from "./button";
+import { vibrate } from '@/lib/utils'
+import { Check } from 'lucide-react'
+import type { ComponentProps } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Button } from './button'
 
 interface Props extends ComponentProps<typeof Button> {
-  onConfirm: () => void;
+  onConfirm: () => void
 }
 
-export function ConfirmButton({
-  onConfirm,
-  children,
-  className,
-  ...props
-}: Props) {
-  const [confirming, setConfirming] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+export function ConfirmButton({ onConfirm, children, className, ...props }: Props) {
+  const [confirming, setConfirming] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!confirming) return;
+    if (!confirming) {
+      return
+    }
 
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
-        setConfirming(false);
+        setConfirming(false)
       }
-    };
+    }
 
-    document.addEventListener("pointerdown", handler, true);
-    return () => document.removeEventListener("pointerdown", handler, true);
-  }, [confirming]);
+    document.addEventListener('pointerdown', handler, true)
+    return () => document.removeEventListener('pointerdown', handler, true)
+  }, [confirming])
 
   return (
-    <div ref={ref} className="inline-flex">
+    <div ref={ref} className='inline-flex'>
       <Button
         {...props}
-        variant={confirming ? "error" : props.variant}
+        variant={confirming ? 'error' : props.variant}
         className={className}
         onClick={(e) => {
-          e.stopPropagation();
+          e.stopPropagation()
           if (confirming) {
-            onConfirm();
-            setConfirming(false);
+            onConfirm()
+            setConfirming(false)
           } else {
-            vibrate(10);
-            setConfirming(true);
+            vibrate(10)
+            setConfirming(true)
           }
         }}
       >
         {confirming ? <Check size={14} /> : children}
       </Button>
     </div>
-  );
+  )
 }

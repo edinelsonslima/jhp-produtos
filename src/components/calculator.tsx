@@ -1,108 +1,91 @@
-import { CurrencyInput } from "@/components/currency/Input";
-import { formatCurrency, vibrate } from "@/lib/utils";
-import { Calculator as CalculatorIcon } from "lucide-react";
-import { useState } from "react";
-import { Button } from "./_ui/button";
-import { Label } from "./_ui/label";
-import { Modal } from "./_ui/modal";
+import { CurrencyInput } from '@/components/currency/Input'
+import { formatCurrency, vibrate } from '@/lib/utils'
+import { Calculator as CalculatorIcon } from 'lucide-react'
+import { useState } from 'react'
+import { Button } from './_ui/button'
+import { Label } from './_ui/label'
+import { Modal } from './_ui/modal'
 
 interface Props {
-  saleTotal: number;
+  saleTotal: number
 }
 
 export function Calculator({ saleTotal }: Props) {
-  const [amountPaid, setAmountPaid] = useState(0);
+  const [amountPaid, setAmountPaid] = useState(0)
 
   const getBreakdown = (value: number) => {
     if (value <= 0) {
-      return [];
+      return []
     }
 
-    const result: { denom: number; count: number }[] = [];
-    const denominations = [100, 50, 20, 10, 5, 2, 1, 0.5, 0.25, 0.1, 0.05];
+    const result: { denom: number; count: number }[] = []
+    const denominations = [100, 50, 20, 10, 5, 2, 1, 0.5, 0.25, 0.1, 0.05]
 
-    let remaining = Math.round(value * 100) / 100;
+    let remaining = Math.round(value * 100) / 100
 
     for (const d of denominations) {
-      const count = Math.floor(remaining / d);
+      const count = Math.floor(remaining / d)
 
       if (count > 0) {
-        result.push({ denom: d, count });
-        remaining = Math.round((remaining - d * count) * 100) / 100;
+        result.push({ denom: d, count })
+        remaining = Math.round((remaining - d * count) * 100) / 100
       }
     }
 
-    return result;
-  };
+    return result
+  }
 
-  const change = amountPaid - saleTotal;
-  const breakdown = getBreakdown(change);
+  const change = amountPaid - saleTotal
+  const breakdown = getBreakdown(change)
 
   return (
     <Modal>
       <Modal.Trigger
         as={Button}
-        size="lg"
-        appearance="outline"
-        type="button"
-        title="Calculadora de Troco"
+        size='lg'
+        appearance='outline'
+        type='button'
+        title='Calculadora de Troco'
         onClick={() => vibrate(10)}
       >
         <CalculatorIcon size={18} />
       </Modal.Trigger>
 
       <Modal.Title>
-        <CalculatorIcon size={20} className="text-primary" />
-        <h3 className="text-lg font-bold">Calculadora de Troco</h3>
+        <CalculatorIcon size={20} className='text-primary' />
+        <h3 className='text-lg font-bold'>Calculadora de Troco</h3>
       </Modal.Title>
 
       <Modal.Content>
-        <div className="mb-3">
+        <div className='mb-3'>
           <Label>Valor da Venda</Label>
-          <p className="text-2xl font-extrabold font-mono text-primary">
-            {formatCurrency(saleTotal)}
-          </p>
+          <p className='text-2xl font-extrabold font-mono text-primary'>{formatCurrency(saleTotal)}</p>
         </div>
 
         <CurrencyInput
-          className="text-lg"
-          label="Valor Recebido (R$)"
+          className='text-lg'
+          label='Valor Recebido (R$)'
           value={amountPaid}
           onValueChange={setAmountPaid}
         />
 
         {amountPaid > 0 && (
-          <div className="pt-4 border-t border-base-300">
-            <p className="text-xs text-base-content/60 uppercase tracking-wide font-semibold mb-2">
-              Troco
+          <div className='pt-4 border-t border-base-300'>
+            <p className='text-xs text-base-content/60 uppercase tracking-wide font-semibold mb-2'>Troco</p>
+            <p className={`text-4xl font-extrabold font-mono ${change >= 0 ? 'text-success' : 'text-error'}`}>
+              {change >= 0 ? formatCurrency(change) : `− ${formatCurrency(Math.abs(change))}`}
             </p>
-            <p
-              className={`text-4xl font-extrabold font-mono ${change >= 0 ? "text-success" : "text-error"}`}
-            >
-              {change >= 0
-                ? formatCurrency(change)
-                : `− ${formatCurrency(Math.abs(change))}`}
-            </p>
-            {change < 0 && (
-              <p className="text-sm text-error mt-2">
-                Valor recebido é menor que o valor da venda!
-              </p>
-            )}
+            {change < 0 && <p className='text-sm text-error mt-2'>Valor recebido é menor que o valor da venda!</p>}
             {breakdown.length > 0 && (
-              <div className="mt-4 space-y-2">
-                <p className="text-xs text-base-content/60 font-semibold uppercase tracking-wide">
-                  Devolver
-                </p>
-                <div className="flex flex-wrap gap-2">
+              <div className='mt-4 space-y-2'>
+                <p className='text-xs text-base-content/60 font-semibold uppercase tracking-wide'>Devolver</p>
+                <div className='flex flex-wrap gap-2'>
                   {breakdown.map(({ denom, count }) => (
                     <span
                       key={denom}
-                      className="inline-flex items-center gap-1 rounded-lg bg-base-200 px-3 py-1.5 text-sm font-mono font-bold"
+                      className='inline-flex items-center gap-1 rounded-lg bg-base-200 px-3 py-1.5 text-sm font-mono font-bold'
                     >
-                      {count}×{" "}
-                      {denom >= 1
-                        ? `R$${denom}`
-                        : `${(denom * 100).toFixed(0)}¢`}
+                      {count}× {denom >= 1 ? `R$${denom}` : `${(denom * 100).toFixed(0)}¢`}
                     </span>
                   ))}
                 </div>
@@ -114,15 +97,11 @@ export function Calculator({ saleTotal }: Props) {
 
       <Modal.Actions>
         {({ close }) => (
-          <Button
-            type="button"
-            appearance="outline"
-            onClick={() => (setAmountPaid(0), close())}
-          >
+          <Button type='button' appearance='outline' onClick={() => (setAmountPaid(0), close())}>
             Fechar
           </Button>
         )}
       </Modal.Actions>
     </Modal>
-  );
+  )
 }

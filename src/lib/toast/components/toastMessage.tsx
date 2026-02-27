@@ -1,7 +1,8 @@
-import { AnimationEvent, useCallback, useEffect, useState } from "react";
+import type { AnimationEvent } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { cn } from "@/lib/utils";
-import { IToastMessageProps } from "../@types";
+import { cn } from '@/lib/utils'
+import type { IToastMessageProps } from '../@types'
 
 export function ToastMessage({
   duration = 7000,
@@ -12,41 +13,43 @@ export function ToastMessage({
   onRemoveMessage,
   ...props
 }: IToastMessageProps) {
-  const [animationUnmount, setAnimationUnmount] = useState<string>("");
+  const [animationUnmount, setAnimationUnmount] = useState<string>('')
 
   const handleRemoveMessage = (event: AnimationEvent<HTMLSpanElement>) => {
     if (!event.currentTarget.classList?.contains(animationUnmount!)) {
-      return;
+      return
     }
 
-    onRemoveMessage(id);
-  };
+    onRemoveMessage(id)
+  }
 
   const handleActiveAnimationUnmount = useCallback(() => {
-    setAnimationUnmount(animationUnmountProp || "animate-pulse");
-  }, [animationUnmountProp]);
+    setAnimationUnmount(animationUnmountProp || 'animate-pulse')
+  }, [animationUnmountProp])
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      return handleActiveAnimationUnmount();
-    }, duration);
+      return handleActiveAnimationUnmount()
+    }, duration)
 
-    return () => window.clearTimeout(timeoutId);
-  }, [duration, handleActiveAnimationUnmount]);
+    return () => window.clearTimeout(timeoutId)
+  }, [duration, handleActiveAnimationUnmount])
 
   return (
     <span
-      role="button"
+      role='button'
       tabIndex={0}
       onAnimationEnd={handleRemoveMessage}
       onClick={handleActiveAnimationUnmount}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") handleActiveAnimationUnmount();
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleActiveAnimationUnmount()
+        }
       }}
       className={cn(className, animationUnmount)}
       {...props}
     >
       {children}
     </span>
-  );
+  )
 }

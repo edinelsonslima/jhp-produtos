@@ -1,7 +1,7 @@
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from 'react'
 
 export function Desktop({ children }: PropsWithChildren) {
-  return children;
+  return children
 }
 
 // <div className="flex flex-col md:flex-row h-dvh overflow-hidden overflow-y-auto">

@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -15,10 +16,8 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
     "@vitejs/plugin-react": "^5.1.4",
-    "babel-plugin-react-compiler": "^1.0.0",
     "clsx": "^2.1.1",
     "daisyui": "^5.5.18",
-    "eslint-plugin-react-compiler": "^19.1.0-rc.2",
     "framer-motion": "^12.33.0",
     "lucide-react": "^0.563.0",
     "react": "^19.2.4",
@@ -32,15 +31,20 @@
     "@types/node": "^25.2.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.0.0",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react-compiler": "^19.1.0-rc.2",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.0",
+    "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.3.0",
     "jsdom": "^28.0.0",
     "lovable-tagger": "^1.1.13",
+    "prettier": "^3.8.1",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.38.0",
+    "typescript-eslint": "^8.56.1",
     "vite": "^7.3.1"
   }
 }

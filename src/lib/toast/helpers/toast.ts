@@ -1,67 +1,68 @@
-import { isValidElement, ReactNode } from "react";
-import { IToast, IToastWithoutType } from "../@types";
-import EventManager from "../services/eventManager";
+import type { ReactNode } from 'react'
+import { isValidElement } from 'react'
+import type { IToast, IToastWithoutType } from '../@types'
+import EventManager from '../services/eventManager'
 
-export const toastEventManager = new EventManager<{ "add-toast": IToast }>();
+export const toastEventManager = new EventManager<{ 'add-toast': IToast }>()
 
 /**
  * @param {object} { duration, content, type }
  */
 function toast({ duration, content, type }: IToast) {
-  content = toastContentSanitize(content);
-  toastEventManager.emit("add-toast", { content, duration, type });
+  content = toastContentSanitize(content)
+  toastEventManager.emit('add-toast', { content, duration, type })
 }
 /**
  * @param {object} { duration, content }
  * @param {ReactNode} ReactNode ReactElement | string | number | Iterable<ReactNode> | ReactPortal | boolean | null | undefined
  */
-toast.error = toastType("error");
+toast.error = toastType('error')
 /**
  * @param {object} { duration, content }
  * @param {ReactNode} ReactNode ReactElement | string | number | Iterable<ReactNode> | ReactPortal | boolean | null | undefined
  */
-toast.success = toastType("success");
+toast.success = toastType('success')
 /**
  * @param {object} { duration, content }
  * @param {ReactNode} ReactNode ReactElement | string | number | Iterable<ReactNode> | ReactPortal | boolean | null | undefined
  */
-toast.warn = toastType("warn");
+toast.warn = toastType('warn')
 /**
  * @param {object} { duration, content }
  * @param {ReactNode} ReactNode ReactElement | string | number | Iterable<ReactNode> | ReactPortal | boolean | null | undefined
  */
-toast.info = toastType("info");
+toast.info = toastType('info')
 /**
  * @param {object} { duration, content }
  * @param {ReactNode} ReactNode ReactElement | string | number | Iterable<ReactNode> | ReactPortal | boolean | null | undefined
  */
-toast.ghost = toastType("ghost");
+toast.ghost = toastType('ghost')
 
 function toastContentSanitize(content?: ReactNode): ReactNode {
-  if (!content) return;
-
-  if (isValidElement(content)) {
-    return content;
+  if (!content) {
+    return
   }
 
-  return !(typeof content === "object") || Array.isArray(content)
-    ? content
-    : JSON.stringify(content);
+  if (isValidElement(content)) {
+    return content
+  }
+
+  return !(typeof content === 'object') || Array.isArray(content) ? content : JSON.stringify(content)
 }
 
-function toastType(type: IToast["type"]) {
+function toastType(type: IToast['type']) {
   return function (data: IToastWithoutType | ReactNode) {
     if (isValidElement(data)) {
-      return toast({ content: data, type: type });
+      return toast({ content: data, type: type })
     }
 
-    if (typeof data === "object") {
-      const { content, duration } = data as IToastWithoutType;
-      return toast({ content, duration, type });
+    if (typeof data === 'object') {
+      const { content, duration } = data as IToastWithoutType
+      return toast({ content, duration, type })
     }
 
-    return toast({ content: String(data), type });
-  };
+    return toast({ content: String(data), type })
+  }
 }
 
-export { toast };
+export { toast }

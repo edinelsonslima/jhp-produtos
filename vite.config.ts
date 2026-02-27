@@ -1,34 +1,34 @@
-import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react";
-import { componentTagger } from "lovable-tagger";
-import path from "path";
-import { defineConfig } from "vite";
-import { VitePWA } from "vite-plugin-pwa";
+import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
+import { componentTagger } from 'lovable-tagger'
+import path from 'path'
+import { defineConfig } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react({ babel: { plugins: [["babel-plugin-react-compiler"]] } }),
+    react({ babel: { plugins: [['babel-plugin-react-compiler']] } }),
     tailwindcss(),
-    mode === "development" && componentTagger(),
+    mode === 'development' && componentTagger(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: 'autoUpdate',
       manifest: false,
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: "CacheFirst",
+            handler: 'CacheFirst',
             options: {
-              cacheName: "google-fonts-cache",
+              cacheName: 'google-fonts-cache',
               expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
             },
           },
           {
             urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: "CacheFirst",
+            handler: 'CacheFirst',
             options: {
-              cacheName: "gstatic-fonts-cache",
+              cacheName: 'gstatic-fonts-cache',
               expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
             },
           },
@@ -36,6 +36,6 @@ export default defineConfig(({ mode }) => ({
       },
     }),
   ].filter(Boolean),
-  server: { host: "::", port: 8080, hmr: { overlay: false } },
-  resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
-}));
+  server: { host: '::', port: 8080, hmr: { overlay: false } },
+  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+}))

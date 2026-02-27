@@ -1,9 +1,9 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from 'react-router-dom'
 
 interface IUnauthenticated {
-  logged: boolean;
+  logged: boolean
 }
 
 export function Unauthenticated({ logged }: IUnauthenticated) {
-  return !logged ? <Outlet /> : <Navigate to="/" replace />;
+  return !logged ? <Outlet /> : <Navigate to='/' replace />
 }

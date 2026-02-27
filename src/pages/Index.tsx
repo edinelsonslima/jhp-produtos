@@ -1,4 +1,3 @@
-import Dashboard from './Dashboard';
+import Dashboard from './Dashboard'
 
-export const Component = () => <Dashboard />;
-
+export const Component = () => <Dashboard />
