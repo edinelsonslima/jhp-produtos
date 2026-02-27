@@ -294,7 +294,11 @@ export function Component() {
         </m.div>
       </AnimatePresence>
 
-      <m.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className='mb-36'>
+      <m.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={cn(products.length === 0 || total <= 0 ? 'mb-0' : 'mb-36')}
+      >
         <h3 className='text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3'>Últimas Vendas</h3>
 
         {sales.length === 0 ? (
@@ -311,7 +315,7 @@ export function Component() {
       <form
         onSubmit={handleSubmit}
         hidden={products.length === 0 || total <= 0}
-        className='daisy-glass fixed bottom-16 space-y-3 p-4 border-t border-base-300 right-0 left-0 animate-fade-in-bottom-to-top'
+        className='daisy-glass fixed bottom-16 space-y-3 p-4 border-t border-base-300 right-0 left-0 animate-fade-in-up'
       >
         <div className='flex gap-2'>
           <Button

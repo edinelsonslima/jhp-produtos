@@ -22,10 +22,6 @@ export function Animate<TElement extends keyof React.JSX.IntrinsicElements>({
 }: ComponentProps<TElement> & Props<TElement>) {
   const [shouldRender, setShouldRender] = useState(show)
 
-  useEffect(() => {
-    onShouldRender?.(show)
-  }, [show, onShouldRender])
-
   const handleAnimationEnd = (event: never) => {
     props.onAnimationEnd?.(event)
 
@@ -33,14 +29,21 @@ export function Animate<TElement extends keyof React.JSX.IntrinsicElements>({
       return
     }
 
-    setShouldRender(false)
+    window.setTimeout(() => setShouldRender(false), 100)
   }
 
   useEffect(() => {
-    if (show) {
-      setShouldRender(true)
+    if (!show) {
+      return
     }
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setShouldRender(true)
   }, [show])
+
+  useEffect(() => {
+    onShouldRender?.(shouldRender)
+  }, [shouldRender, onShouldRender])
 
   if (!shouldRender) {
     return null

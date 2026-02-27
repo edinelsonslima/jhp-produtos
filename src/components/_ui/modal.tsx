@@ -1,7 +1,8 @@
 import { cn } from '@/lib/utils'
-import type { ComponentProps, ElementType, PropsWithChildren, ReactNode, RefObject, TouchEvent } from 'react'
+import type { ComponentProps, PropsWithChildren, ReactNode, RefObject, TouchEvent } from 'react'
 import { Children, createContext, createElement, isValidElement, useContext, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { Animate } from './animate'
 
 interface ModalContextValue {
   ref: RefObject<HTMLDialogElement | null>
@@ -95,23 +96,27 @@ export function Modal({ children, className, ...props }: ComponentProps<'div'>) 
       {trigger}
       {createPortal(
         <dialog ref={handleSetRef} className='daisy-modal daisy-modal-bottom sm:daisy-modal-middle'>
-          {open && (
-            <div
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              className={cn('daisy-modal-box max-h-[80vh] animate-fade-in-bottom-to-top', className)}
-              style={{
-                transform: `translateY(${dragY}px)`,
-                transition: isDragging ? 'none' : 'transform 0.2s ease-out',
-                opacity: isDragging ? Math.max(0.5, 1 - dragY / 300) : 1,
-              }}
-              {...props}
-            >
-              <div className='w-10 h-1 rounded-full bg-base-content/20 mx-auto -mt-2 mb-3 sm:hidden' />
-              {childrenWithoutTrigger}
-            </div>
-          )}
+          <Animate
+            as='div'
+            show={open}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            className={cn('daisy-modal-box max-h-[80vh]', className)}
+            style={
+              !isDragging
+                ? undefined
+                : {
+                    transform: `translateY(${dragY}px)`,
+                    transition: 'transform 0.2s ease-out',
+                    opacity: Math.max(0.5, 1 - dragY / 300),
+                  }
+            }
+            {...props}
+          >
+            <div className='w-10 h-1 rounded-full bg-base-content/20 mx-auto -mt-2 mb-3 sm:hidden' />
+            {childrenWithoutTrigger}
+          </Animate>
 
           <div
             role='button'
@@ -159,7 +164,7 @@ Modal.Actions = function Actions({
   )
 }
 
-Modal.Trigger = function Trigger<TElement extends keyof React.JSX.IntrinsicElements | ElementType>({
+Modal.Trigger = function Trigger<TElement extends keyof React.JSX.IntrinsicElements>({
   children,
   as,
   onClick,
@@ -167,6 +172,6 @@ Modal.Trigger = function Trigger<TElement extends keyof React.JSX.IntrinsicEleme
 }: ComponentProps<TElement> & { as: TElement }) {
   const { ref } = useContext(ModalContext)
 
-  const handleClick = (e: unknown) => (ref.current?.showModal(), onClick?.(e))
+  const handleClick = (e: never) => (ref.current?.showModal(), onClick?.(e))
   return createElement(as, { ...props, onClick: handleClick }, children)
 }

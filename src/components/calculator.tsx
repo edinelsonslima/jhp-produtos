@@ -41,12 +41,11 @@ export function Calculator({ saleTotal }: Props) {
   return (
     <Modal>
       <Modal.Trigger
-        as={Button}
-        size='lg'
-        appearance='outline'
+        as='button'
         type='button'
         title='Calculadora de Troco'
         onClick={() => vibrate(10)}
+        className={Button.getStyle(undefined, { appearance: 'outline', size: 'lg' })}
       >
         <CalculatorIcon size={18} />
       </Modal.Trigger>

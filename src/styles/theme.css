@@ -2,7 +2,8 @@
   --font-mono: "JetBrains Mono", monospace;
 
   --animate-fade-out: fadeOut 0.5s ease-in forwards;
-  --animate-fade-in-bottom-to-top: fadeInBottomToTop 0.3s ease-in-out;
+  --animate-fade-in-up: fadeSlideUp 0.3s ease-in-out;
+  --animate-fade-out-down: fadeSlideDown 0.5s ease-in-out;
   --animate-scale-up: scaleUp 0.5s ease-in-out;
   --animate-loading-bar: loading-bar 1.4s ease-in-out infinite;
 
@@ -10,16 +11,36 @@
     from {
       opacity: 1;
     }
+
     to {
       opacity: 0;
     }
   }
 
-  @keyframes fadeInBottomToTop {
+  @keyframes fadeSlideDown {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(100vh);
+    }
+
+  }
+
+  @keyframes fadeSlideUp {
     from {
       opacity: 0;
       transform: translateY(100vh);
     }
+
+    90% {
+      opacity: 1;
+      transform: translateY(-20px);
+    }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -30,15 +51,19 @@
     from {
       transform: scale(1) rotate(0deg);
     }
+
     25% {
       transform: scale(1.05) rotate(8deg);
     }
+
     50% {
       transform: scale(1.1) rotate(-8deg);
     }
+
     75% {
       transform: scale(1.05) rotate(8deg);
     }
+
     to {
       transform: scale(1) rotate(0deg);
     }
@@ -49,10 +74,12 @@
       transform: translateX(-100%);
       width: 40%;
     }
+
     50% {
       transform: translateX(100%);
       width: 60%;
     }
+
     100% {
       transform: translateX(260%);
       width: 40%;
