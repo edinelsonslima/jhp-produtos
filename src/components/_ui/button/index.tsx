@@ -1,6 +1,7 @@
 import type { GetStyleConfig } from '@/lib/utils'
 import { cn, createStyle } from '@/lib/utils'
 import type { ComponentProps } from 'react'
+import { ConfirmButton } from './confirm'
 
 const styled = createStyle({
   variant: {
@@ -75,3 +76,5 @@ Button.getStyle = styled<StylesExtra>((className, props, styles, extra) => {
     className,
   )
 })
+
+Button.Confirm = ConfirmButton

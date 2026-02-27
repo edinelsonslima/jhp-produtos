@@ -1,7 +1,6 @@
 import { Title } from '@/components/_layout/title'
 import { Button } from '@/components/_ui/button'
 import { Card } from '@/components/_ui/card'
-import { ConfirmButton } from '@/components/_ui/confirm-button'
 import { Label } from '@/components/_ui/label'
 import { toast } from '@/components/_ui/toast'
 import { CurrencyInput } from '@/components/currency/Input'
@@ -95,7 +94,7 @@ export function Component() {
               </div>
               <div className='flex items-center gap-3'>
                 <p className='text-sm font-bold font-mono'>{formatCurrency(p.price)}</p>
-                <ConfirmButton
+                <Button.Confirm
                   size='xs'
                   variant='error'
                   appearance='soft'
@@ -105,7 +104,7 @@ export function Component() {
                   }}
                 >
                   <Trash2 size={14} />
-                </ConfirmButton>
+                </Button.Confirm>
               </div>
             </div>
           ))}

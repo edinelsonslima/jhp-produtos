@@ -1,4 +1,3 @@
-import { ConfirmButton } from '@/components/_ui/confirm-button'
 import { productStore } from '@/hooks/useProducts'
 import { saleStore } from '@/hooks/useSales'
 import { formatCurrency, formatDateTime } from '@/lib/utils'
@@ -80,9 +79,9 @@ export function SaleItem({ saleId, onDelete }: SaleItemProps) {
           </Link>
 
           {onDelete && (
-            <ConfirmButton size='sm' variant='error' appearance='soft' onConfirm={() => onDelete(sale.id)}>
+            <Button.Confirm size='sm' variant='error' appearance='soft' onConfirm={() => onDelete(sale.id)}>
               <Trash2 size={15} />
-            </ConfirmButton>
+            </Button.Confirm>
           )}
         </div>
       </Collapse.Content>

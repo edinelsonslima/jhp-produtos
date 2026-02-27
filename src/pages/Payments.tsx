@@ -1,7 +1,6 @@
 import { Title } from '@/components/_layout/title'
 import { Button } from '@/components/_ui/button'
 import { Card } from '@/components/_ui/card'
-import { ConfirmButton } from '@/components/_ui/confirm-button'
 import { Label } from '@/components/_ui/label'
 import { Modal } from '@/components/_ui/modal'
 import { toast } from '@/components/_ui/toast'
@@ -202,7 +201,7 @@ export function Component() {
                 </div>
               </div>
 
-              <ConfirmButton
+              <Button.Confirm
                 size='sm'
                 variant='error'
                 appearance='outline'
@@ -213,7 +212,7 @@ export function Component() {
                 }}
               >
                 <Trash2 size={16} />
-              </ConfirmButton>
+              </Button.Confirm>
             </div>
 
             <div className='grid grid-cols-2 gap-3'>
@@ -283,7 +282,7 @@ export function Component() {
                   <div className='flex items-center gap-3'>
                     <p className='text-sm font-bold font-mono'>{formatCurrency(payment.amount)}</p>
 
-                    <ConfirmButton
+                    <Button.Confirm
                       size='xs'
                       variant='error'
                       appearance='soft'
@@ -293,7 +292,7 @@ export function Component() {
                       }}
                     >
                       <Trash2 size={14} />
-                    </ConfirmButton>
+                    </Button.Confirm>
                   </div>
                 </div>
               )

@@ -2,7 +2,7 @@ import { vibrate } from '@/lib/utils'
 import { Check } from 'lucide-react'
 import type { ComponentProps } from 'react'
 import { useEffect, useRef, useState } from 'react'
-import { Button } from './button'
+import { Button } from '.'
 
 interface Props extends ComponentProps<typeof Button> {
   onConfirm: () => void
@@ -12,15 +12,30 @@ export function ConfirmButton({ onConfirm, children, className, ...props }: Prop
   const [confirming, setConfirming] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+
+    if (confirming) {
+      onConfirm()
+      setConfirming(false)
+      return
+    }
+
+    vibrate(10)
+    setConfirming(true)
+  }
+
   useEffect(() => {
     if (!confirming) {
       return
     }
 
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setConfirming(false)
+      if (ref.current?.contains(e.target as Node)) {
+        return
       }
+
+      setConfirming(false)
     }
 
     document.addEventListener('pointerdown', handler, true)
@@ -29,21 +44,7 @@ export function ConfirmButton({ onConfirm, children, className, ...props }: Prop
 
   return (
     <div ref={ref} className='inline-flex'>
-      <Button
-        {...props}
-        variant={confirming ? 'error' : props.variant}
-        className={className}
-        onClick={(e) => {
-          e.stopPropagation()
-          if (confirming) {
-            onConfirm()
-            setConfirming(false)
-          } else {
-            vibrate(10)
-            setConfirming(true)
-          }
-        }}
-      >
+      <Button {...props} variant={confirming ? 'error' : props.variant} className={className} onClick={handleClick}>
         {confirming ? <Check size={14} /> : children}
       </Button>
     </div>

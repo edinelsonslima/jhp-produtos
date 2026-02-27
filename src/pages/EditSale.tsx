@@ -1,7 +1,6 @@
 import { Title } from '@/components/_layout/title'
 import { Button } from '@/components/_ui/button'
 import { Card } from '@/components/_ui/card'
-import { ConfirmButton } from '@/components/_ui/confirm-button'
 import { Label } from '@/components/_ui/label'
 import { toast } from '@/components/_ui/toast'
 import { CurrencyInput } from '@/components/currency/Input'
@@ -229,9 +228,9 @@ export function Component() {
           <Save size={20} /> Salvar Alterações
         </Button>
 
-        <ConfirmButton size='lg' variant='error' appearance='soft' onConfirm={handleDelete}>
+        <Button.Confirm size='lg' variant='error' appearance='soft' onConfirm={handleDelete}>
           <Trash2 size={20} />
-        </ConfirmButton>
+        </Button.Confirm>
       </div>
     </>
   )
