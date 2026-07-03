@@ -7,7 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react({ babel: { plugins: [['babel-plugin-react-compiler']] } }),
+    react(),
     tailwindcss(),
     mode === 'development' && componentTagger(),
     VitePWA({

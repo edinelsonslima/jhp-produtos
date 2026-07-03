@@ -3,7 +3,7 @@ import { Badge } from '@/components/_ui/badge'
 import { Card } from '@/components/_ui/card'
 import { getAuditLog } from '@/lib/audit'
 import { ClipboardList } from 'lucide-react'
-import type { ComponentProps } from 'react'
+import type { ComponentProps, UIEvent } from 'react'
 import { useMemo, useState } from 'react'
 
 const ITEM_HEIGHT = 96
@@ -48,7 +48,7 @@ export function Component() {
   const bottomSpacer = Math.max(0, (loadedEntries.length - endIndex) * ITEM_HEIGHT)
   const visibleEntries = useMemo(() => loadedEntries.slice(startIndex, endIndex), [endIndex, loadedEntries, startIndex])
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  const handleScroll = (e: UIEvent<HTMLDivElement>) => {
     const { clientHeight, scrollHeight, scrollTop: currentScrollTop } = e.currentTarget
 
     setScrollTop(currentScrollTop)
