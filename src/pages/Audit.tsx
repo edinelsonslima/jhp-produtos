@@ -3,7 +3,14 @@ import { Badge } from '@/components/_ui/badge'
 import { Card } from '@/components/_ui/card'
 import { getAuditLog } from '@/lib/audit'
 import { ClipboardList } from 'lucide-react'
-import type { ComponentProps } from 'react'
+import type { ComponentProps, UIEvent } from 'react'
+import { useMemo, useState } from 'react'
+
+const ITEM_HEIGHT = 96
+const INITIAL_BATCH = 40
+const BATCH_SIZE = 40
+const OVERSCAN = 6
+const ESTIMATED_VIEWPORT_HEIGHT = 720
 
 interface ActionConfig extends ComponentProps<typeof Badge> {
   label: string
@@ -27,6 +34,29 @@ const ACTION_LABELS: Record<string, ActionConfig> = {
 
 export function Component() {
   const entries = getAuditLog()
+  const [scrollTop, setScrollTop] = useState(0)
+  const [limit, setLimit] = useState(INITIAL_BATCH)
+
+  const visibleEntriesLimit = Math.min(limit, entries.length)
+  const loadedEntries = entries.slice(0, visibleEntriesLimit)
+  const startIndex = Math.max(0, Math.floor(scrollTop / ITEM_HEIGHT) - OVERSCAN)
+  const endIndex = Math.min(
+    loadedEntries.length,
+    Math.ceil((scrollTop + ESTIMATED_VIEWPORT_HEIGHT) / ITEM_HEIGHT) + OVERSCAN,
+  )
+  const topSpacer = startIndex * ITEM_HEIGHT
+  const bottomSpacer = Math.max(0, (loadedEntries.length - endIndex) * ITEM_HEIGHT)
+  const visibleEntries = useMemo(() => loadedEntries.slice(startIndex, endIndex), [endIndex, loadedEntries, startIndex])
+
+  const handleScroll = (e: UIEvent<HTMLDivElement>) => {
+    const { clientHeight, scrollHeight, scrollTop: currentScrollTop } = e.currentTarget
+
+    setScrollTop(currentScrollTop)
+
+    if (currentScrollTop + clientHeight >= scrollHeight - ITEM_HEIGHT * 8) {
+      setLimit((current) => Math.min(entries.length, current + BATCH_SIZE))
+    }
+  }
 
   return (
     <>
@@ -38,15 +68,19 @@ export function Component() {
           <p className='text-sm'>Nenhum registro de auditoria</p>
         </Card>
       ) : (
-        <Card className='overflow-hidden divide-y divide-base-300 p-0'>
-          {entries.map((entry) => {
+        <div className={Card.getStyle('overflow-hidden p-0')}>
+          <div data-swipe-ignore className='h-[min(70dvh,42rem)] overflow-y-auto' onScroll={handleScroll}>
+            <div style={{ height: topSpacer }} />
+
+            <div role='list' className='divide-y divide-base-300'>
+              {visibleEntries.map((entry) => {
             const config = ACTION_LABELS[entry.action] ?? {
               label: entry.action,
               variant: 'outline' as const,
             }
 
             return (
-              <div key={entry.id} className='px-4 py-3 flex flex-col items-start gap-3'>
+              <div key={entry.id} role='listitem' className='px-4 py-3 flex flex-col items-start gap-3' style={{ height: ITEM_HEIGHT }}>
                 <Badge variant={config.variant} className='text-xs'>
                   {config.label}
                 </Badge>
@@ -60,7 +94,15 @@ export function Component() {
               </div>
             )
           })}
-        </Card>
+            </div>
+
+            <div style={{ height: bottomSpacer }} />
+
+            {visibleEntriesLimit < entries.length && (
+              <div className='py-4 text-center text-xs text-base-content/50'>Carregando registros...</div>
+            )}
+          </div>
+        </div>
       )}
     </>
   )

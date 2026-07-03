@@ -13,6 +13,7 @@ export function useSwipeNavigation(ref: RefObject<HTMLElement | null>, pages: st
   const touchStartX = useRef(0)
   const touchStartY = useRef(0)
   const shouldIgnore = useRef(false)
+  const isNavigating = useRef(false)
 
   useEffect(() => {
     const el = ref.current
@@ -55,6 +56,11 @@ export function useSwipeNavigation(ref: RefObject<HTMLElement | null>, pages: st
     }
 
     const handleTouchStart = (e: TouchEvent) => {
+      if (isNavigating.current) {
+        shouldIgnore.current = true
+        return
+      }
+
       if (e.touches.length > 1) {
         shouldIgnore.current = true
         return
@@ -101,10 +107,23 @@ export function useSwipeNavigation(ref: RefObject<HTMLElement | null>, pages: st
     }
 
     const navigateWithAnimation = (path: string, direction: 'left' | 'right') => {
+      if (isNavigating.current) {
+        return
+      }
+
+      isNavigating.current = true
+      document.documentElement.dataset.swipeNavigation = 'true'
+
       const main = ref.current
+
+      const finishSwipeNavigation = () => {
+        delete document.documentElement.dataset.swipeNavigation
+        isNavigating.current = false
+      }
 
       if (!main) {
         navigate(path)
+        window.setTimeout(finishSwipeNavigation, DURATION + 80)
         return
       }
 
@@ -124,6 +143,7 @@ export function useSwipeNavigation(ref: RefObject<HTMLElement | null>, pages: st
             window.setTimeout(() => {
               delete main.dataset.swipeEnter
               delete main.dataset.swipeEntering
+              finishSwipeNavigation()
             }, DURATION + 50)
           })
         })
