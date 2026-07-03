@@ -155,6 +155,8 @@ export function Component() {
 
   const totalPaymentCombined = cashAmount + pixAmount
 
+  const showFooter = (selected.regular.length > 0 || selected.custom.length > 0) && products.length > 0
+
   const total =
     selected.custom.reduce((acc, p) => acc + p.price * p.quantity, 0) +
     selected.regular.reduce((acc, p) => {
@@ -297,7 +299,7 @@ export function Component() {
       <m.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className={cn(products.length === 0 || total <= 0 ? 'mb-0' : 'mb-36')}
+        className={cn(showFooter && total > 0 ? 'mb-36' : 'mb-0')}
       >
         <h3 className='text-sm font-semibold text-base-content/80 uppercase tracking-wider mb-3'>Últimas Vendas</h3>
 
@@ -313,9 +315,10 @@ export function Component() {
       </m.div>
 
       <form
+        data-swipe-ignore
         onSubmit={handleSubmit}
-        hidden={products.length === 0 || total <= 0}
-        className='daisy-glass fixed bottom-16 space-y-3 p-4 border-t border-base-300 right-0 left-0 animate-fade-in-up'
+        hidden={!showFooter || total <= 0}
+        className='daisy-glass fixed bottom-16 space-y-3 p-4 border-t border-base-300 right-0 left-0 animate-fade-in-up z-30'
       >
         <div className='flex gap-2'>
           <Button

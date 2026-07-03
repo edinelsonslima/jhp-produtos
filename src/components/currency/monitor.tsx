@@ -63,5 +63,14 @@ export function CurrencyMonitor({ children, className, duration = 0.6, ...props 
     </motion.div>
   )
 
-  return className?.includes('fixed') ? createPortal(content, document.body) : content
+  if (!className?.includes('fixed')) {
+    return content
+  }
+
+  // Portal into `.main-content` (when present) so the fixed element inherits
+  // the swipe transform of the page container. Falling back to <body> keeps
+  // it working on desktop where there is no swipe container.
+  const target = (typeof document !== 'undefined' && document.querySelector('.main-content')) || document.body
+
+  return createPortal(content, target as Element)
 }

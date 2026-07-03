@@ -223,7 +223,13 @@ export function Component() {
         )}
       </Card>
 
-      <div className='flex gap-3'>
+      {/* Spacer so content doesn't hide behind the sticky action bar */}
+      <div aria-hidden className='h-24' />
+
+      <div
+        data-swipe-ignore
+        className='daisy-glass fixed bottom-16 left-0 right-0 flex gap-3 p-4 border-t border-base-300 z-30'
+      >
         <Button size='lg' variant='primary' className='flex-1' onClick={handleSave}>
           <Save size={20} /> Salvar Alterações
         </Button>
