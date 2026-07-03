@@ -72,7 +72,7 @@ Button.getStyle = styled<StylesExtra>((className, props, styles, extra) => {
     appearance && styles.appearance[appearance],
     modifier && styles.modifier[modifier],
     disabled && 'daisy-btn-disabled',
-    active && 'daisy-btn-active',
+    active && 'daisy-btn-active text-primary-content',
     className,
   )
 })
