@@ -69,7 +69,7 @@ export function Component() {
         </Card>
       ) : (
         <div className={Card.getStyle('overflow-hidden p-0')}>
-          <div data-swipe-ignore className='h-[min(70dvh,42rem)] overflow-y-auto' onScroll={handleScroll}>
+          <div data-swipe-ignore className='h-[min(80dvh,42rem)] overflow-y-auto ' onScroll={handleScroll}>
             <div style={{ height: topSpacer }} />
 
             <div role='list' className='divide-y divide-base-300'>
@@ -90,7 +90,7 @@ export function Component() {
                       {config.label}
                     </Badge>
 
-                    <div className='min-w-0 max-w-full overflow-x-auto'>
+                    <div className='min-w-0 max-w-full overflow-x-auto overflow-y-hidden'>
                       <p className='text-sm whitespace-nowrap'>{entry.details}</p>
                       <p className='text-xs text-base-content/60 mt-0.5'>
                         {entry.userName} • {new Date(entry.timestamp).toLocaleString('pt-BR')}
