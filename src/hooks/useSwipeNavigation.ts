@@ -2,16 +2,17 @@ import type { RefObject } from 'react'
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const SWIPE_THRESHOLD = 60
-const SWIPE_MAX_VERTICAL = 80
+const SWIPE_THRESHOLD = 70
+const SWIPE_MAX_VERTICAL = 60
+const HORIZONTAL_LOCK_RATIO = 1.4
 const DURATION = 320
 const IGNORE_ATTR = 'data-swipe-ignore'
 
 export function useSwipeNavigation(ref: RefObject<HTMLElement | null>, pages: string[]) {
   const navigate = useNavigate()
-  const touchStartX = useRef<number>(0)
-  const touchStartY = useRef<number>(0)
-  const touchTarget = useRef<EventTarget | null>(null)
+  const touchStartX = useRef(0)
+  const touchStartY = useRef(0)
+  const shouldIgnore = useRef(false)
 
   useEffect(() => {
     const el = ref.current
@@ -22,32 +23,27 @@ export function useSwipeNavigation(ref: RefObject<HTMLElement | null>, pages: st
 
     const pagesItems = [...pages]
 
-    function shouldIgnoreSwipe(target: EventTarget | null, deltaX: number, root: HTMLElement): boolean {
-      let el = target as HTMLElement | null
+    // Ignore swipe when the gesture starts inside an element that opts out
+    // (data-swipe-ignore) or inside any horizontally-scrollable ancestor.
+    // Deciding at touchstart avoids racing with pointer capture from
+    // draggable children (e.g. framer-motion product cards).
+    function shouldIgnoreGesture(target: EventTarget | null, root: HTMLElement): boolean {
+      let node = target as HTMLElement | null
 
-      while (el && el !== root) {
-        if (el.hasAttribute(IGNORE_ATTR)) {
+      while (node && node !== root) {
+        if (node.hasAttribute?.(IGNORE_ATTR)) {
           return true
         }
 
-        const { overflowX } = window.getComputedStyle(el)
-
-        const canScrollX = (overflowX === 'auto' || overflowX === 'scroll') && el.scrollWidth > el.clientWidth
+        const style = window.getComputedStyle(node)
+        const overflowX = style.overflowX
+        const canScrollX = (overflowX === 'auto' || overflowX === 'scroll') && node.scrollWidth > node.clientWidth
 
         if (canScrollX) {
-          const atLeftEdge = el.scrollLeft <= 0
-          const atRightEdge = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1
-
-          if (deltaX > 0 && !atLeftEdge) {
-            return true
-          }
-
-          if (deltaX < 0 && !atRightEdge) {
-            return true
-          }
+          return true
         }
 
-        el = el.parentElement
+        node = node.parentElement
       }
 
       return false
@@ -59,12 +55,21 @@ export function useSwipeNavigation(ref: RefObject<HTMLElement | null>, pages: st
     }
 
     const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 1) {
+        shouldIgnore.current = true
+        return
+      }
+
       touchStartX.current = e.touches[0].clientX
       touchStartY.current = e.touches[0].clientY
-      touchTarget.current = e.target
+      shouldIgnore.current = shouldIgnoreGesture(e.target, el)
     }
 
     const handleTouchEnd = (e: TouchEvent) => {
+      if (shouldIgnore.current) {
+        return
+      }
+
       const deltaX = e.changedTouches[0].clientX - touchStartX.current
       const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY.current)
 
@@ -72,11 +77,9 @@ export function useSwipeNavigation(ref: RefObject<HTMLElement | null>, pages: st
         return
       }
 
-      if (Math.abs(deltaX) < SWIPE_THRESHOLD) {
-        return
-      }
+      const absX = Math.abs(deltaX)
 
-      if (shouldIgnoreSwipe(touchTarget.current, deltaX, el)) {
+      if (absX < SWIPE_THRESHOLD || absX < deltaY * HORIZONTAL_LOCK_RATIO) {
         return
       }
 

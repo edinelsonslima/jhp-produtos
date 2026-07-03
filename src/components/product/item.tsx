@@ -1,3 +1,4 @@
+import { useHasHover } from '@/hooks/useHasHover'
 import { cn, formatCurrency, vibrate } from '@/lib/utils'
 import type { Product } from '@/types'
 import { m } from 'framer-motion'
@@ -13,6 +14,7 @@ interface Props extends Omit<ComponentProps<typeof m.button>, 'onSelect'> {
 }
 
 export function ProductItem({ product, className, quantity = 0, onSelect, ...props }: Props) {
+  const hasHover = useHasHover()
   const [longPressActive, setLongPressActive] = useState(false)
   const longPressTimer = useRef<number | null>(null)
   const isDragging = useRef(false)
@@ -78,8 +80,9 @@ export function ProductItem({ product, className, quantity = 0, onSelect, ...pro
       dragTransition={{ bounceStiffness: 100, bounceDamping: 9999 }}
       dragElastic={1}
       dragConstraints={{ left: 0, right: 0 }}
+      dragDirectionLock
       onDragEnd={handleDragEnd}
-      whileHover={{ scale: 1.02 }}
+      whileHover={hasHover ? { scale: 1.02 } : undefined}
       whileTap={{ scale: 0.98 }}
       onDragStart={handleDragStart}
       onPointerDown={handlePointerDown}

@@ -26,6 +26,18 @@ textarea,
   user-select: text;
 }
 
+/* Disable hover-based visual states on devices without a hover-capable
+   pointer (e.g. touch phones) — this prevents the "sticky hover" effect
+   where a tapped element keeps its :hover styles until another tap. */
+@media (hover: none), (pointer: coarse) {
+  *:hover {
+    background-color: inherit !important;
+    color: inherit !important;
+    transform: none !important;
+    box-shadow: inherit !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
