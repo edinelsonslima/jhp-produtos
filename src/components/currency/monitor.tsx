@@ -28,7 +28,6 @@ export function CurrencyMonitor({ children, className, duration = 0.6, ...props 
     const from = prevValue.current
     const to = children
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setColor(to > from ? 'up' : to < from ? 'down' : 'idle')
 
     const controls = animate(motionValue, to, {

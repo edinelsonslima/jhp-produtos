@@ -74,26 +74,31 @@ export function Component() {
 
             <div role='list' className='divide-y divide-base-300'>
               {visibleEntries.map((entry) => {
-            const config = ACTION_LABELS[entry.action] ?? {
-              label: entry.action,
-              variant: 'outline' as const,
-            }
+                const config = ACTION_LABELS[entry.action] ?? {
+                  label: entry.action,
+                  variant: 'outline' as const,
+                }
 
-            return (
-              <div key={entry.id} role='listitem' className='px-4 py-3 flex flex-col items-start gap-3' style={{ height: ITEM_HEIGHT }}>
-                <Badge variant={config.variant} className='text-xs'>
-                  {config.label}
-                </Badge>
+                return (
+                  <div
+                    key={entry.id}
+                    role='listitem'
+                    className='px-4 py-3 flex flex-col items-start gap-3'
+                    style={{ height: ITEM_HEIGHT }}
+                  >
+                    <Badge variant={config.variant} className='text-xs'>
+                      {config.label}
+                    </Badge>
 
-                <div className='min-w-0 max-w-full overflow-x-auto'>
-                  <p className='text-sm whitespace-nowrap'>{entry.details}</p>
-                  <p className='text-xs text-base-content/60 mt-0.5'>
-                    {entry.userName} • {new Date(entry.timestamp).toLocaleString('pt-BR')}
-                  </p>
-                </div>
-              </div>
-            )
-          })}
+                    <div className='min-w-0 max-w-full overflow-x-auto'>
+                      <p className='text-sm whitespace-nowrap'>{entry.details}</p>
+                      <p className='text-xs text-base-content/60 mt-0.5'>
+                        {entry.userName} • {new Date(entry.timestamp).toLocaleString('pt-BR')}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
             </div>
 
             <div style={{ height: bottomSpacer }} />
