@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import type { ComponentProps, PropsWithChildren, ReactNode, RefObject, TouchEvent } from 'react'
-import { Children, createContext, createElement, isValidElement, useContext, useRef, useState } from 'react'
+import { Children, createContext, createElement, isValidElement, useContext, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Animate } from './animate'
 
@@ -12,6 +12,13 @@ const ModalContext = createContext<ModalContextValue>({
   ref: { current: null },
 })
 
+let openModalCount = 0
+
+function updateVisualViewportHeight() {
+  const height = window.visualViewport?.height ?? window.innerHeight
+  document.documentElement.style.setProperty('--app-visual-viewport-height', `${height}px`)
+}
+
 export function Modal({ children, className, ...props }: ComponentProps<'div'>) {
   const ref = useRef<HTMLDialogElement>(null)
   const startY = useRef(0)
@@ -20,6 +27,33 @@ export function Modal({ children, className, ...props }: ComponentProps<'div'>) 
   const [dragY, setDragY] = useState(0)
   const [open, setOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    openModalCount += 1
+    updateVisualViewportHeight()
+    document.body.classList.add('app-modal-open')
+
+    window.visualViewport?.addEventListener('resize', updateVisualViewportHeight)
+    window.visualViewport?.addEventListener('scroll', updateVisualViewportHeight)
+    window.addEventListener('resize', updateVisualViewportHeight)
+
+    return () => {
+      openModalCount = Math.max(0, openModalCount - 1)
+
+      window.visualViewport?.removeEventListener('resize', updateVisualViewportHeight)
+      window.visualViewport?.removeEventListener('scroll', updateVisualViewportHeight)
+      window.removeEventListener('resize', updateVisualViewportHeight)
+
+      if (openModalCount === 0) {
+        document.body.classList.remove('app-modal-open')
+        document.documentElement.style.removeProperty('--app-visual-viewport-height')
+      }
+    }
+  }, [open])
 
   const handleTouchStart = (e: TouchEvent) => {
     const current = e.currentTarget
@@ -95,7 +129,7 @@ export function Modal({ children, className, ...props }: ComponentProps<'div'>) 
     <ModalContext value={{ ref }}>
       {trigger}
       {createPortal(
-        <dialog ref={handleSetRef} className='daisy-modal daisy-modal-bottom sm:daisy-modal-middle'>
+        <dialog ref={handleSetRef} data-swipe-ignore className='daisy-modal daisy-modal-bottom sm:daisy-modal-middle'>
           <Animate
             as='div'
             show={open}

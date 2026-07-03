@@ -26,6 +26,45 @@ textarea,
   user-select: text;
 }
 
+body.app-modal-open {
+  overflow: hidden;
+}
+
+body.app-modal-open .daisy-dock {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(calc(100% + env(safe-area-inset-bottom)));
+  transition:
+    transform 160ms ease,
+    opacity 120ms ease;
+}
+
+body.app-modal-open .daisy-modal {
+  height: var(--app-visual-viewport-height, 100dvh);
+  max-height: var(--app-visual-viewport-height, 100dvh);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+body.app-modal-open .daisy-modal-box {
+  max-height: min(82dvh, calc(var(--app-visual-viewport-height, 100dvh) - 1rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+body.app-modal-open .daisy-modal-backdrop {
+  min-height: var(--app-visual-viewport-height, 100dvh);
+}
+
+html[data-swipe-navigation="true"] .main-content > *,
+html[data-swipe-navigation="true"] .daisy-dock * {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition-duration: 0ms !important;
+}
+
 /* Disable hover-based visual states on devices without a hover-capable
    pointer (e.g. touch phones) — this prevents the "sticky hover" effect
    where a tapped element keeps its :hover styles until another tap. */
