@@ -1,5 +1,6 @@
 import { logAudit } from '@/lib/audit'
 import { generateUUID } from '@/lib/utils'
+import type { Module } from '@/types'
 import { createStore } from './useStore'
 
 export interface AppUser {
@@ -8,7 +9,10 @@ export interface AppUser {
   email: string
   password: string
   initials: string
+  modules: Module[]
 }
+
+const ALL_MODULES: Module[] = ['sale', 'stock', 'payments', 'manager', 'audit', 'admin']
 
 type State = {
   user: AppUser | null
@@ -22,6 +26,41 @@ type Actions = {
   register: (name: string, email: string, password: string) => string | null
   update: (user: Partial<Omit<AppUser, 'id'>>) => void
 }
+
+// Migração: usuários persistidos antes do campo `modules` recebem todos os módulos.
+// Executa antes da criação do store para que o estado carregado já venha corrigido.
+;(() => {
+  if (typeof localStorage === 'undefined') return
+
+  const key = 'jhp-store-store-auth'
+  const raw = localStorage.getItem(key)
+  if (!raw) return
+
+  try {
+    const parsed = JSON.parse(raw)
+    const data = parsed?.data as Partial<State> | undefined
+    if (!data) return
+
+    const users = Array.isArray(data.users) ? (data.users as AppUser[]) : []
+    const user = (data.user ?? null) as AppUser | null
+
+    const needs =
+      users.some((u) => !Array.isArray(u.modules)) || (user !== null && !Array.isArray(user.modules))
+    if (!needs) return
+
+    const migratedUsers = users.map((u) =>
+      Array.isArray(u.modules) ? u : { ...u, modules: [...ALL_MODULES] },
+    )
+    const migratedUser =
+      user && !Array.isArray(user.modules) ? { ...user, modules: [...ALL_MODULES] } : user
+
+    parsed.data = { ...data, users: migratedUsers, user: migratedUser }
+    parsed.updatedAt = Date.now()
+    localStorage.setItem(key, JSON.stringify(parsed))
+  } catch {
+    // noop
+  }
+})()
 
 export const authStore = createStore<State, Actions>({
   persist: { key: 'auth' },
@@ -74,6 +113,7 @@ export const authStore = createStore<State, Actions>({
         password,
         name,
         email,
+        modules: users.length === 0 ? [...ALL_MODULES] : [],
         initials: !name
           ? '?'
           : name

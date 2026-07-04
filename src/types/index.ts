@@ -1,5 +1,12 @@
 export type PaymentMethod = 'pix' | 'dinheiro' | 'combinado'
 
+export type Module = 'sale' | 'stock' | 'payments' | 'manager' | 'audit' | 'admin'
+
+export interface Tenant {
+  id: string
+  name: string
+}
+
 export interface Product {
   id: string
   name: string
